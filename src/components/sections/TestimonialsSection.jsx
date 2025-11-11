@@ -100,8 +100,17 @@ const TestimonialsSection = () => {
   };
 
   return (
-    <section id="testimonials" className="section-padding bg-gradient-to-b from-white to-beauty-pink/5">
-      <div className="max-w-7xl mx-auto">
+    <section id="testimonials" className="relative section-padding bg-gradient-to-b from-white to-beauty-pink/5">
+      {/* Background Image */}
+      <div className="absolute top-1/4 left-0 w-1/3 h-2/3">
+        <img
+          src="/images/hairdresser-doing-haircut-for-women-in-hairdressin-2025-10-16-23-09-35-utc-min.jpg"
+          alt="Frizerie profesională"
+          className="w-full h-full object-cover rounded-r-3xl opacity-15"
+        />
+      </div>
+      
+      <div className="relative z-10 max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center px-4 py-2 bg-beauty-rose/10 rounded-full border border-beauty-rose/20 mb-6">

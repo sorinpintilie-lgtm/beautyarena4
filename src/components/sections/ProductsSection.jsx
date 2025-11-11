@@ -172,8 +172,17 @@ const ProductsSection = () => {
   });
 
   return (
-    <section id="products" className="section-padding bg-white">
-      <div className="max-w-7xl mx-auto">
+    <section id="products" className="relative section-padding bg-white">
+      {/* Background Image */}
+      <div className="absolute top-0 right-0 w-1/3 h-1/3">
+        <img
+          src="/images/tools-of-makeup-artist-2025-03-09-22-18-22-utc-min.jpg"
+          alt="Unelte machiaj"
+          className="w-full h-full object-cover rounded-bl-3xl opacity-20"
+        />
+      </div>
+      
+      <div className="relative z-10 max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center px-4 py-2 bg-beauty-purple/10 rounded-full border border-beauty-purple/20 mb-6">
@@ -185,7 +194,7 @@ const ProductsSection = () => {
             <span className="block gradient-text">Frumusețe</span>
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Descoperă gama noastră completă de produse de frumusețe premium, selectate cu grijă 
+            Descoperă gama noastră completă de produse de frumusețe premium, selectate cu grijă
             pentru a îți oferi rezultate excepționale acasă.
           </p>
         </div>

@@ -34,11 +34,18 @@ const PromotionalBanner = () => {
 
           {/* Visual Element */}
           <div className="relative">
-            <div className="aspect-square bg-white/10 backdrop-blur-sm rounded-3xl p-8 flex items-center justify-center">
-              <div className="text-center space-y-4">
-                <Sparkles className="w-24 h-24 text-white mx-auto" />
-                <div className="text-6xl font-bold text-white">50%</div>
-                <div className="text-xl text-pink-100">OFF</div>
+            <div className="relative aspect-square bg-white/10 backdrop-blur-sm rounded-3xl overflow-hidden">
+              <img
+                src="/images/a-woman-at-the-beauty-salon-2025-10-14-10-53-53-utc-min.jpg"
+                alt="Salon de frumusețe"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-br from-beauty-pink/80 via-beauty-purple/60 to-beauty-rose/80 flex items-center justify-center">
+                <div className="text-center space-y-4">
+                  <Sparkles className="w-24 h-24 text-white mx-auto" />
+                  <div className="text-6xl font-bold text-white">50%</div>
+                  <div className="text-xl text-pink-100">REDUCERE</div>
+                </div>
               </div>
             </div>
             

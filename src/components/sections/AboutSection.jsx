@@ -80,8 +80,17 @@ const AboutSection = () => {
   };
 
   return (
-    <section id="about" className="section-padding bg-gradient-to-b from-pink-50 to-white">
-      <div className="max-w-7xl mx-auto">
+    <section id="about" className="relative section-padding bg-gradient-to-b from-pink-50 to-white">
+      {/* Background Image */}
+      <div className="absolute bottom-0 left-0 w-1/4 h-1/2">
+        <img
+          src="/images/beautiful-woman-with-stylish-bow-hairstyle-2024-12-05-04-34-27-utc-min.jpg"
+          alt="Coafură stilizată"
+          className="w-full h-full object-cover rounded-tr-3xl opacity-30"
+        />
+      </div>
+      
+      <div className="relative z-10 max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center px-4 py-2 bg-beauty-rose/10 rounded-full border border-beauty-rose/20 mb-6">

@@ -84,8 +84,18 @@ const ServicesSection = () => {
   ];
 
   return (
-    <section id="services" className="section-padding bg-gradient-to-b from-white to-pink-50">
-      <div className="max-w-7xl mx-auto">
+    <section id="services" className="relative section-padding">
+      {/* Background Image */}
+      <div className="absolute inset-0">
+        <img
+          src="/images/make-up-artists-shading-eyes-2025-03-16-07-53-24-utc-min.jpg"
+          alt="Machiaj profesional"
+          className="w-full h-full object-cover object-center opacity-10"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/95 via-white/90 to-white/95"></div>
+      </div>
+      
+      <div className="relative z-10 max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center px-4 py-2 bg-beauty-pink/10 rounded-full border border-beauty-pink/20 mb-6">
@@ -93,11 +103,11 @@ const ServicesSection = () => {
             <span className="text-sm font-medium text-beauty-pink">Serviciile noastre premium</span>
           </div>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-elegant font-bold text-gray-900 mb-6">
-            Experimentează 
+            Experimentează
             <span className="block gradient-text">excelența în frumusețe</span>
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Descoperă gama completă de servicii profesionale de frumusețe, realizate de experți 
+            Descoperă gama completă de servicii profesionale de frumusețe, realizate de experți
             cu produse de calitate premium și tehnici inovatoare.
           </p>
         </div>
@@ -168,18 +178,27 @@ const ServicesSection = () => {
 
         {/* Call to Action */}
         <div className="text-center mt-16">
-          <div className="bg-gradient-to-r from-beauty-pink to-beauty-purple rounded-2xl p-8 text-white">
-            <h3 className="text-2xl md:text-3xl font-elegant font-bold mb-4">
-              Nu găsești ce cauți?
-            </h3>
-            <p className="text-pink-100 mb-6 max-w-2xl mx-auto">
-              Oferim consultanță personalizată pentru a crea experiența perfectă de frumusețe adaptată nevoilor tale specifice.
-            </p>
-            <button className="bg-white text-beauty-pink px-8 py-3 rounded-full font-semibold hover:bg-gray-50 transition-colors duration-300 flex items-center mx-auto">
-              <Calendar className="w-5 h-5 mr-2" />
-              Programează consultația gratuită
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </button>
+          <div className="relative bg-gradient-to-r from-beauty-pink to-beauty-purple rounded-2xl p-8 text-white overflow-hidden">
+            <div className="absolute inset-0">
+              <img
+                src="/images/makeup-artist-makes-makeup-to-a-girl-apply-beige-2025-03-13-10-07-09-utc-min.jpg"
+                alt="Machiaj profesional"
+                className="w-full h-full object-cover opacity-20"
+              />
+            </div>
+            <div className="relative z-10">
+              <h3 className="text-2xl md:text-3xl font-elegant font-bold mb-4">
+                Nu găsești ce cauți?
+              </h3>
+              <p className="text-pink-100 mb-6 max-w-2xl mx-auto">
+                Oferim consultanță personalizată pentru a crea experiența perfectă de frumusețe adaptată nevoilor tale specifice.
+              </p>
+              <button className="bg-white text-beauty-pink px-8 py-3 rounded-full font-semibold hover:bg-gray-50 transition-colors duration-300 flex items-center mx-auto">
+                <Calendar className="w-5 h-5 mr-2" />
+                Programează consultația gratuită
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </button>
+            </div>
           </div>
         </div>
       </div>

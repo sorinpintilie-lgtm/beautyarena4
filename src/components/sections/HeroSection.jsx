@@ -7,11 +7,17 @@ const HeroSection = () => {
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Full Background Image with Overlay */}
       <div className="absolute inset-0">
-        {/* Gradient background simulating a beauty image */}
-        <div className="absolute inset-0 bg-gradient-to-br from-rose-100 via-pink-50 to-purple-100"></div>
+        {/* Background image */}
+        <div className="absolute inset-0">
+          <img
+            src="/images/what-makes-you-different-makes-you-beautiful-2025-04-06-09-43-35-utc-min.jpg"
+            alt="Frumusețea ta unică"
+            className="w-full h-full object-cover object-center"
+          />
+        </div>
         
         {/* Overlay for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/60"></div>
         
         {/* Decorative elements */}
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-beauty-pink/20 rounded-full blur-3xl animate-float"></div>
