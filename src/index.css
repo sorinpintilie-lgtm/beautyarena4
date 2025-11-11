@@ -1,0 +1,118 @@
+@import "tailwindcss";
+
+/* Custom fonts for BeautyArena */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Tailwind v4 Theme Configuration */
+@theme {
+  /* Custom Colors */
+  --color-beauty-pink: #ff69b4;
+  --color-beauty-purple: #8b5cf6;
+  --color-beauty-gold: #f59e0b;
+  --color-beauty-rose: #f43f5e;
+  --color-beauty-navy: #1e293b;
+  
+  /* Custom Animations */
+  --animate-fade-in: fade-in 0.5s ease-in-out;
+  --animate-slide-up: slide-up 0.6s ease-out;
+  --animate-float: float 3s ease-in-out infinite;
+}
+
+/* Custom Font Family Utilities */
+@utility font-elegant {
+  font-family: 'Playfair Display', serif;
+}
+
+@utility font-modern {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Custom Keyframes */
+@keyframes fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes slide-up {
+  0% { transform: translateY(20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 0; transform: scale(0.5); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+/* Custom base styles */
+@layer base {
+  body {
+    @apply bg-white text-gray-900 font-modern;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Custom component styles */
+@layer components {
+  .btn-primary {
+    @apply bg-gradient-to-r from-beauty-pink to-beauty-rose text-white px-6 py-3 rounded-full font-medium hover:from-beauty-rose hover:to-beauty-pink transition-all duration-300 transform hover:scale-105 shadow-lg;
+  }
+  
+  .btn-secondary {
+    @apply bg-white text-beauty-pink border-2 border-beauty-pink px-6 py-3 rounded-full font-medium hover:bg-beauty-pink hover:text-white transition-all duration-300;
+  }
+  
+  .card-beauty {
+    @apply bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2;
+  }
+  
+  .gradient-text {
+    @apply bg-gradient-to-r from-beauty-pink to-beauty-purple bg-clip-text text-transparent;
+  }
+  
+  .section-padding {
+    @apply px-4 sm:px-6 lg:px-8 py-16 lg:py-24;
+  }
+}
+
+/* Custom utilities */
+@layer utilities {
+  .text-shadow {
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .backdrop-blur-beauty {
+    backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.9);
+  }
+  
+  .sparkle {
+    animation: sparkle 2s infinite;
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #ff69b4, #8b5cf6);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #f43f5e, #7c3aed);
+}
