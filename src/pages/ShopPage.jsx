@@ -1,8 +1,7 @@
-import React, { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useMemo, useEffect } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import { Search, Filter, Grid, List, Heart, ShoppingCart, Star } from 'lucide-react';
 import products from '../data/products';
-import brands from '../data/brands';
 import categories from '../data/categories';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
@@ -11,10 +10,10 @@ import Pagination from '../components/shop/Pagination';
 import SEO from '../components/common/SEO';
 
 const ShopPage = () => {
+  const { category } = useParams();
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedBrands, setSelectedBrands] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [priceRange, setPriceRange] = useState([0, 500]);
   const [minRating, setMinRating] = useState(0);
@@ -24,18 +23,26 @@ const ShopPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(12);
 
+  // Handle URL category parameter
+  useEffect(() => {
+    if (category) {
+      const categoryData = categories.find(cat => cat.slug === category);
+      if (categoryData && !selectedCategories.includes(categoryData.id)) {
+        setSelectedCategories([categoryData.id]);
+      }
+    }
+  }, [category, selectedCategories]);
+
   // Filter and sort products
   const filteredProducts = useMemo(() => {
     let filtered = products.filter(product => {
-      const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           product.brand?.name.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesBrand = selectedBrands.length === 0 || selectedBrands.includes(product.brand?.id);
+      const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(product.category);
       const matchesPrice = product.price >= priceRange[0] && product.price <= priceRange[1];
       const matchesRating = product.rating >= minRating;
       const matchesStock = !showInStockOnly || product.inStock;
       
-      return matchesSearch && matchesBrand && matchesCategory && matchesPrice && matchesRating && matchesStock;
+      return matchesSearch && matchesCategory && matchesPrice && matchesRating && matchesStock;
     });
 
     // Sort
@@ -54,7 +61,7 @@ const ShopPage = () => {
     });
 
     return filtered;
-  }, [searchTerm, selectedBrands, selectedCategories, priceRange, minRating, showInStockOnly, sortBy]);
+  }, [searchTerm, selectedCategories, priceRange, minRating, showInStockOnly, sortBy]);
 
   // Pagination
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
@@ -64,7 +71,7 @@ const ShopPage = () => {
   // Reset to page 1 when filters change
   useMemo(() => {
     setCurrentPage(1);
-  }, [searchTerm, selectedBrands, selectedCategories, priceRange, minRating, showInStockOnly]);
+  }, [searchTerm, selectedCategories, priceRange, minRating, showInStockOnly]);
 
   const handleAddToCart = (e, product) => {
     e.preventDefault();
@@ -82,8 +89,8 @@ const ShopPage = () => {
     <>
       <SEO 
         title="Shop - Premium Beauty Products | BeautyArena"
-        description="Browse our collection of 50+ premium beauty products from top brands. Filter by brand, category, price, and rating. Free shipping on orders over 200 lei."
-        keywords="shop beauty products, buy cosmetics online, makeup shop, skincare products, haircare products, beauty brands"
+        description="Browse our collection of 50+ premium beauty products. Filter by category, price, and rating. Free shipping on orders over 200 lei."
+        keywords="shop beauty products, buy cosmetics online, makeup shop, skincare products, haircare products, beauty products"
       />
       <div className="min-h-screen bg-gray-50 pt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -105,7 +112,7 @@ const ShopPage = () => {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
                   type="text"
-                  placeholder="Caută produse sau branduri..."
+                  placeholder="Caută produse..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-beauty-pink transition-colors"
@@ -150,30 +157,6 @@ const ShopPage = () => {
                   <Filter className="w-5 h-5 mr-2" />
                   Filtre
                 </h3>
-
-                {/* Brand Filter */}
-                <div className="pb-6 border-b border-gray-200">
-                  <h4 className="font-medium mb-3">Branduri</h4>
-                  <div className="space-y-2 max-h-48 overflow-y-auto">
-                    {brands.map(brand => (
-                      <label key={brand.id} className="flex items-center cursor-pointer hover:bg-gray-50 p-1 rounded transition-colors">
-                        <input
-                          type="checkbox"
-                          checked={selectedBrands.includes(brand.id)}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setSelectedBrands([...selectedBrands, brand.id]);
-                            } else {
-                              setSelectedBrands(selectedBrands.filter(id => id !== brand.id));
-                            }
-                          }}
-                          className="rounded text-beauty-pink focus:ring-beauty-pink"
-                        />
-                        <span className="ml-2 text-sm">{brand.name}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
 
                 {/* Category Filter */}
                 <div className="pb-6 border-b border-gray-200">
@@ -252,10 +235,9 @@ const ShopPage = () => {
                 </div>
 
                 {/* Clear Filters */}
-                {(selectedBrands.length > 0 || selectedCategories.length > 0 || minRating > 0 || showInStockOnly || priceRange[0] > 0 || priceRange[1] < 500) && (
+                {(selectedCategories.length > 0 || minRating > 0 || showInStockOnly || priceRange[0] > 0 || priceRange[1] < 500) && (
                   <button
                     onClick={() => {
-                      setSelectedBrands([]);
                       setSelectedCategories([]);
                       setPriceRange([0, 500]);
                       setMinRating(0);
@@ -277,7 +259,6 @@ const ShopPage = () => {
                   <button
                     onClick={() => {
                       setSearchTerm('');
-                      setSelectedBrands([]);
                       setSelectedCategories([]);
                       setPriceRange([0, 500]);
                       setMinRating(0);
