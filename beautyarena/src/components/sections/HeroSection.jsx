@@ -4,7 +4,7 @@ import { ArrowRight, Sparkles } from 'lucide-react';
 
 const HeroSection = () => {
   return (
-    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section id="home" className="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
       {/* Full Background Image with Subtle Gradient Overlay */}
       <div className="absolute inset-0">
         {/* Background image */}
