@@ -139,19 +139,31 @@ const AboutSection = () => {
 
           {/* Visual Content */}
           <div className="relative">
-            <div className="bg-beauty-pink/10 border-2 border-beauty-pink/20 rounded-2xl p-8 h-full flex items-center justify-center">
-              <div className="text-center">
-                <div className="w-32 h-32 bg-beauty-pink/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <svg className="w-16 h-16 text-beauty-pink" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2L2 7V10C2 16 6 20.5 12 22C18 20.5 22 16 22 10V7L12 2ZM10 17L6 13L7.41 11.59L10 14.17L16.59 7.58L18 9L10 17Z"/>
-                  </svg>
+            <div className="relative overflow-hidden rounded-2xl shadow-2xl">
+              <img
+                src="/imaginisite/attractive-young-woman-with-beautiful-hair-in-hair-2024-11-19-03-43-53-utc.jpg"
+                alt="Echipa noastră de profesioniști la lucru"
+                className="w-full h-full object-cover min-h-[400px] transition-transform duration-700 hover:scale-105"
+              />
+              {/* Overlay with content */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+              <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 bg-beauty-pink rounded-full flex items-center justify-center">
+                    <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2L2 7V10C2 16 6 20.5 12 22C18 20.5 22 16 22 10V7L12 2ZM10 17L6 13L7.41 11.59L10 14.17L16.59 7.58L18 9L10 17Z"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-elegant font-bold">15+ ani de excelență</h3>
+                    <p className="text-beauty-pink-light">Profesiști pasionați în fiecare sesiune</p>
+                  </div>
                 </div>
-                <h3 className="text-2xl font-elegant font-bold text-black mb-4">15+ ani de excelență</h3>
-                <p className="text-gray-700 mb-6">
+                <p className="text-white/90 mb-4 leading-relaxed">
                   În acești ani am servit peste 5.000 de clienți și am construit o reputație solidă
                   bazată pe încredere și rezultate excepționale.
                 </p>
-                <button className="px-6 py-3 bg-beauty-pink text-white rounded-lg font-medium hover:bg-beauty-pink-dark transition-colors">
+                <button className="px-6 py-3 bg-beauty-pink hover:bg-beauty-pink-dark text-white rounded-lg font-medium transition-colors shadow-lg hover:shadow-xl transform hover:scale-105">
                   Vezi realizările noastre
                 </button>
               </div>
@@ -208,11 +220,11 @@ const AboutSection = () => {
         <div className="text-center">
           <div className="rounded-2xl p-8" style={{ backgroundColor: '#FFB6A3' }}>
             <h3 className="text-2xl md:text-3xl font-elegant font-bold text-black mb-4">
-              Vrei să ne cunoști personal?
+              Fă cunoștință cu specialiștii noștri!
             </h3>
             <p className="text-gray-800 mb-6 max-w-2xl mx-auto">
-              Te invităm la o consultație gratuită în salonul nostru. Aici vei întâlni echipa noastră
-              și vei vedea de ce BeautyArena este alegerea celor mai exigenți clienți.
+              Vino să ne vezi la lucru! Descoperă calitatea serviciilor noastre și întâlnește echipa
+              noastră de experți pasionați care îți vor oferi o experiență de frumusețe de neuitat.
             </p>
             <button className="bg-white text-gray-800 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors duration-300 flex items-center mx-auto">
               <Calendar className="w-5 h-5 mr-2" />

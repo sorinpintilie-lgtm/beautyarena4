@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-const InfiniteCarousel = ({ items, renderItem, autoPlay = true, interval = 3000, itemsPerView = 3 }) => {
+const InfiniteCarousel = ({ items, renderItem, autoPlay = true, interval = 3000, itemsPerView = 3, showDots = true }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -17,14 +17,14 @@ const InfiniteCarousel = ({ items, renderItem, autoPlay = true, interval = 3000,
   const totalItems = items.length;
 
   useEffect(() => {
-    if (!autoPlay || isPaused) return;
+    if (!autoPlay || isPaused || items.length === 0) return;
 
     const timer = setInterval(() => {
       handleNext();
     }, interval);
 
     return () => clearInterval(timer);
-  }, [currentIndex, autoPlay, isPaused, interval]);
+  }, [currentIndex, autoPlay, isPaused, interval, items.length]);
 
   const handleNext = () => {
     if (isTransitioning) return;
@@ -50,7 +50,7 @@ const InfiniteCarousel = ({ items, renderItem, autoPlay = true, interval = 3000,
 
   const getTransformValue = () => {
     const offset = currentIndex + itemsPerView;
-    return `translateX(-${(offset * 100) / itemsPerView}%)`;
+    return `translateX(-${offset * (100 / itemsPerView)}%)`;
   };
 
   return (
@@ -100,23 +100,29 @@ const InfiniteCarousel = ({ items, renderItem, autoPlay = true, interval = 3000,
       </button>
 
       {/* Progress Indicators */}
-      <div className="flex justify-center gap-2 mt-6">
-        {items.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => {
-              setIsTransitioning(true);
-              setCurrentIndex(index);
-            }}
-            className={`h-2 rounded-full transition-all duration-300 ${
-              index === (currentIndex >= 0 && currentIndex < totalItems ? currentIndex : currentIndex >= totalItems ? 0 : totalItems - 1)
-                ? 'w-8 bg-beauty-pink'
-                : 'w-2 bg-gray-300 hover:bg-beauty-pink/50'
-            }`}
-            aria-label={`Go to slide ${index + 1}`}
-          />
-        ))}
-      </div>
+      {showDots && (
+        <div className="flex justify-center gap-2 mt-6">
+          {items.map((_, index) => {
+            const activeIndex = currentIndex < 0 ? totalItems - 1 :
+                                currentIndex >= totalItems ? 0 : currentIndex;
+            return (
+              <button
+                key={index}
+                onClick={() => {
+                  setIsTransitioning(true);
+                  setCurrentIndex(index);
+                }}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  index === activeIndex
+                    ? 'w-8 bg-beauty-pink'
+                    : 'w-2 bg-gray-300 hover:bg-beauty-pink/50'
+                }`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };

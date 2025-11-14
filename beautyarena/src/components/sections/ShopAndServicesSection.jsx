@@ -80,31 +80,38 @@ const ShopAndServicesSection = () => {
   };
 
   return (
-    <section className="relative section-padding bg-gradient-to-b from-white to-gray-50 overflow-hidden">
-      {/* Background decorative elements */}
-      <div className="absolute top-0 right-0 w-1/3 h-1/3 overflow-hidden opacity-10">
+    <section className="relative overflow-hidden">
+      {/* Banner-style Header with Full-Width Image */}
+      <div className="relative w-full h-[300px] md:h-[400px] lg:h-[500px] overflow-hidden">
         <img
-          src="/images/tools-of-makeup-artist-2025-03-09-22-18-22-utc-min.jpg"
-          alt="Decorative"
-          className="w-full h-full object-cover rounded-bl-3xl"
+          src="/imaginisite/envato-labs-image-edit-37.png"
+          alt="BeautyArena - Experiență completă de frumusețe"
+          className="w-full h-full object-cover object-center"
         />
-      </div>
-      
-      <div className="relative z-10 max-w-7xl mx-auto">
-        {/* Section Header */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center px-4 py-2 bg-beauty-pink/10 rounded-full border border-beauty-pink/20 mb-6">
-            <Star className="w-4 h-4 text-beauty-pink mr-2" />
-            <span className="text-sm font-medium text-beauty-pink">Produse & Servicii</span>
+        {/* Dark overlay for text readability */}
+        <div className="absolute inset-0 bg-black/50"></div>
+        
+        {/* Banner Title Content */}
+        <div className="absolute inset-0 flex items-center justify-center z-10">
+          <div className="text-center px-4">
+            <div className="inline-flex items-center px-4 py-2 bg-beauty-pink/20 backdrop-blur-sm rounded-full border border-beauty-pink/30 mb-6">
+              <Star className="w-4 h-4 text-beauty-pink-light mr-2" />
+              <span className="text-sm font-medium text-white">Produse & Servicii</span>
+            </div>
+            <h2 className="text-3xl md:text-4xl lg:text-6xl font-elegant font-bold text-white mb-6">
+              Descoperă frumusețea
+              <span className="block text-beauty-pink-light mt-2">la BeautyArena</span>
+            </h2>
+            <p className="text-base md:text-lg lg:text-xl text-white/90 max-w-2xl mx-auto">
+              Explorează produsele noastre premium și serviciile profesionale pentru o experiență completă de frumusețe.
+            </p>
           </div>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-elegant font-bold text-gray-900 mb-6">
-            Descoperă frumusețea
-            <span className="block text-black">la BeautyArena</span>
-          </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Explorează produsele noastre premium și serviciile profesionale pentru o experiență completă de frumusețe.
-          </p>
         </div>
+      </div>
+
+      {/* Content Section */}
+      <div className="section-padding bg-gradient-to-b from-white to-beauty-pink/5">
+        <div className="max-w-7xl mx-auto">
 
         {/* 50/50 Split Layout - Always 2 columns on all devices */}
         <div className="grid grid-cols-2 gap-3 md:gap-6 lg:gap-12 items-start">
@@ -112,13 +119,13 @@ const ShopAndServicesSection = () => {
           {/* LEFT SIDE - SHOP PRODUCTS (50%) */}
           <div className="space-y-3 md:space-y-4">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 md:mb-4 gap-2">
-              <h3 className="text-sm md:text-xl lg:text-2xl font-bold text-gray-900 flex items-center">
+              <h3 className="text-sm md:text-xl lg:text-2xl font-bold text-white flex items-center">
                 <ShoppingCart className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-beauty-pink mr-1 md:mr-2" />
                 <span className="text-xs md:text-base lg:text-xl">Magazin</span>
               </h3>
               <Link
                 to="/shop"
-                className="text-beauty-pink hover:text-beauty-pink-dark transition-colors duration-300 flex items-center text-xs md:text-sm font-medium"
+                className="text-white hover:text-beauty-pink-light transition-colors duration-300 flex items-center text-xs md:text-sm font-medium"
               >
                 Vezi toate
                 <ArrowRight className="w-3 h-3 md:w-4 md:h-4 ml-1" />
@@ -216,13 +223,13 @@ const ShopAndServicesSection = () => {
           {/* RIGHT SIDE - SERVICES (50%) */}
           <div className="space-y-3 md:space-y-4">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 md:mb-4 gap-2">
-              <h3 className="text-sm md:text-xl lg:text-2xl font-bold text-gray-900 flex items-center">
+              <h3 className="text-sm md:text-xl lg:text-2xl font-bold text-white flex items-center">
                 <Sparkles className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-beauty-pink mr-1 md:mr-2" />
                 <span className="text-xs md:text-base lg:text-xl">Servicii</span>
               </h3>
               <Link
                 to="/services"
-                className="text-beauty-pink hover:text-beauty-pink-dark transition-colors duration-300 flex items-center text-xs md:text-sm font-medium"
+                className="text-white hover:text-beauty-pink-light transition-colors duration-300 flex items-center text-xs md:text-sm font-medium"
               >
                 Vezi toate
                 <ArrowRight className="w-3 h-3 md:w-4 md:h-4 ml-1" />
@@ -282,36 +289,37 @@ const ShopAndServicesSection = () => {
           </div>
         </div>
 
-        {/* Bottom CTA */}
-        <div className="mt-16 text-center">
-          <div className="relative bg-beauty-pink rounded-2xl p-8 text-white overflow-hidden">
-            <div className="absolute inset-0">
-              <img
-                src="/images/makeup-artist-makes-makeup-to-a-girl-apply-beige-2025-03-13-10-07-09-utc-min.jpg"
-                alt="BeautyArena"
-                className="w-full h-full object-cover opacity-20"
-              />
-            </div>
-            <div className="relative z-10">
-              <h3 className="text-2xl md:text-3xl font-elegant font-bold mb-4 text-black">
-                Experiență completă de frumusețe
-              </h3>
-              <p className="text-black/80 mb-6 max-w-2xl mx-auto">
-                Combină produsele premium cu serviciile noastre profesionale pentru rezultate extraordinare.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link to="/shop">
-                  <button className="px-6 py-3 rounded-full font-semibold transition-colors duration-300 flex items-center text-gray-800" style={{ backgroundColor: '#FFB6A3' }}>
-                    <ShoppingCart className="w-5 h-5 mr-2" />
-                    Explorează magazinul
-                  </button>
-                </Link>
-                <Link to="/booking">
-                  <button className="px-6 py-3 rounded-full font-semibold transition-colors duration-300 flex items-center text-gray-800" style={{ backgroundColor: '#FFB6A3' }}>
-                    <Calendar className="w-5 h-5 mr-2" />
-                    Programează acum
-                  </button>
-                </Link>
+          {/* Bottom CTA */}
+          <div className="mt-16 text-center">
+            <div className="relative bg-beauty-pink rounded-2xl p-8 text-white overflow-hidden">
+              <div className="absolute inset-0">
+                <img
+                  src="/images/makeup-artist-makes-makeup-to-a-girl-apply-beige-2025-03-13-10-07-09-utc-min.jpg"
+                  alt="BeautyArena"
+                  className="w-full h-full object-cover opacity-60"
+                />
+              </div>
+              <div className="relative z-10">
+                <h3 className="text-2xl md:text-3xl font-elegant font-bold mb-4 text-black">
+                  Experiență completă de frumusețe
+                </h3>
+                <p className="text-black/80 mb-6 max-w-2xl mx-auto">
+                  Combină produsele premium cu serviciile noastre profesionale pentru rezultate extraordinare.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Link to="/shop">
+                    <button className="px-6 py-3 rounded-full font-semibold transition-colors duration-300 flex items-center text-gray-800" style={{ backgroundColor: '#FFB6A3' }}>
+                      <ShoppingCart className="w-5 h-5 mr-2" />
+                      Explorează magazinul
+                    </button>
+                  </Link>
+                  <Link to="/booking">
+                    <button className="px-6 py-3 rounded-full font-semibold transition-colors duration-300 flex items-center text-gray-800" style={{ backgroundColor: '#FFB6A3' }}>
+                      <Calendar className="w-5 h-5 mr-2" />
+                      Programează acum
+                    </button>
+                  </Link>
+                </div>
               </div>
             </div>
           </div>

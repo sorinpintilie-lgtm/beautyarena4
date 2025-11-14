@@ -16,16 +16,7 @@ const ProductsSection = () => {
   const [viewMode, setViewMode] = useState('grid');
   const [sortBy, setSortBy] = useState('name');
 
-  // DEBUG: Log product data structure
-  console.log('[DEBUG ProductsSection] Total products:', products?.length || 0);
-  console.log('[DEBUG ProductsSection] Sample product structure:', products?.[0] ? {
-    name: products[0].name,
-    images: products[0].images,
-    thumbnail: products[0].thumbnail,
-    localImages: products[0].localImages,
-    category: products[0].category,
-    price: products[0].price
-  } : 'No products available');
+  // Product data is ready
 
   // Get unique categories from real products
   const categories = useMemo(() => {
@@ -65,14 +56,6 @@ const ProductsSection = () => {
 
     // Return only first 6 products for homepage
     const limitedProducts = filtered.slice(0, 6);
-    console.log('[DEBUG ProductsSection] Filtered and sorted products count:', limitedProducts.length);
-    console.log('[DEBUG ProductsSection] Limited products with images:', limitedProducts.map(p => ({
-      name: p.name,
-      hasImages: !!(p.images && p.images.length > 0),
-      imageCount: p.images?.length || 0,
-      hasLocalImages: !!(p.localImages && p.localImages.length > 0),
-      localImageCount: p.localImages?.length || 0
-    })));
     
     return limitedProducts;
   }, [products, searchTerm, selectedCategory, sortBy]);
@@ -245,12 +228,6 @@ const ProductsSection = () => {
         {!loading && !error && (
           <div className={`${viewMode === 'grid' ? 'grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3' : 'space-y-3 md:space-y-6'} gap-3 md:gap-6`}>
             {filteredAndSortedProducts.map((product) => {
-              console.log('[DEBUG ProductsSection] Rendering product:', product.name, {
-                hasImages: !!(product.images && product.images.length > 0),
-                imageCount: product.images?.length || 0,
-                localImageCount: product.localImages?.length || 0,
-                thumbnail: product.thumbnail
-              });
 
               // Get the best available image
               const getProductImage = () => {
@@ -285,7 +262,6 @@ const ProductsSection = () => {
                         alt={product.name}
                         className="w-full h-full object-cover rounded-lg"
                         onError={(e) => {
-                          console.warn(`[DEBUG ProductsSection] Failed to load image for ${product.name}:`, productImage);
                           e.target.style.display = 'none';
                           e.target.nextSibling.style.display = 'flex';
                         }}

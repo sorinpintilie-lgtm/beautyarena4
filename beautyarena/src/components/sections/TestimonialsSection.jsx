@@ -101,12 +101,21 @@ const TestimonialsSection = () => {
 
   return (
     <section id="testimonials" className="relative section-padding bg-white">
-      {/* Background Image */}
+      {/* Background Images */}
       <div className="absolute top-1/4 left-0 w-1/3 h-2/3">
         <img
           src="/images/hairdresser-doing-haircut-for-women-in-hairdressin-2025-10-16-23-09-35-utc-min.jpg"
           alt="Frizerie profesională"
           className="w-full h-full object-cover rounded-r-3xl opacity-15"
+        />
+      </div>
+      
+      {/* Additional Background Image */}
+      <div className="absolute bottom-0 right-0 w-1/4 h-1/2">
+        <img
+          src="/imaginisite/cute-woman-looking-happy-after-getting-professiona-2024-10-18-08-14-22-utc.jpg"
+          alt="Clientă mulțumită după tratament"
+          className="w-full h-full object-cover rounded-l-3xl opacity-10"
         />
       </div>
       
@@ -220,44 +229,6 @@ const TestimonialsSection = () => {
           </div>
         </div>
 
-        {/* Featured Testimonial */}
-        <div className="bg-beauty-pink-light rounded-2xl p-8 lg:p-12 text-center border-2 border-beauty-pink/30">
-          <div className="max-w-4xl mx-auto">
-            <Quote className="w-12 h-12 text-beauty-pink-dark/40 mx-auto mb-6" />
-            <blockquote className="text-xl lg:text-2xl font-elegant leading-relaxed mb-6 text-gray-900">
-              "BeautyArena nu este doar un salon de frumusețe, este un loc unde mă simt răsfățată și îmi regăsesc încrederea în sine.
-              Echipa este fantastică și rezultatele vorbesc de la sine!"
-            </blockquote>
-            <div className="flex items-center justify-center">
-              <div className="w-16 h-16 bg-beauty-pink rounded-full flex items-center justify-center mr-4">
-                {getClientIcon('featured')}
-              </div>
-              <div className="text-left">
-                <div className="font-semibold text-lg text-gray-900">Cristina Popescu</div>
-                <div className="text-gray-700">Client fidel de 3 ani</div>
-                <div className="flex items-center mt-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 text-beauty-pink-dark fill-current" />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* CTA Section */}
-        <div className="text-center mt-16">
-          <h3 className="text-2xl font-elegant font-bold text-gray-900 mb-4">
-            Vrei să fii următorul nostru succes?
-          </h3>
-          <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-            Alătură-te comunității noastre de clienți fericiți și experimentează diferența pe care o poate face 
-            îngrijirea profesională.
-          </p>
-          <button className="btn-primary">
-            Programează prima ta vizită
-          </button>
-        </div>
       </div>
     </section>
   );

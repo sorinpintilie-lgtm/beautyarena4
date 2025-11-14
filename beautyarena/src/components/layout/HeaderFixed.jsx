@@ -27,12 +27,19 @@ const Header = ({ onCartClick }) => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-beauty border-b border-gray-200/20">
+    <header className="fixed top-0 left-0 right-0 z-50 border-b-2 border-beauty-pink-dark/20 shadow-xl"
+            style={{
+              backgroundColor: '#FFB6A3',
+              background: '#FFB6A3',
+              opacity: 1,
+              backdropFilter: 'none',
+              WebkitBackdropFilter: 'none'
+            }}>
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 lg:h-16">
           {/* Logo */}
           <Link to="/" className="flex-shrink-0">
-            <h1 className="text-xl lg:text-2xl font-elegant font-bold gradient-text">
+            <h1 className="text-xl lg:text-2xl font-elegant font-bold text-white drop-shadow-sm">
               BeautyArena
             </h1>
           </Link>
@@ -44,7 +51,7 @@ const Header = ({ onCartClick }) => {
                 <a
                   key={item.name}
                   href={item.path}
-                  className="text-gray-700 hover:text-beauty-pink transition-colors duration-300 font-medium"
+                  className="text-white/90 hover:text-white transition-colors duration-300 font-medium drop-shadow-sm"
                 >
                   {item.name}
                 </a>
@@ -52,10 +59,10 @@ const Header = ({ onCartClick }) => {
                 <Link
                   key={item.name}
                   to={item.path}
-                  className={`transition-colors duration-300 font-medium ${
+                  className={`transition-colors duration-300 font-medium drop-shadow-sm ${
                     isActive(item.path)
-                      ? 'text-beauty-pink'
-                      : 'text-gray-700 hover:text-beauty-pink'
+                      ? 'text-white'
+                      : 'text-white/90 hover:text-white'
                   }`}
                 >
                   {item.name}
@@ -67,10 +74,10 @@ const Header = ({ onCartClick }) => {
           {/* Desktop Action Buttons */}
           <div className="hidden lg:flex items-center space-x-3">
             {/* Wishlist */}
-            <Link to="/wishlist" className="p-2 text-gray-700 hover:text-beauty-pink transition-colors duration-300 relative">
-              <Heart className="w-5 h-5" />
+            <Link to="/wishlist" className="p-2 text-white/90 hover:text-white transition-colors duration-300 relative">
+              <Heart className="w-5 h-5 drop-shadow-sm" />
               {wishlistCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-beauty-pink text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-beauty-pink-dark text-white text-xs font-bold rounded-full min-w-[18px] h-[18px] px-1 flex items-center justify-center border border-white/20">
                   {wishlistCount}
                 </span>
               )}
@@ -79,11 +86,11 @@ const Header = ({ onCartClick }) => {
             {/* Cart */}
             <button
               onClick={onCartClick}
-              className="p-2 text-gray-700 hover:text-beauty-pink transition-colors duration-300 relative"
+              className="p-2 text-white/90 hover:text-white transition-colors duration-300 relative"
             >
-              <ShoppingCart className="w-5 h-5" />
+              <ShoppingCart className="w-5 h-5 drop-shadow-sm" />
               {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-beauty-pink text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-beauty-pink-dark text-white text-xs font-bold rounded-full min-w-[18px] h-[18px] px-1 flex items-center justify-center border border-white/20">
                   {cartCount}
                 </span>
               )}
@@ -91,18 +98,18 @@ const Header = ({ onCartClick }) => {
 
             {/* User Account */}
             {isAuthenticated ? (
-              <button className="p-2 text-gray-700 hover:text-beauty-pink transition-colors duration-300">
-                <User className="w-5 h-5" />
+              <button className="p-2 text-white/90 hover:text-white transition-colors duration-300">
+                <User className="w-5 h-5 drop-shadow-sm" />
               </button>
             ) : (
-              <button className="text-gray-700 hover:text-beauty-pink transition-colors duration-300 font-medium text-sm">
+              <button className="text-white/90 hover:text-white transition-colors duration-300 font-medium text-sm drop-shadow-sm">
                 AUTENTIFICARE
               </button>
             )}
 
             {/* Book Appointment */}
-            <button className="btn-primary flex items-center space-x-2 text-sm px-4 py-2">
-              <Calendar className="w-4 h-4" />
+            <button className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg font-medium hover:bg-white/30 transition-colors flex items-center space-x-2 text-sm text-white border border-white/20">
+              <Calendar className="w-4 h-4 drop-shadow-sm" />
               <span>PROGRAMEAZĂ</span>
             </button>
           </div>
@@ -111,16 +118,16 @@ const Header = ({ onCartClick }) => {
           <div className="lg:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 text-gray-700 hover:text-beauty-pink transition-colors duration-300"
+              className="p-2 text-white/90 hover:text-white transition-colors duration-300"
             >
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isMenuOpen ? <X className="w-6 h-6 drop-shadow-sm" /> : <Menu className="w-6 h-6 drop-shadow-sm" />}
             </button>
           </div>
         </div>
 
         {/* Enhanced Mobile Navigation Menu */}
         {isMenuOpen && (
-          <div className={`lg:hidden mt-4 pb-4 border-t border-gray-200/20 transition-all duration-300 ease-in-out ${
+          <div className={`lg:hidden mt-4 pb-4 border-t border-white/20 transition-all duration-300 ease-in-out ${
             isMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
           }`}>
             <nav className="flex flex-col space-y-1 pt-6">
@@ -129,7 +136,7 @@ const Header = ({ onCartClick }) => {
                   <a
                     key={item.name}
                     href={item.path}
-                    className="flex items-center px-4 py-3 text-gray-700 hover:text-beauty-pink hover:bg-beauty-pink/5 transition-all duration-300 rounded-lg mx-2 font-medium"
+                    className="flex items-center px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 transition-all duration-300 rounded-lg mx-2 font-medium"
                     onClick={() => setIsMenuOpen(false)}
                     style={{
                       animationDelay: `${index * 50}ms`,
@@ -144,8 +151,8 @@ const Header = ({ onCartClick }) => {
                     to={item.path}
                     className={`flex items-center px-4 py-3 rounded-lg mx-2 transition-all duration-300 font-medium ${
                       isActive(item.path)
-                        ? 'text-beauty-pink bg-beauty-pink/10 border-l-4 border-beauty-pink'
-                        : 'text-gray-700 hover:text-beauty-pink hover:bg-beauty-pink/5'
+                        ? 'text-white bg-white/20 border-l-4 border-white'
+                        : 'text-white/90 hover:text-white hover:bg-white/10'
                     }`}
                     onClick={() => setIsMenuOpen(false)}
                     style={{
@@ -160,7 +167,7 @@ const Header = ({ onCartClick }) => {
               
               {!isAuthenticated && (
                 <button
-                  className="flex items-center px-4 py-3 text-gray-700 hover:text-beauty-pink hover:bg-beauty-pink/5 transition-all duration-300 rounded-lg mx-2 font-medium"
+                  className="flex items-center px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 transition-all duration-300 rounded-lg mx-2 font-medium"
                   onClick={() => setIsMenuOpen(false)}
                   style={{
                     animationDelay: `${navItems.length * 50}ms`,
@@ -173,7 +180,7 @@ const Header = ({ onCartClick }) => {
               
               <div className="px-2 mt-4">
                 <button
-                  className="btn-primary w-full flex items-center justify-center space-x-2 py-3"
+                  className="bg-white/20 backdrop-blur-sm w-full flex items-center justify-center space-x-2 py-3 rounded-lg font-medium hover:bg-white/30 transition-colors text-white border border-white/20"
                   onClick={() => {
                     setIsMenuOpen(false);
                     // Handle booking action
@@ -187,7 +194,7 @@ const Header = ({ onCartClick }) => {
                     animation: isMenuOpen ? 'slideInUp 0.4s ease-out forwards' : 'none'
                   }}
                 >
-                  <Calendar className="w-4 h-4" />
+                  <Calendar className="w-4 h-4 drop-shadow-sm" />
                   <span>PROGRAMEAZĂ PROGRAMARE</span>
                 </button>
               </div>

@@ -205,7 +205,8 @@ const ProductsSectionMobile = () => {
       document.removeEventListener('touchend', handleTouchEnd);
     };
     
-    document.addEventListener('touchend', handleTouchEnd);
+    // Use capture to ensure we catch the event
+    document.addEventListener('touchend', handleTouchEnd, { once: true, capture: true });
   };
 
   const handleRefresh = () => {

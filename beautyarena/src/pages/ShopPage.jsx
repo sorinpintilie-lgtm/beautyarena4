@@ -144,6 +144,9 @@ const ShopPage = () => {
           return (b.price || 0) - (a.price || 0);
         case 'rating':
           return (b.rating || 0) - (a.rating || 0);
+        case 'most-sold':
+          // Sort by review count as proxy for sales popularity
+          return (b.reviewCount || 0) - (a.reviewCount || 0);
         case 'name':
         default:
           return (a.name || '').localeCompare(b.name || '');
@@ -295,31 +298,67 @@ const ShopPage = () => {
               </div>
 
               {/* Sort */}
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-beauty-pink"
-              >
-                <option value="name">Sortare după nume</option>
-                <option value="price-low">Preț crescător</option>
-                <option value="price-high">Preț descrescător</option>
-                <option value="rating">Cele mai apreciate</option>
-              </select>
+              <div className="relative">
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="w-full min-w-[200px] px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-beauty-pink appearance-none bg-white pr-10 cursor-pointer transition-all font-medium"
+                >
+                  <option value="name">Sortare alfabetică (A - Z)</option>
+                  <option value="price-low">Preț: Crescător</option>
+                  <option value="price-high">Preț: Descrescător</option>
+                  <option value="rating">Cele mai apreciate</option>
+                  <option value="most-sold">Cele mai vândute</option>
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
 
               {/* View Mode */}
-              <div className="flex border border-gray-200 rounded-lg overflow-hidden">
-                <button
-                  onClick={() => setViewMode('grid')}
-                  className={`p-3 ${viewMode === 'grid' ? 'bg-beauty-pink text-white' : 'text-gray-600'} transition-colors`}
-                >
-                  <Grid className="w-5 h-5" />
-                </button>
-                <button
-                  onClick={() => setViewMode('list')}
-                  className={`p-3 ${viewMode === 'list' ? 'bg-beauty-pink text-white' : 'text-gray-600'} transition-colors`}
-                >
-                  <List className="w-5 h-5" />
-                </button>
+              <div className="relative">
+                <div className="flex border border-gray-200 rounded-lg overflow-hidden bg-gray-50 relative">
+                  {/* Active indicator */}
+                  <div
+                    className={`absolute top-1 bottom-1 bg-beauty-pink rounded-md transition-all duration-300 ease-in-out ${
+                      viewMode === 'grid'
+                        ? 'left-1 w-[calc(50%-0.25rem)]'
+                        : 'left-1/2 w-[calc(50%-0.25rem)]'
+                    }`}
+                  />
+                  
+                  <button
+                    onClick={() => setViewMode('grid')}
+                    title="Vizualizare grilă - Afișează produsele în coloane"
+                    className="relative z-10 flex items-center gap-2 px-4 py-3 transition-all duration-200 flex-1"
+                  >
+                    <Grid className={`w-5 h-5 transition-colors ${
+                      viewMode === 'grid' ? 'text-white' : 'text-gray-600'
+                    }`} />
+                    <span className={`hidden sm:inline font-medium text-sm transition-colors ${
+                      viewMode === 'grid' ? 'text-white' : 'text-gray-600'
+                    }`}>
+                      Grilă
+                    </span>
+                  </button>
+                  
+                  <button
+                    onClick={() => setViewMode('list')}
+                    title="Vizualizare listă - Afișează produsele pe o singură coloană"
+                    className="relative z-10 flex items-center gap-2 px-4 py-3 transition-all duration-200 flex-1"
+                  >
+                    <List className={`w-5 h-5 transition-colors ${
+                      viewMode === 'list' ? 'text-white' : 'text-gray-600'
+                    }`} />
+                    <span className={`hidden sm:inline font-medium text-sm transition-colors ${
+                      viewMode === 'list' ? 'text-white' : 'text-gray-600'
+                    }`}>
+                      Listă
+                    </span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>

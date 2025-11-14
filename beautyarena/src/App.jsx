@@ -23,7 +23,9 @@ const ComparisonPage = lazy(() => import('./pages/ComparisonPage'));
 const ServicesPage = lazy(() => import('./pages/ServicesPage'));
 const BookingPage = lazy(() => import('./pages/BookingPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
+const AboutPage = lazy(() => import('./pages/AboutPage'));
 const OrderConfirmationPage = lazy(() => import('./pages/OrderConfirmationPage'));
+const CarouselTest = lazy(() => import('./components/common/CarouselTest'));
 
 // Loading component
 const LoadingSpinner = () => (
@@ -58,9 +60,11 @@ function App() {
                         <Route path="/brand/:slug" element={<BrandPage />} />
                         <Route path="/compare" element={<ComparisonPage />} />
                         <Route path="/servicii" element={<ServicesPage />} />
+                        <Route path="/despre" element={<AboutPage />} />
                         <Route path="/programare" element={<BookingPage />} />
                         <Route path="/contact" element={<ContactPage />} />
                         <Route path="/confirmare-comanda" element={<OrderConfirmationPage />} />
+                        <Route path="/carousel-test" element={<CarouselTest />} />
                       </Routes>
                     </Suspense>
                   </main>

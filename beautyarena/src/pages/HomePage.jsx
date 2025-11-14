@@ -1,9 +1,9 @@
 import React from 'react';
 import SEO from '../components/common/SEO';
 import HeroSection from '../components/sections/HeroSection';
+import PromotionalCarousel from '../components/sections/PromotionalCarousel';
 import PromotionalBanner from '../components/sections/PromotionalBanner';
 import ShopAndServicesSection from '../components/sections/ShopAndServicesSection';
-import AboutSection from '../components/sections/AboutSection';
 import TestimonialsSection from '../components/sections/TestimonialsSection';
 import Newsletter from '../components/sections/Newsletter';
 
@@ -16,9 +16,9 @@ const HomePage = () => {
         keywords="produse frumusețe, cosmetice, machiaj, îngrijire ten, îngrijire păr, salon frumusețe, servicii profesionale frumusețe, L'Oréal, Maybelline, NYX"
       />
       <HeroSection />
+      <PromotionalCarousel />
       <PromotionalBanner />
       <ShopAndServicesSection />
-      <AboutSection />
       <TestimonialsSection />
       <Newsletter />
     </>

@@ -334,8 +334,8 @@ const ContactPage = () => {
                   answer: 'Da, acceptăm toate cardurile majore: Visa, MasterCard, și plăți mobile (Apple Pay, Google Pay).'
                 },
                 {
-                  question: 'Oferiți consultații gratuite?',
-                  answer: 'Da, oferim consultații gratuite pentru toate serviciile. Este nevoie de programare prealabilă.'
+                  question: 'Ce servicii oferiți?',
+                  answer: 'Oferim o gamă completă de servicii de frumusețe: coafură, machiaj, îngrijire ten, manichiură, pedichiură și tratamente specializate.'
                 }
               ].map((faq, index) => (
                 <div key={index} className="bg-white border-2 border-gray-100 rounded-2xl p-6 hover:border-beauty-pink transition-colors">

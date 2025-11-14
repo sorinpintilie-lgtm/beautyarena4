@@ -1,15 +1,11 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, ShoppingBag, Heart, User, Menu } from 'lucide-react';
+import { Home, ShoppingBag, Calendar, User } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
-import { useWishlist } from '../../context/WishlistContext';
-import { useAuth } from '../../context/AuthContext';
 
 const BottomNavigation = ({ onMenuClick, onCartClick }) => {
   const location = useLocation();
   const { cartCount } = useCart();
-  const { wishlistCount } = useWishlist();
-  const { isAuthenticated } = useAuth();
 
   const navItems = [
     {
@@ -27,12 +23,18 @@ const BottomNavigation = ({ onMenuClick, onCartClick }) => {
       isActive: location.pathname.startsWith('/shop')
     },
     {
-      id: 'wishlist',
-      label: 'Favorite',
-      icon: Heart,
-      path: '/wishlist',
-      isActive: location.pathname === '/wishlist',
-      badge: wishlistCount
+      id: 'about',
+      label: 'Despre',
+      icon: User,
+      path: '/despre',
+      isActive: location.pathname === '/despre'
+    },
+    {
+      id: 'booking',
+      label: 'Programare',
+      icon: Calendar,
+      path: '/programare',
+      isActive: location.pathname === '/programare'
     }
   ];
 
@@ -43,7 +45,11 @@ const BottomNavigation = ({ onMenuClick, onCartClick }) => {
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 lg:hidden">
       {/* Bottom Navigation Bar */}
-      <div className="bg-white/95 backdrop-blur-beauty border-t border-gray-200/20 px-2 py-2 safe-area-pb">
+      <div className="px-3 py-2 safe-area-pb shadow-lg"
+           style={{
+             backgroundColor: '#FFB6A3',
+             background: '#FFB6A3'
+           }}>
         <div className="flex items-center justify-around mx-auto">
           {navItems.map((item) => {
             const IconComponent = item.icon;
@@ -53,28 +59,32 @@ const BottomNavigation = ({ onMenuClick, onCartClick }) => {
               <Link
                 key={item.id}
                 to={item.path}
-                className="flex flex-col items-center justify-center p-1 min-w-[60px] flex-1 rounded-lg transition-all duration-300 hover:bg-gray-50 active:scale-95"
+                className={`flex flex-col items-center justify-center p-2 min-w-[70px] flex-1 rounded-xl transition-all duration-300 transform hover:scale-105 active:scale-95 ${
+                  isActive
+                    ? 'bg-white/30 shadow-md'
+                    : 'hover:bg-white/20 active:bg-white/10'
+                }`}
               >
-                <div className="relative mb-1">
+                <div className="relative mb-1.5">
                   <IconComponent
-                    className={`w-6 h-6 transition-colors duration-300 ${
+                    className={`w-6 h-6 transition-all duration-300 ${
                       isActive
-                        ? 'text-beauty-pink'
-                        : 'text-gray-600 hover:text-beauty-pink'
+                        ? 'text-white drop-shadow-sm transform scale-110'
+                        : 'text-white/90 hover:text-white drop-shadow-sm'
                     }`}
                   />
                   
-                  {/* Cart badge - only show on shop/cart items, not wishlist */}
+                  {/* Cart badge - only show on shop */}
                   {item.id === 'shop' && cartCount > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-beauty-pink text-white text-[9px] font-bold rounded-full min-w-[16px] h-4 px-1 flex items-center justify-center">
+                    <span className="absolute -top-2 -right-2 bg-beauty-pink-dark text-white text-[9px] font-bold rounded-full min-w-[18px] h-4.5 px-1.5 flex items-center justify-center shadow-md border border-white/20">
                       {cartCount > 9 ? '9+' : cartCount}
                     </span>
                   )}
                 </div>
-                <span className={`text-[10px] font-medium transition-colors duration-300 text-center leading-tight ${
+                <span className={`text-[11px] font-semibold transition-all duration-300 text-center leading-tight drop-shadow-sm ${
                   isActive
-                    ? 'text-beauty-pink'
-                    : 'text-gray-600'
+                    ? 'text-white'
+                    : 'text-white/90'
                 }`}>
                   {item.label}
                 </span>
@@ -85,7 +95,7 @@ const BottomNavigation = ({ onMenuClick, onCartClick }) => {
       </div>
       
       {/* Safe area padding for devices with home indicator */}
-      <div className="h-safe-area-inset-bottom bg-white/95 backdrop-blur-beauty"></div>
+      <div className="h-safe-area-inset-bottom" style={{ backgroundColor: '#FFB6A3' }}></div>
     </nav>
   );
 };
