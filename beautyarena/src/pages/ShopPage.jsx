@@ -35,7 +35,6 @@ const ShopPage = () => {
   }, [products]);
   
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategories, setSelectedCategories] = useState([]);
   const [activeCategory, setActiveCategory] = useState(null); // Single active category
   const [priceRange, setPriceRange] = useState([priceStats.min, priceStats.max]);
   const [minRating, setMinRating] = useState(0);
@@ -118,16 +117,13 @@ const ShopPage = () => {
           })
         ));
        
-      // Legacy category filtering (for backward compatibility)
-      const matchesCategory = selectedCategories.length === 0 ||
-                             selectedCategories.includes(product.category) ||
-                             selectedCategories.includes(product.subcategory);
+      // Legacy category filtering (removed - only hierarchical filtering remains)
        
       const matchesPrice = product.price >= priceRange[0] && product.price <= priceRange[1];
       const matchesRating = (product.rating || 0) >= minRating;
       const matchesStock = !showInStockOnly || product.inStock;
          
-      return matchesSearch && matchesHierarchicalCategory && matchesCategory && matchesPrice && matchesRating && matchesStock;
+      return matchesSearch && matchesHierarchicalCategory && matchesPrice && matchesRating && matchesStock;
     });
 
     // Debug first few products
@@ -155,7 +151,7 @@ const ShopPage = () => {
     });
 
     return filtered;
-  }, [products, searchTerm, selectedCategories, activeCategory, priceRange, minRating, showInStockOnly, sortBy]);
+  }, [products, searchTerm, activeCategory, priceRange, minRating, showInStockOnly, sortBy]);
 
   // Pagination
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
@@ -165,7 +161,7 @@ const ShopPage = () => {
   // Reset to page 1 when filters change
   useMemo(() => {
     setCurrentPage(1);
-  }, [searchTerm, selectedCategories, activeCategory, priceRange, minRating, showInStockOnly]);
+  }, [searchTerm, activeCategory, priceRange, minRating, showInStockOnly]);
 
   const handleAddToCart = (e, product) => {
     e.preventDefault();
@@ -355,30 +351,6 @@ const ShopPage = () => {
                   Filtre
                 </h3>
 
-                {/* Category Filter */}
-                <div className="pb-6 border-b border-gray-200">
-                  <h4 className="font-medium mb-3">Categorii</h4>
-                  <div className="space-y-2">
-                    {Array.from(new Set(products.map(p => p.category).filter(Boolean))).map(category => (
-                      <label key={category} className="flex items-center cursor-pointer hover:bg-gray-50 p-1 rounded transition-colors">
-                        <input
-                          type="checkbox"
-                          checked={selectedCategories.includes(category)}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setSelectedCategories([...selectedCategories, category]);
-                            } else {
-                              setSelectedCategories(selectedCategories.filter(cat => cat !== category));
-                            }
-                          }}
-                          className="rounded text-beauty-pink focus:ring-beauty-pink"
-                        />
-                        <span className="ml-2 text-sm">{category.charAt(0).toUpperCase() + category.slice(1)}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
                 {/* Price Range Filter */}
                 <div className="pb-6 border-b border-gray-200">
                   <h4 className="font-medium mb-3">Interval preț</h4>
@@ -432,13 +404,14 @@ const ShopPage = () => {
                 </div>
 
                 {/* Clear Filters */}
-                {(selectedCategories.length > 0 || minRating > 0 || showInStockOnly || priceRange[0] !== priceStats.min || priceRange[1] !== priceStats.max) && (
+                {(activeCategory || minRating > 0 || showInStockOnly || priceRange[0] !== priceStats.min || priceRange[1] !== priceStats.max) && (
                   <button
                     onClick={() => {
-                      setSelectedCategories([]);
+                      setActiveCategory(null);
                       setPriceRange([priceStats.min, priceStats.max]);
                       setMinRating(0);
                       setShowInStockOnly(false);
+                      setSearchParams({});
                     }}
                     className="w-full text-sm text-beauty-pink hover:text-beauty-pink-dark transition-colors font-medium"
                   >
@@ -456,10 +429,11 @@ const ShopPage = () => {
                   <button
                     onClick={() => {
                       setSearchTerm('');
-                      setSelectedCategories([]);
+                      setActiveCategory(null);
                       setPriceRange([priceStats.min, priceStats.max]);
                       setMinRating(0);
                       setShowInStockOnly(false);
+                      setSearchParams({});
                     }}
                     className="btn-secondary"
                   >
