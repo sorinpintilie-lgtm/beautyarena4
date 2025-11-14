@@ -18,14 +18,16 @@ const ContactPage = () => {
     {
       icon: <MapPin className="w-6 h-6" />,
       title: 'Adresă',
-      details: ['Strada Frumuseții 123', 'Cluj-Napoca, CJ 400000'],
-      action: 'Vezi pe hartă'
+      details: ['Bulevardul Basarabia 96', 'București'],
+      action: 'Vezi pe hartă',
+      link: 'https://www.google.com/maps/place/Salon+Beauty+Arena/@44.4326188,26.1524149,805m/data=!3m2!1e3!4b1!4m6!3m5!1s0x40b1fecc42670a79:0xec62769fb5307edc!8m2!3d44.4326188!4d26.1524149!16s%2Fg%2F11b6nk_kl6?entry=ttu&g_ep=EgoyMDI1MTExMS4wIKXMDSoASAFQAw%3D%3D'
     },
     {
       icon: <Phone className="w-6 h-6" />,
       title: 'Telefon',
-      details: ['+40 264 123 456', '+40 753 987 654'],
-      action: 'Sună acum'
+      details: ['0722402559'],
+      action: 'Sună acum',
+      link: 'tel:0722402559'
     },
     {
       icon: <Mail className="w-6 h-6" />,
@@ -45,7 +47,7 @@ const ContactPage = () => {
     { icon: Instagram, name: 'Instagram', handle: '@beautyarena.ro', color: 'hover:text-pink-500' },
     { icon: Facebook, name: 'Facebook', handle: 'BeautyArena.ro', color: 'hover:text-blue-600' },
     { icon: Twitter, name: 'Twitter', handle: '@BeautyArena', color: 'hover:text-blue-400' },
-    { icon: MessageCircle, name: 'WhatsApp', handle: '+40 753 987 654', color: 'hover:text-green-500' }
+    { icon: MessageCircle, name: 'WhatsApp', handle: '0722402559', color: 'hover:text-green-500' }
   ];
 
   const handleInputChange = (e) => {
@@ -249,7 +251,11 @@ const ContactPage = () => {
                 {/* Contact Details */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {contactInfo.map((info, index) => (
-                    <div key={index} className="bg-white border-2 border-gray-100 rounded-2xl p-6 text-center hover:border-beauty-pink transition-colors">
+                    <div
+                      key={index}
+                      className={`bg-white border-2 border-gray-100 rounded-2xl p-6 text-center hover:border-beauty-pink transition-colors ${info.link ? 'cursor-pointer' : ''}`}
+                      onClick={info.link ? () => window.open(info.link, '_blank') : undefined}
+                    >
                       <div className="w-12 h-12 bg-beauty-pink/10 rounded-full flex items-center justify-center mx-auto mb-4">
                         <div className="text-beauty-pink">
                           {info.icon}
@@ -261,6 +267,11 @@ const ContactPage = () => {
                           <p key={idx} className="text-gray-600 text-sm">{detail}</p>
                         ))}
                       </div>
+                      {info.link && (
+                        <div className="text-beauty-pink text-sm font-medium hover:text-beauty-pink-dark">
+                          {info.action}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -275,7 +286,7 @@ const ContactPage = () => {
                     <div className="text-center">
                       <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-2" />
                       <p className="text-gray-600">Hartă interactivă</p>
-                      <p className="text-sm text-gray-500">Strada Frumuseții 123, Cluj-Napoca</p>
+                      <p className="text-sm text-gray-500">Bulevardul Basarabia 96, București</p>
                     </div>
                   </div>
                 </div>
@@ -323,7 +334,7 @@ const ContactPage = () => {
               {[
                 {
                   question: 'Cum pot programa o vizită?',
-                  answer: 'Poți programa o vizită online prin formularul nostru, telefonic la +40 264 123 456, sau direct în salon.'
+                  answer: 'Poți programa o vizită online prin formularul nostru, telefonic la 0722402559, sau direct în salon.'
                 },
                 {
                   question: 'Care este politica de anulare?',
