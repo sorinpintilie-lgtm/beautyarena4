@@ -274,7 +274,7 @@ const ShopPage = () => {
                 className="px-4 py-3 border-2 border-beauty-pink text-beauty-pink rounded-lg hover:bg-beauty-pink hover:text-gray-900 transition-all font-medium flex items-center justify-center gap-2"
               >
                 <Filter className="w-5 h-5" />
-                <span>Categorii</span>
+                <span>CATEGORII</span>
                 {activeCategory && (
                   <span className="bg-beauty-pink text-white px-2 py-0.5 rounded-full text-xs">
                     1
@@ -328,10 +328,11 @@ const ShopPage = () => {
             {/* Mobile Category Filter Button */}
             <button
               onClick={() => setIsCategoryDrawerOpen(true)}
-              className="lg:hidden fixed bottom-20 right-4 z-30 bg-beauty-pink text-white p-4 rounded-full shadow-lg hover:bg-beauty-pink-dark transition-all hover:scale-110"
+              className="lg:hidden fixed bottom-20 right-4 z-30 bg-beauty-pink text-white px-4 py-3 rounded-full shadow-lg hover:bg-beauty-pink-dark transition-all hover:scale-110 flex items-center gap-2"
               aria-label="Open category filters"
             >
-              <Filter className="w-6 h-6" />
+              <Filter className="w-5 h-5" />
+              <span className="text-sm font-medium uppercase">CATEGORII</span>
             </button>
 
             {/* Category Drawer */}

@@ -15,11 +15,11 @@ const Header = ({ onCartClick }) => {
   const { isAuthenticated } = useAuth();
 
   const navItems = [
-    { name: 'Acasă', path: '/' },
-    { name: 'Magazin', path: '/shop' },
-    { name: 'Servicii', path: '/servicii' },
-    { name: 'Despre', path: '/#about' },
-    { name: 'Contact', path: '/contact' },
+    { name: 'ACASĂ', path: '/' },
+    { name: 'MAGAZIN', path: '/shop' },
+    { name: 'SERVICII', path: '/servicii' },
+    { name: 'DESPRE', path: '/#about' },
+    { name: 'CONTACT', path: '/contact' },
   ];
 
   const isActive = (path) => {
@@ -116,14 +116,14 @@ const Header = ({ onCartClick }) => {
               </button>
             ) : (
               <button className="text-gray-700 hover:text-beauty-pink transition-colors duration-300 font-medium text-sm">
-                Autentificare
+                AUTENTIFICARE
               </button>
             )}
 
             {/* Book Appointment */}
             <Link to="/programare" className="bg-beauty-peach px-4 py-2 rounded-lg font-medium hover:bg-beauty-pink-dark transition-colors flex items-center space-x-2 text-sm">
               <Calendar className="w-4 h-4" />
-              <span>Programează</span>
+              <span>PROGRAMEAZĂ</span>
             </Link>
           </div>
 
@@ -169,13 +169,6 @@ const Header = ({ onCartClick }) => {
                       animation: isMenuOpen ? 'slideInLeft 0.3s ease-out forwards' : 'none'
                     }}
                   >
-                    <span className="mr-3 text-beauty-pink">
-                      {item.name === 'Acasă' && '🏠'}
-                      {item.name === 'Magazin' && '🛍️'}
-                      {item.name === 'Servicii' && '✨'}
-                      {item.name === 'Despre' && '💄'}
-                      {item.name === 'Contact' && '📞'}
-                    </span>
                     {item.name}
                   </Component>
                 );
@@ -190,8 +183,7 @@ const Header = ({ onCartClick }) => {
                     animation: isMenuOpen ? 'slideInLeft 0.3s ease-out forwards' : 'none'
                   }}
                 >
-                  <span className="mr-3 text-beauty-pink">👤</span>
-                  Autentificare
+                  AUTENTIFICARE
                 </button>
               )}
 
@@ -206,7 +198,7 @@ const Header = ({ onCartClick }) => {
                   }}
                 >
                   <Calendar className="w-4 h-4" />
-                  <span>Programează</span>
+                  <span>PROGRAMEAZĂ</span>
                 </Link>
               </div>
             </nav>

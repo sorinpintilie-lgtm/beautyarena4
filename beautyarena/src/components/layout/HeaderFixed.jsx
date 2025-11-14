@@ -14,11 +14,11 @@ const Header = ({ onCartClick }) => {
   const { isAuthenticated } = useAuth();
 
   const navItems = [
-    { name: 'Acasă', path: '/' },
-    { name: 'Magazin', path: '/shop' },
-    { name: 'Servicii', path: '/#services' },
-    { name: 'Despre', path: '/#about' },
-    { name: 'Contact', path: '/#contact' },
+    { name: 'ACASĂ', path: '/' },
+    { name: 'MAGAZIN', path: '/shop' },
+    { name: 'SERVICII', path: '/#services' },
+    { name: 'DESPRE', path: '/#about' },
+    { name: 'CONTACT', path: '/#contact' },
   ];
 
   const isActive = (path) => {
@@ -96,14 +96,14 @@ const Header = ({ onCartClick }) => {
               </button>
             ) : (
               <button className="text-gray-700 hover:text-beauty-pink transition-colors duration-300 font-medium text-sm">
-                Autentificare
+                AUTENTIFICARE
               </button>
             )}
 
             {/* Book Appointment */}
             <button className="btn-primary flex items-center space-x-2 text-sm px-4 py-2">
               <Calendar className="w-4 h-4" />
-              <span>Programează</span>
+              <span>PROGRAMEAZĂ</span>
             </button>
           </div>
 
@@ -136,13 +136,6 @@ const Header = ({ onCartClick }) => {
                       animation: isMenuOpen ? 'slideInLeft 0.3s ease-out forwards' : 'none'
                     }}
                   >
-                    <span className="mr-3 text-beauty-pink">
-                      {item.name === 'Acasă' && '🏠'}
-                      {item.name === 'Magazin' && '🛍️'}
-                      {item.name === 'Servicii' && '✨'}
-                      {item.name === 'Despre' && '💄'}
-                      {item.name === 'Contact' && '📞'}
-                    </span>
                     {item.name}
                   </a>
                 ) : (
@@ -160,13 +153,6 @@ const Header = ({ onCartClick }) => {
                       animation: isMenuOpen ? 'slideInLeft 0.3s ease-out forwards' : 'none'
                     }}
                   >
-                    <span className="mr-3 text-beauty-pink">
-                      {item.name === 'Acasă' && '🏠'}
-                      {item.name === 'Magazin' && '🛍️'}
-                      {item.name === 'Servicii' && '✨'}
-                      {item.name === 'Despre' && '💄'}
-                      {item.name === 'Contact' && '📞'}
-                    </span>
                     {item.name}
                   </Link>
                 )
@@ -181,11 +167,10 @@ const Header = ({ onCartClick }) => {
                     animation: isMenuOpen ? 'slideInLeft 0.3s ease-out forwards' : 'none'
                   }}
                 >
-                  <span className="mr-3 text-beauty-pink">👤</span>
-                  Autentificare
+                  AUTENTIFICARE
                 </button>
               )}
-
+              
               <div className="px-2 mt-4">
                 <button
                   className="btn-primary w-full flex items-center justify-center space-x-2 py-3"
@@ -203,7 +188,7 @@ const Header = ({ onCartClick }) => {
                   }}
                 >
                   <Calendar className="w-4 h-4" />
-                  <span>Programează programare</span>
+                  <span>PROGRAMEAZĂ PROGRAMARE</span>
                 </button>
               </div>
             </nav>
