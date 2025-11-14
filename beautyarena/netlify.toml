@@ -1,5 +1,5 @@
 [build]
-  publish = "beautyarena/dist"
+  publish = "/beautyarena/dist"
   command = "npm run build"
 
 [build.environment]
