@@ -1,0 +1,1219 @@
+{
+  "haircare": [
+    {
+      "id": "1202",
+      "name": "Apa Micelara pentru Scalp pH 7 - 150 ml",
+      "slug": "apa-micelara-pentru-scalp-ph-7-150-ml",
+      "price": 151,
+      "inStock": true
+    },
+    {
+      "id": "2431",
+      "name": "Balsam bifazic cu pigment aramiu/cupru fara clatire cu colagen si ceramide -150 ml",
+      "slug": "balsam-bifazic-cu-pigment-aramiu_cupru-fara-clatire-cu-colagen-si-ceramide-150-ml",
+      "price": 185,
+      "inStock": true
+    },
+    {
+      "id": "2429",
+      "name": "Balsam bifazic cu pigment cald fara clatire,cu colagen si ceramide - 150ml",
+      "slug": "balsam-bifazic-cu-pigment-cald-fara-clatirecu-colagen-si-ceramide-150ml",
+      "price": 185,
+      "inStock": true
+    },
+    {
+      "id": "2388",
+      "name": "Balsam bifazic cu pigment rece/cenusiu - fara clatire - cu colagen si ceramide -150ml",
+      "slug": "balsam-bifazic-cu-pigment-rece_cenusiu-fara-clatire-cu-colagen-si-ceramide-150ml",
+      "price": 209,
+      "inStock": true
+    },
+    {
+      "id": "2430",
+      "name": "Balsam bifazic cu pigment violet fara clatire cu colagen si ceramide-150 ml",
+      "slug": "balsam-bifazic-cu-pigment-violet-fara-clatire-cu-colagen-si-ceramide-150-ml",
+      "price": 185,
+      "inStock": true
+    },
+    {
+      "id": "2379",
+      "name": "Balsam Blondie cu ceramide si acid hialuronic pentru hidratare si umplere - 150ml",
+      "slug": "balsam-blondie-cu-ceramide-si-acid-hialuronic-pentru-hidratare-si-umplere-150ml",
+      "price": 117,
+      "inStock": true
+    },
+    {
+      "id": "1206",
+      "name": "Balsam pt Scalp si Lungimi pH 3.7 - 150ml - Medavita",
+      "slug": "balsam-pt-scalp-si-lungimi-ph-37-150ml-medavita",
+      "price": 127,
+      "inStock": true
+    },
+    {
+      "id": "301075",
+      "name": "Cadou Hidratare - NUTRISUBSTANCE - Medavita",
+      "slug": "cadou-hidratare-nutrisubstance-medavita",
+      "price": 297,
+      "inStock": true
+    },
+    {
+      "id": "2285-2287-2309",
+      "name": "Cadou HUILE D'ETOILE - sampon + masca + ulei de stralucire, ambalate individual",
+      "slug": "cadou-huile-detoile-sampon-masca-ulei-de-stralucire-ambalate-individual",
+      "price": 270,
+      "inStock": true
+    },
+    {
+      "id": "301076",
+      "name": "Cadou ICE BLONDE Medavita",
+      "slug": "cadou-ice-blonde-medavita",
+      "price": 297,
+      "inStock": true
+    },
+    {
+      "id": "301070",
+      "name": "Cadou Keratin Miracle - Medavita",
+      "slug": "cadou-keratin-miracle-medavita",
+      "price": 297,
+      "inStock": false
+    },
+    {
+      "id": "301074",
+      "name": "Cadou pentru Reconstructie - BETAREFIBER - Medavita",
+      "slug": "cadou-pentru-reconstructie-betarefiber-medavita",
+      "price": 297,
+      "inStock": false
+    },
+    {
+      "id": "301077",
+      "name": "Cadou SCALP LIGHTLY - Medavita",
+      "slug": "cadou-scalp-lightly-medavita",
+      "price": 297,
+      "inStock": true
+    },
+    {
+      "id": "3148",
+      "name": "Ceara pe baza de apa cu fixare usoara BLINK - 100ml",
+      "slug": "ceara-pe-baza-de-apa-cu-fixare-usoara-blink-100ml",
+      "price": 157,
+      "inStock": true
+    },
+    {
+      "id": "3124",
+      "name": "Crema bucle fixare medie -150ml",
+      "slug": "crema-bucle-fixare-medie-150ml",
+      "price": 147,
+      "inStock": false
+    },
+    {
+      "id": "2381",
+      "name": "Crema fara clatire cu ceramide si acid hialuronic pentru inchiderea cuticulelor- 150ml",
+      "slug": "crema-fara-clatire-cu-ceramide-si-acid-hialuronic-pentru-inchiderea-cuticulelor-150ml",
+      "price": 194,
+      "inStock": true
+    },
+    {
+      "id": "2445",
+      "name": "Crema Leave-in pentru Umplere si Restructurare pH 5.5 - Prodige - 50 ml",
+      "slug": "crema-leave-in-pentru-umplere-si-restructurare-ph-55-prodige-50-ml",
+      "price": 203,
+      "inStock": true
+    },
+    {
+      "id": "3104",
+      "name": "Crema pentru stralucire cu fixare ultra-usoara Idol 100ml",
+      "slug": "crema-pentru-stralucire-cu-fixare-ultra-usoara-idol-100ml",
+      "price": 147,
+      "inStock": true
+    },
+    {
+      "id": "2220",
+      "name": "Crema tip gel pentru volum si protectie - 200ml",
+      "slug": "crema-tip-gel-pentru-volum-si-protectie-200ml",
+      "price": 141,
+      "inStock": true
+    },
+    {
+      "id": "1201",
+      "name": "Daily Tonic - Energizant pentru Scalp pH 5.5 - 100 ml",
+      "slug": "daily-tonic-energizant-pentru-scalp-ph-55-100-ml",
+      "price": 311,
+      "inStock": true
+    },
+    {
+      "id": "1200",
+      "name": "DermoCrema Anticadere pre-sampon - Co Wash Lotion Concentree - 500ml",
+      "slug": "dermocrema-anticadere-pre-sampon-co-wash-lotion-concentree-500ml",
+      "price": 418,
+      "inStock": true
+    },
+    {
+      "id": "1203",
+      "name": "DermoCrema Antimatreata pre-sampon - Co Wash Puroxine - 500ml",
+      "slug": "dermocrema-antimatreata-pre-sampon-co-wash-puroxine-500ml",
+      "price": 418,
+      "inStock": true
+    },
+    {
+      "id": "1205",
+      "name": "DermoCrema Antisebum pre-sampon - Co Wash - Requilibre - 500ml",
+      "slug": "dermocrema-antisebum-pre-sampon-co-wash-requilibre-500ml",
+      "price": 418,
+      "inStock": true
+    },
+    {
+      "id": "1208",
+      "name": "DermoCrema Calmanta pre-sampon - Co Wash Velour - 500ml",
+      "slug": "dermocrema-calmanta-pre-sampon-co-wash-velour-500ml",
+      "price": 418,
+      "inStock": true
+    },
+    {
+      "id": "301086",
+      "name": "Duo Kit pentru Stralucirea Parului - Medavita Choice Glowing",
+      "slug": "duo-kit-pentru-stralucirea-parului-medavita-choice-glowing",
+      "price": 325,
+      "inStock": true
+    },
+    {
+      "id": "301089",
+      "name": "Duo Luxury Kit Ingrijire pentru Par Blond - Medavita Blondie",
+      "slug": "duo-luxury-kit-ingrijire-pentru-par-blond-medavita-blondie",
+      "price": 325,
+      "inStock": true
+    },
+    {
+      "id": "301087",
+      "name": "Duo Luxury Kit pentru Hidratarea Parului - Medavita Nutrisubstance",
+      "slug": "duo-luxury-kit-pentru-hidratarea-parului-medavita-nutrisubstance",
+      "price": 325,
+      "inStock": true
+    },
+    {
+      "id": "301084",
+      "name": "Duo Luxury Kit pentru Repararea Parului - Medavita Betarefibre",
+      "slug": "duo-luxury-kit-pentru-repararea-parului-medavita-betarefibre",
+      "price": 325,
+      "inStock": true
+    },
+    {
+      "id": "301088",
+      "name": "Duo Luxury Kit pentru Umplerea Firului de Par - Medavita Prodige",
+      "slug": "duo-luxury-kit-pentru-umplerea-firului-de-par-medavita-prodige",
+      "price": 325,
+      "inStock": true
+    },
+    {
+      "id": "301080",
+      "name": "Elisièr - Ser si Spuma Fortifianta",
+      "slug": "elisier-ser-si-spuma-fortifianta",
+      "price": 418,
+      "inStock": true
+    },
+    {
+      "id": "3168",
+      "name": "Extreme Wax Spray - 150ml",
+      "slug": "extreme-wax-spray-150ml",
+      "price": 189,
+      "inStock": true
+    },
+    {
+      "id": "2416F",
+      "name": "Fiola de reconstructie a parului Medavita, set betarefribrare pentru restructurare, reparare, consolidare si anti-imbatranire firului de par",
+      "slug": "fiola-de-reconstructie-a-parului-medavita-set-betarefribrare-pentru-restructurare-reparare-consolidare-si-anti-imbatranire-firului-de-par",
+      "price": 44,
+      "inStock": true
+    },
+    {
+      "id": "2454F",
+      "name": "Fiola pentru hidratarea parului, Medavita Nutrisubstance, cu unt shea, aminoacizi esentiali, fara clatire, 10 ml",
+      "slug": "fiola-pentru-hidratarea-parului-medavita-nutrisubstance-cu-unt-shea-aminoacizi-esentiali-fara-clatire-10-ml",
+      "price": 44,
+      "inStock": true
+    },
+    {
+      "id": "110460",
+      "name": "Fiole anticadere par Medavita - Tratament intensiv anticadere, fara parabeni, PH 3.5 - 12x6ml",
+      "slug": "fiole-anticadere-par-medavita-tratament-intensiv-anticadere-fara-parabeni-ph-35-12x6ml",
+      "price": 418,
+      "inStock": true
+    },
+    {
+      "id": "111960",
+      "name": "Fiole antimatreata Medavita Puroxine, antiseptic, anti mancarimi, formula fara clatire, 12x6ml",
+      "slug": "fiole-antimatreata-medavita-puroxine-antiseptic-anti-mancarimi-formula-fara-clatire-12x6ml",
+      "price": 418,
+      "inStock": true
+    },
+    {
+      "id": "1123",
+      "name": "Fiole antisebum Medavita Requilibre, lotiune-tratament pentru dermatita seboreica, echilibrarea sebumului, 12x6ml",
+      "slug": "fiole-antisebum-medavita-requilibre-lotiune-tratament-pentru-dermatita-seboreica-echilibrarea-sebumului-12x6ml",
+      "price": 418,
+      "inStock": true
+    },
+    {
+      "id": "112960",
+      "name": "Fiole calmante scalp sensibil Medavida Velour, PH 4.5, pentru scalp cu dermatita, psoriazis, ideal dupa decolorarea/cololarea parului, 12x6ml",
+      "slug": "fiole-calmante-scalp-sensibil-medavida-velour-ph-45-pentru-scalp-cu-dermatita-psoriazis-ideal-dupa-decolorarea_cololarea-parului-12x6ml",
+      "price": 418,
+      "inStock": true
+    },
+    {
+      "id": "2454",
+      "name": "Fiole pentru hidratarea parului Medavita Nutrisubstance, fara clatire, cu unt shea, aminoacizi esentiali, 24x10 ml",
+      "slug": "fiole-pentru-hidratarea-parului-medavita-nutrisubstance-fara-clatire-cu-unt-shea-aminoacizi-esentiali-24x10-ml",
+      "price": 791,
+      "inStock": true
+    },
+    {
+      "id": "2327",
+      "name": "Fiole pentru parul deteriorat Medavita Prodige, hidratarea, reconstructie, umplere, formula fara clatire, 4x15ml",
+      "slug": "fiole-pentru-parul-deteriorat-medavita-prodige-hidratarea-reconstructie-umplere-formula-fara-clatire-4x15ml",
+      "price": 483,
+      "inStock": true
+    },
+    {
+      "id": "2329",
+      "name": "Fiole pentru parul deteriorat Medavita Prodige, regenerarea si intarire fibra parului, 4x15ml",
+      "slug": "fiole-pentru-parul-deteriorat-medavita-prodige-regenerarea-si-intarire-fibra-parului-4x15ml",
+      "price": 239,
+      "inStock": true
+    },
+    {
+      "id": "2416",
+      "name": "Fiole pentru reconstructie par Medavita Betarefribrare, ser pentru restructurare, reparare, consolidare si anti-imbatranire firului de par , 24x10ml",
+      "slug": "fiole-pentru-reconstructie-par-medavita-betarefribrare-ser-pentru-restructurare-reparare-consolidare-si-anti-imbatranire-firului-de-par-24x10ml",
+      "price": 791,
+      "inStock": true
+    },
+    {
+      "id": "112760",
+      "name": "Fiole scalp sensibil, cu dermatita, psoriazis - tratament de calmare pentru scalp inrosit, uscat, 12x6ml",
+      "slug": "fiole-scalp-sensibil-cu-dermatita-psoriazis-tratament-de-calmare-pentru-scalp-inrosit-uscat-12x6ml",
+      "price": 418,
+      "inStock": true
+    },
+    {
+      "id": "1110",
+      "name": "Fiole tratament anticadere par barbati Medavita, stimuleaza cresterea parului, pentru toate tipurile de scalp 13x6ml",
+      "slug": "fiole-tratament-anticadere-par-barbati-medavita-stimuleaza-cresterea-parului-pentru-toate-tipurile-de-scalp-13x6ml",
+      "price": 418,
+      "inStock": true
+    },
+    {
+      "id": "3146",
+      "name": "Fixativ uscat extra-puternic, Idol Texture 300ml",
+      "slug": "fixativ-uscat-extra-puternic-idol-texture-300ml",
+      "price": 161,
+      "inStock": true
+    },
+    {
+      "id": "03141",
+      "name": "Fixativ Uscat Light - Idol - 300ml — 300 ml",
+      "slug": "fixativ-uscat-light-idol-300ml-300-ml",
+      "price": 161,
+      "inStock": true
+    },
+    {
+      "id": "3142",
+      "name": "Fixativ Uscat Light - Idol - 300ml — 500 ml",
+      "slug": "fixativ-uscat-light-idol-300ml-500-ml",
+      "price": 192,
+      "inStock": true
+    },
+    {
+      "id": "3144",
+      "name": "Fixativ uscat puternic, Idol Texture — 300 ml",
+      "slug": "fixativ-uscat-puternic-idol-texture-300-ml",
+      "price": 161,
+      "inStock": false
+    },
+    {
+      "id": "3143",
+      "name": "Fixativ uscat puternic, Idol Texture — 75 ml",
+      "slug": "fixativ-uscat-puternic-idol-texture-75-ml",
+      "price": 119,
+      "inStock": true
+    },
+    {
+      "id": "2473",
+      "name": "Fluid cu Efect de Laminar - Extreme Makeover Fluid - 200ml",
+      "slug": "fluid-cu-efect-de-laminar-extreme-makeover-fluid-200ml",
+      "price": 194,
+      "inStock": true
+    },
+    {
+      "id": "3172",
+      "name": "Fluid pt Modelarea Buclelor - fixare puternica - Curl Shape Model Up Fluid - 150ml",
+      "slug": "fluid-pt-modelarea-buclelor-fixare-puternica-curl-shape-model-up-fluid-150ml",
+      "price": 177,
+      "inStock": true
+    },
+    {
+      "id": "3122",
+      "name": "Gel Bucle - definirea, fixarea, reactivarea buclelor - fixare puternica - 150 ml",
+      "slug": "gel-bucle-definirea-fixarea-reactivarea-buclelor-fixare-puternica-150-ml",
+      "price": 147,
+      "inStock": false
+    },
+    {
+      "id": "4105",
+      "name": "Gel cu fixare medie, Idol Man-200ml",
+      "slug": "gel-cu-fixare-medie-idol-man-200ml",
+      "price": 120,
+      "inStock": true
+    },
+    {
+      "id": "2333",
+      "name": "Gel de dus pentru corp si par dupa expunerea la soare - Solarich - 400ml",
+      "slug": "gel-de-dus-pentru-corp-si-par-dupa-expunerea-la-soare-solarich-400ml",
+      "price": 178,
+      "inStock": true
+    },
+    {
+      "id": "3109",
+      "name": "Gel fixare puternica Idol 150ml",
+      "slug": "gel-fixare-puternica-idol-150ml",
+      "price": 104,
+      "inStock": true
+    },
+    {
+      "id": "3123",
+      "name": "Gel pentru bucle extra-puternic -150ml",
+      "slug": "gel-pentru-bucle-extra-puternic-150ml",
+      "price": 147,
+      "inStock": true
+    },
+    {
+      "id": "301090",
+      "name": "Kit Anticadere - Sampon Anticadere 400ml si Vitality Hair and Scalp Cream 150ml",
+      "slug": "kit-anticadere-sampon-anticadere-400ml-si-vitality-hair-and-scalp-cream-150ml",
+      "price": 354,
+      "inStock": true
+    },
+    {
+      "id": "301091",
+      "name": "Kit Antimatreata - Sampon Antimatreata 400ml si Dermocrema Purifianta 150ml",
+      "slug": "kit-antimatreata-sampon-antimatreata-400ml-si-dermocrema-purifianta-150ml",
+      "price": 354,
+      "inStock": true
+    },
+    {
+      "id": "301093",
+      "name": "Kit Antisebum - Sampon Antisebum 400ml si Rebalance Hair and Scalp Cream 150ml",
+      "slug": "kit-antisebum-sampon-antisebum-400ml-si-rebalance-hair-and-scalp-cream-150ml",
+      "price": 345,
+      "inStock": true
+    },
+    {
+      "id": "301092",
+      "name": "Kit Calmant - Sampon Calmant 400ml si Crema pt Calmarea Scalpului 150ml",
+      "slug": "kit-calmant-sampon-calmant-400ml-si-crema-pt-calmarea-scalpului-150ml",
+      "price": 354,
+      "inStock": true
+    },
+    {
+      "id": "KIT SOLARICH",
+      "name": "Kit Summer Care - SOLARICH",
+      "slug": "kit-summer-care-solarich",
+      "price": 570,
+      "inStock": true
+    },
+    {
+      "id": "2483",
+      "name": "Masca Acidifianta pentru Protectia Culorii Ph 2.8 - 150 ml",
+      "slug": "masca-acidifianta-pentru-protectia-culorii-ph-28-150-ml",
+      "price": 131,
+      "inStock": true
+    },
+    {
+      "id": "2391",
+      "name": "Masca blondie pentru blonduri calde cu acid hialuronuc,colagen,ceramide -150 ml",
+      "slug": "masca-blondie-pentru-blonduri-calde-cu-acid-hialuronuccolagenceramide-150-ml",
+      "price": 135,
+      "inStock": true
+    },
+    {
+      "id": "2377",
+      "name": "Masca blondie pentru toate tipurile de blond cu Ceramide si Acid Hialuronic si Colagen pentru parul blond -150 ml",
+      "slug": "masca-blondie-pentru-toate-tipurile-de-blond-cu-ceramide-si-acid-hialuronic-si-colagen-pentru-parul-blond-150-ml",
+      "price": 135,
+      "inStock": true
+    },
+    {
+      "id": "2448",
+      "name": "Masca Coloranta Anti Galben/Portocaliu - 750 ml - Black Blondie",
+      "slug": "masca-coloranta-anti-galben_portocaliu-750-ml-black-blondie",
+      "price": 401,
+      "inStock": true
+    },
+    {
+      "id": "CCM007",
+      "name": "Masca Coloranta Argento ( argintie) - pentru mentinerea reflexelor reci",
+      "slug": "masca-coloranta-argento-argintie-pentru-mentinerea-reflexelor-reci",
+      "price": 138,
+      "inStock": true
+    },
+    {
+      "id": "2477",
+      "name": "Masca coloranta neagra - BLONDIE - No yellow No Orange - 150 ml",
+      "slug": "masca-coloranta-neagra-blondie-no-yellow-no-orange-150-ml",
+      "price": 156,
+      "inStock": true
+    },
+    {
+      "id": "2438",
+      "name": "Masca cu Keratina pt Netezire - KERATIN MIRACLE — 150 ml",
+      "slug": "masca-cu-keratina-pt-netezire-keratin-miracle-150-ml",
+      "price": 143,
+      "inStock": true
+    },
+    {
+      "id": "2330",
+      "name": "Masca cu Liposomi Incapsulati pt Restructurare si Umplere pH 2.8 - 250ml — 250 ml",
+      "slug": "masca-cu-liposomi-incapsulati-pt-restructurare-si-umplere-ph-28-250ml-250-ml",
+      "price": 261,
+      "inStock": true
+    },
+    {
+      "id": "CCM009",
+      "name": "Masca de Par Coloranta Aubergine (Violet) 200ml",
+      "slug": "masca-de-par-coloranta-aubergine-violet-200ml",
+      "price": 138,
+      "inStock": true
+    },
+    {
+      "id": "CCM004",
+      "name": "Masca de Par Coloranta Aurie (gold) - pentru mentinerea reflexelor calde",
+      "slug": "masca-de-par-coloranta-aurie-gold-pentru-mentinerea-reflexelor-calde",
+      "price": 138,
+      "inStock": true
+    },
+    {
+      "id": "CCM008",
+      "name": "Masca de Par Coloranta Beige - pentru mentinerea reflexelor neutre",
+      "slug": "masca-de-par-coloranta-beige-pentru-mentinerea-reflexelor-neutre",
+      "price": 138,
+      "inStock": true
+    },
+    {
+      "id": "CCM005",
+      "name": "Masca de Par Coloranta Caramel 200ml",
+      "slug": "masca-de-par-coloranta-caramel-200ml",
+      "price": 138,
+      "inStock": true
+    },
+    {
+      "id": "CCM006",
+      "name": "Masca de Par Coloranta Cool Brown (Castanie) 200ml",
+      "slug": "masca-de-par-coloranta-cool-brown-castanie-200ml",
+      "price": 138,
+      "inStock": true
+    },
+    {
+      "id": "CCM003",
+      "name": "Masca de Par Coloranta Cupru (Orange) - pentru mentinrea reflexelor calde",
+      "slug": "masca-de-par-coloranta-cupru-orange-pentru-mentinrea-reflexelor-calde",
+      "price": 138,
+      "inStock": true
+    },
+    {
+      "id": "CCM010",
+      "name": "Masca de Par Coloranta Hazelnut (Aluna de padure) 200ml",
+      "slug": "masca-de-par-coloranta-hazelnut-aluna-de-padure-200ml",
+      "price": 138,
+      "inStock": true
+    },
+    {
+      "id": "CCM011",
+      "name": "Masca de Par Coloranta Liquorice (Lemn Dulce) 200ml",
+      "slug": "masca-de-par-coloranta-liquorice-lemn-dulce-200ml",
+      "price": 138,
+      "inStock": true
+    },
+    {
+      "id": "CCM001",
+      "name": "Masca de Par Coloranta Neutro (Clear) 200ml",
+      "slug": "masca-de-par-coloranta-neutro-clear-200ml",
+      "price": 138,
+      "inStock": true
+    },
+    {
+      "id": "CCM012",
+      "name": "Masca de Par Coloranta Peach (Piersica) - 200ml",
+      "slug": "masca-de-par-coloranta-peach-piersica-200ml",
+      "price": 138,
+      "inStock": true
+    },
+    {
+      "id": "CCM002",
+      "name": "Masca de Par Coloranta Rosie (Rosso) - pentru mentinerea reflexelor calde",
+      "slug": "masca-de-par-coloranta-rosie-rosso-pentru-mentinerea-reflexelor-calde",
+      "price": 138,
+      "inStock": true
+    },
+    {
+      "id": "2406",
+      "name": "Masca fara clatire all in one cu extract din uleiuri esentiale - DREAMFULL - 150ml",
+      "slug": "masca-fara-clatire-all-in-one-cu-extract-din-uleiuri-esentiale-dreamfull-150ml",
+      "price": 135,
+      "inStock": true
+    },
+    {
+      "id": "2334",
+      "name": "Masca hidratanta si cu protectie uv cu miere de manuca ideala dupa statul la plaja 150ml",
+      "slug": "masca-hidratanta-si-cu-protectie-uv-cu-miere-de-manuca-ideala-dupa-statul-la-plaja-150ml",
+      "price": 178,
+      "inStock": true
+    },
+    {
+      "id": "2385",
+      "name": "Masca Nuantatoare cu Pigment Rece si Acid Hialuronic - 150ml — 150 ml",
+      "slug": "masca-nuantatoare-cu-pigment-rece-si-acid-hialuronic-150ml-150-ml",
+      "price": 136,
+      "inStock": true
+    },
+    {
+      "id": "2452",
+      "name": "Masca pentru Hidratare cu Unt de Shea si Aminoacizi - Nutrisubstance - 150ml",
+      "slug": "masca-pentru-hidratare-cu-unt-de-shea-si-aminoacizi-nutrisubstance-150ml",
+      "price": 125,
+      "inStock": true
+    },
+    {
+      "id": "2302",
+      "name": "Masca pentru par cret - Curl Addict - 150ml — 150 ml",
+      "slug": "masca-pentru-par-cret-curl-addict-150ml-150-ml",
+      "price": 129,
+      "inStock": true
+    },
+    {
+      "id": "2238",
+      "name": "Masca pentru Par Ondulat - Curladdict - 500ml - Medavita",
+      "slug": "masca-pentru-par-ondulat-curladdict-500ml-medavita",
+      "price": 277,
+      "inStock": true
+    },
+    {
+      "id": "2905",
+      "name": "Masca pentru Stralucire - par natural sau vopsit - Choice Glowing — 150 ml",
+      "slug": "masca-pentru-stralucire-par-natural-sau-vopsit-choice-glowing-150-ml",
+      "price": 128,
+      "inStock": true
+    },
+    {
+      "id": "2287",
+      "name": "Masca pt Stralucire din Uleiuri Naturale — 150 ml",
+      "slug": "masca-pt-stralucire-din-uleiuri-naturale-150-ml",
+      "price": 134,
+      "inStock": true
+    },
+    {
+      "id": "2288",
+      "name": "Masca pt Stralucire din Uleiuri Naturale — 500 ml",
+      "slug": "masca-pt-stralucire-din-uleiuri-naturale-500-ml",
+      "price": 334,
+      "inStock": true
+    },
+    {
+      "id": "2414",
+      "name": "Masca Reconstructie cu Aminoacizi - ph 2.6 - Betarefibre - 150 ml",
+      "slug": "masca-reconstructie-cu-aminoacizi-ph-26-betarefibre-150-ml",
+      "price": 133,
+      "inStock": true
+    },
+    {
+      "id": "2455",
+      "name": "Microemulsie spray nutritiva - Nutrisubstance",
+      "slug": "microemulsie-spray-nutritiva-nutrisubstance",
+      "price": 132,
+      "inStock": true
+    },
+    {
+      "id": "2418",
+      "name": "Nectar pentru Reconstructie - Leave-in - 50ml - Betarefibre",
+      "slug": "nectar-pentru-reconstructie-leave-in-50ml-betarefibre",
+      "price": 198,
+      "inStock": true
+    },
+    {
+      "id": "1207",
+      "name": "Night Reset Serum - 50ml",
+      "slug": "night-reset-serum-50ml",
+      "price": 256,
+      "inStock": true
+    },
+    {
+      "id": "C568",
+      "name": "Outline- Gel de barbierit de inalta precizie 50ml",
+      "slug": "outline-gel-de-barbierit-de-inalta-precizie-50ml",
+      "price": 50,
+      "inStock": false
+    },
+    {
+      "id": "3150",
+      "name": "Pasta Mata Blackjack - 100ml",
+      "slug": "pasta-mata-blackjack-100ml",
+      "price": 174,
+      "inStock": true
+    },
+    {
+      "id": "1173",
+      "name": "Peeling pentru detoxifiere cu efect regenerant 150ml",
+      "slug": "peeling-pentru-detoxifiere-cu-efect-regenerant-150ml",
+      "price": 192,
+      "inStock": true
+    },
+    {
+      "id": "2336",
+      "name": "Protectie Solara 10 in 1 cu Miere de Manuka - 150ml - SOLARICH",
+      "slug": "protectie-solara-10-in-1-cu-miere-de-manuka-150ml-solarich",
+      "price": 178,
+      "inStock": true
+    },
+    {
+      "id": "3158",
+      "name": "Protectie termica - Liss defence",
+      "slug": "protectie-termica-liss-defence",
+      "price": 153,
+      "inStock": true
+    },
+    {
+      "id": "2442",
+      "name": "Protectie Termica pana la 230 grade - 150ml - KERATIN MIRACLE",
+      "slug": "protectie-termica-pana-la-230-grade-150ml-keratin-miracle",
+      "price": 201,
+      "inStock": true
+    },
+    {
+      "id": "3130",
+      "name": "Pudra de volum cu fixare extrema si efect mat, Idol Volum 30ml",
+      "slug": "pudra-de-volum-cu-fixare-extrema-si-efect-mat-idol-volum-30ml",
+      "price": 184,
+      "inStock": true
+    },
+    {
+      "id": "1108",
+      "name": "Sampon Anticadere Barbati pH 4.8 - 250ml — 250 ml",
+      "slug": "sampon-anticadere-barbati-ph-48-250ml-250-ml",
+      "price": 111,
+      "inStock": true
+    },
+    {
+      "id": "1102",
+      "name": "Sampon Anticadere pH 5.5 - Medavita — 250 ml",
+      "slug": "sampon-anticadere-ph-55-medavita-250-ml",
+      "price": 111,
+      "inStock": true
+    },
+    {
+      "id": "1148",
+      "name": "Sampon Antimatreata pH 5.5 - Medavita — 250 ml",
+      "slug": "sampon-antimatreata-ph-55-medavita-250-ml",
+      "price": 114,
+      "inStock": true
+    },
+    {
+      "id": "1121",
+      "name": "Sampon Antisebum - Medavita — 250 ml",
+      "slug": "sampon-antisebum-medavita-250-ml",
+      "price": 111,
+      "inStock": true
+    },
+    {
+      "id": "1125",
+      "name": "Sampon Calmant Velour pH 5.5 — 250 ml",
+      "slug": "sampon-calmant-velour-ph-55-250-ml",
+      "price": 111,
+      "inStock": true
+    },
+    {
+      "id": "2434",
+      "name": "Sampon Clarifiant/Alcalin - KERATIN MIRACLE - 500ml",
+      "slug": "sampon-clarifiant_alcalin-keratin-miracle-500ml",
+      "price": 184,
+      "inStock": true
+    },
+    {
+      "id": "2447",
+      "name": "Sampon Colorant Anti Galben/Portocaliu - 750 ml - Black Blondie",
+      "slug": "sampon-colorant-anti-galben_portocaliu-750-ml-black-blondie",
+      "price": 308,
+      "inStock": true
+    },
+    {
+      "id": "2476",
+      "name": "Sampon Colorant AntiGalben/Portocaliu - 250ml - Black Blondie — 250 ml",
+      "slug": "sampon-colorant-antigalben_portocaliu-250ml-black-blondie-250-ml",
+      "price": 134,
+      "inStock": true
+    },
+    {
+      "id": "2354",
+      "name": "Sampon Colorant Ph 5.5 -250 ml",
+      "slug": "sampon-colorant-ph-55-250-ml",
+      "price": 135,
+      "inStock": true
+    },
+    {
+      "id": "2436",
+      "name": "Sampon cu keratina pentru netezire - KERATIN MIRACLE — 250 ml",
+      "slug": "sampon-cu-keratina-pentru-netezire-keratin-miracle-250-ml",
+      "price": 121,
+      "inStock": true
+    },
+    {
+      "id": "2443",
+      "name": "Sampon cu keratina pentru netezire - KERATIN MIRACLE — 55 ml",
+      "slug": "sampon-cu-keratina-pentru-netezire-keratin-miracle-55-ml",
+      "price": 55,
+      "inStock": true
+    },
+    {
+      "id": "2353",
+      "name": "Sampon cu Pigment Bej - 250ml",
+      "slug": "sampon-cu-pigment-bej-250ml",
+      "price": 135,
+      "inStock": true
+    },
+    {
+      "id": "2903",
+      "name": "Sampon Glowing -250 ml Ph 5.5",
+      "slug": "sampon-glowing-250-ml-ph-55",
+      "price": 138,
+      "inStock": true
+    },
+    {
+      "id": "2383",
+      "name": "Sampon Nuantator cu [igment Rece - Blondie - 250ml — 250 ml",
+      "slug": "sampon-nuantator-cu-igment-rece-blondie-250ml-250-ml",
+      "price": 117,
+      "inStock": true
+    },
+    {
+      "id": "2389",
+      "name": "Sampon pentru blonduri calde cu acid hialuronuc, colagen, ceramide - BLONDIE - 250 ml",
+      "slug": "sampon-pentru-blonduri-calde-cu-acid-hialuronuc-colagen-ceramide-blondie-250-ml",
+      "price": 117,
+      "inStock": true
+    },
+    {
+      "id": "2450",
+      "name": "Sampon pentru hidratare - Nutrisubstance - 250ml — 250 ml",
+      "slug": "sampon-pentru-hidratare-nutrisubstance-250ml-250-ml",
+      "price": 113,
+      "inStock": true
+    },
+    {
+      "id": "2235",
+      "name": "Sampon pentru par cret - Curl Addict — 250 ml",
+      "slug": "sampon-pentru-par-cret-curl-addict-250-ml",
+      "price": 106,
+      "inStock": true
+    },
+    {
+      "id": "2236",
+      "name": "Sampon pentru par Ondulat - Curl Addict - 1000ml - Medavita",
+      "slug": "sampon-pentru-par-ondulat-curl-addict-1000ml-medavita",
+      "price": 243,
+      "inStock": true
+    },
+    {
+      "id": "2412",
+      "name": "Sampon pentru Reconstructie - Betarefibre - 250 ml",
+      "slug": "sampon-pentru-reconstructie-betarefibre-250-ml",
+      "price": 106,
+      "inStock": true
+    },
+    {
+      "id": "2375",
+      "name": "Sampon pentru toate tipurile de blond cu acid hialuronic, ceramide, colagen - ALL BLONDES — 250 ml",
+      "slug": "sampon-pentru-toate-tipurile-de-blond-cu-acid-hialuronic-ceramide-colagen-all-blondes-250-ml",
+      "price": 117,
+      "inStock": true
+    },
+    {
+      "id": "2328",
+      "name": "Sampon pentru Umplere si Restructurare - pH 5.5 Prodige — 250 ml",
+      "slug": "sampon-pentru-umplere-si-restructurare-ph-55-prodige-250-ml",
+      "price": 147,
+      "inStock": true
+    },
+    {
+      "id": "2339",
+      "name": "Sampon pentru Umplere si Restructurare - pH 5.5 Prodige — 55 ml",
+      "slug": "sampon-pentru-umplere-si-restructurare-ph-55-prodige-55-ml",
+      "price": 55,
+      "inStock": true
+    },
+    {
+      "id": "2218",
+      "name": "Sampon pentru volum - 250ml",
+      "slug": "sampon-pentru-volum-250ml",
+      "price": 106,
+      "inStock": true
+    },
+    {
+      "id": "2481",
+      "name": "Sampon Protectia Culorii - Sampon Acidifiant pH 4.6 - 250 ml",
+      "slug": "sampon-protectia-culorii-sampon-acidifiant-ph-46-250-ml",
+      "price": 112,
+      "inStock": true
+    },
+    {
+      "id": "4200",
+      "name": "Sampon si gel de dus tonifiant-Idol Man-250 ml",
+      "slug": "sampon-si-gel-de-dus-tonifiant-idol-man-250-ml",
+      "price": 201,
+      "inStock": false
+    },
+    {
+      "id": "2364",
+      "name": "Sampon si Masca pentru Hidratare - Nutrisubstance",
+      "slug": "sampon-si-masca-pentru-hidratare-nutrisubstance",
+      "price": 234,
+      "inStock": true
+    },
+    {
+      "id": "2285",
+      "name": "Sampon Stralucire cu Uleiuri Naturale - 250ml — 250 ml",
+      "slug": "sampon-stralucire-cu-uleiuri-naturale-250ml-250-ml",
+      "price": 106,
+      "inStock": true
+    },
+    {
+      "id": "3169",
+      "name": "Sampon Uscat Texturizant - Flash Glam Dry Shampoo - 150ml",
+      "slug": "sampon-uscat-texturizant-flash-glam-dry-shampoo-150ml",
+      "price": 179,
+      "inStock": true
+    },
+    {
+      "id": "3129",
+      "name": "Sare de mare - spray cu fixare medie - Idol - 150ml",
+      "slug": "sare-de-mare-spray-cu-fixare-medie-idol-150ml",
+      "price": 147,
+      "inStock": true
+    },
+    {
+      "id": "1100",
+      "name": "Scrub enzimatic - emulsie igienizanta Cutis Pura",
+      "slug": "scrub-enzimatic-emulsie-igienizanta-cutis-pura",
+      "price": 418,
+      "inStock": true
+    },
+    {
+      "id": "1158",
+      "name": "Scrub Monodoza Argila Rosie si Particule de Quartz - 75ml",
+      "slug": "scrub-monodoza-argila-rosie-si-particule-de-quartz-75ml",
+      "price": 138,
+      "inStock": true
+    },
+    {
+      "id": "2441",
+      "name": "Ser cu keratina antifrizz, fara clatire, impotriva porozitatii excesive -75 ml - KERATIN MIRACLE",
+      "slug": "ser-cu-keratina-antifrizz-fara-clatire-impotriva-porozitatii-excesive-75-ml-keratin-miracle",
+      "price": 221,
+      "inStock": true
+    },
+    {
+      "id": "2457",
+      "name": "Ser pentru hranire si nutritie cu actiune de 8H - fara clatire - 100ml",
+      "slug": "ser-pentru-hranire-si-nutritie-cu-actiune-de-8h-fara-clatire-100ml",
+      "price": 333,
+      "inStock": true
+    },
+    {
+      "id": "0122104EXP",
+      "name": "Set anticadere par Medavita - fiole anticadere + ulei nutritiv pentru par",
+      "slug": "set-anticadere-par-medavita-fiole-anticadere-ulei-nutritiv-pentru-par",
+      "price": 609,
+      "inStock": true
+    },
+    {
+      "id": "301095",
+      "name": "SOLARICH -",
+      "slug": "solarich-",
+      "price": 450,
+      "inStock": true
+    },
+    {
+      "id": "2331",
+      "name": "Spray Antirupere Leave-in - Prodige - 150ml — 150 ml",
+      "slug": "spray-antirupere-leave-in-prodige-150ml-150-ml",
+      "price": 281,
+      "inStock": true
+    },
+    {
+      "id": "3127",
+      "name": "Spray cu efect de stralucire - Idol - 150ml",
+      "slug": "spray-cu-efect-de-stralucire-idol-150ml",
+      "price": 153,
+      "inStock": true
+    },
+    {
+      "id": "2350",
+      "name": "Spray cu ph acid pentru inchiderea cuticulei si fixarea culorii -150 ml",
+      "slug": "spray-cu-ph-acid-pentru-inchiderea-cuticulei-si-fixarea-culorii-150-ml",
+      "price": 143,
+      "inStock": true
+    },
+    {
+      "id": "3159",
+      "name": "Spray de volum cu fixare medie - 150ml - Medavita",
+      "slug": "spray-de-volum-cu-fixare-medie-150ml-medavita",
+      "price": 153,
+      "inStock": true
+    },
+    {
+      "id": "2382",
+      "name": "Spray fara clatire antirupere, cu acid hialuronic si ceramide - Blondie - 150ml",
+      "slug": "spray-fara-clatire-antirupere-cu-acid-hialuronic-si-ceramide-blondie-150ml",
+      "price": 194,
+      "inStock": true
+    },
+    {
+      "id": "2501",
+      "name": "Spray Protectie Solara pt Corp - SPF 50 - 200ml - SOLARICH",
+      "slug": "spray-protectie-solara-pt-corp-spf-50-200ml-solarich",
+      "price": 209,
+      "inStock": true
+    },
+    {
+      "id": "2500",
+      "name": "Spray Protectie Solara pt Corp SPF 30 - 200ML - SOLARICH",
+      "slug": "spray-protectie-solara-pt-corp-spf-30-200ml-solarich",
+      "price": 209,
+      "inStock": true
+    },
+    {
+      "id": "3128",
+      "name": "Spray pt luciu, fara gaz si fixare extra-usoara - Idol - 150ml",
+      "slug": "spray-pt-luciu-fara-gaz-si-fixare-extra-usoara-idol-150ml",
+      "price": 153,
+      "inStock": true
+    },
+    {
+      "id": "2417",
+      "name": "Spray Reconstructie cu Aminoacizi- Microemulsie Leave-in 150ml - Betarefibre",
+      "slug": "spray-reconstructie-cu-aminoacizi-microemulsie-leave-in-150ml-betarefibre",
+      "price": 132,
+      "inStock": true
+    },
+    {
+      "id": "3125",
+      "name": "Spray sigilare cuticule cu fixare extra-usoara Idol 150ml",
+      "slug": "spray-sigilare-cuticule-cu-fixare-extra-usoara-idol-150ml",
+      "price": 153,
+      "inStock": true
+    },
+    {
+      "id": "2248",
+      "name": "Spray Stralucire - Delicate Glossy Hair Spray - 150ml - Medavita",
+      "slug": "spray-stralucire-delicate-glossy-hair-spray-150ml-medavita",
+      "price": 130,
+      "inStock": true
+    },
+    {
+      "id": "1111",
+      "name": "Spray tratament anticadere par barbati Medavita, stimuleaza cresterea parului, cu rozmarin, aloe, turmeric, ghimbir, 100 ml",
+      "slug": "spray-tratament-anticadere-par-barbati-medavita-stimuleaza-cresterea-parului-cu-rozmarin-aloe-turmeric-ghimbir-100-ml",
+      "price": 418,
+      "inStock": true
+    },
+    {
+      "id": "2440",
+      "name": "Spuma cu keratina antifrizz - KERATIN MIRACLE - 200ml",
+      "slug": "spuma-cu-keratina-antifrizz-keratin-miracle-200ml",
+      "price": 202,
+      "inStock": true
+    },
+    {
+      "id": "3170",
+      "name": "Spuma Definire si Fixare a Buclelor - Curl Control Hair Mousse - 200ml",
+      "slug": "spuma-definire-si-fixare-a-buclelor-curl-control-hair-mousse-200ml",
+      "price": 179,
+      "inStock": true
+    },
+    {
+      "id": "2393",
+      "name": "Spuma Nuantatoare cu Pigment Cald, cu Acid Hialuronic, Colagen, Ceramide - 300ml",
+      "slug": "spuma-nuantatoare-cu-pigment-cald-cu-acid-hialuronic-colagen-ceramide-300ml",
+      "price": 192,
+      "inStock": true
+    },
+    {
+      "id": "2387",
+      "name": "Spuma Tratament cu Pigment Rece si Acid Hialuronic - 300ml",
+      "slug": "spuma-tratament-cu-pigment-rece-si-acid-hialuronic-300ml",
+      "price": 192,
+      "inStock": true
+    },
+    {
+      "id": "01107",
+      "name": "Tratament Anticadere - Spray - 100ml - Medavita",
+      "slug": "tratament-anticadere-spray-100ml-medavita",
+      "price": 418,
+      "inStock": false
+    },
+    {
+      "id": "301082",
+      "name": "Tratament pentru ingrijirea culorii - Luxviva Color Care - Cadou Craciun - Medavita",
+      "slug": "tratament-pentru-ingrijirea-culorii-luxviva-color-care-cadou-craciun-medavita",
+      "price": 362,
+      "inStock": true
+    },
+    {
+      "id": "301083",
+      "name": "Tratament Regenerant Prodige - Cadou Craciun - Medavita",
+      "slug": "tratament-regenerant-prodige-cadou-craciun-medavita",
+      "price": 362,
+      "inStock": true
+    },
+    {
+      "id": "301081",
+      "name": "Tratament Stralucire si Iluminare - Huile d`Etoile - Cadou Craciun - Medavita",
+      "slug": "tratament-stralucire-si-iluminare-huile-detoile-cadou-craciun-medavita",
+      "price": 362,
+      "inStock": true
+    },
+    {
+      "id": "3133",
+      "name": "Ulei antifrizz, anti-incretire - 50ml",
+      "slug": "ulei-antifrizz-anti-incretire-50ml",
+      "price": 173,
+      "inStock": false
+    },
+    {
+      "id": "4202",
+      "name": "Ulei de barba Idol Man- 50ml",
+      "slug": "ulei-de-barba-idol-man-50ml",
+      "price": 120,
+      "inStock": true
+    },
+    {
+      "id": "2456",
+      "name": "Ulei pentru Hidratare si Stralucire - Nutrisubstance - 50ml",
+      "slug": "ulei-pentru-hidratare-si-stralucire-nutrisubstance-50ml",
+      "price": 191,
+      "inStock": true
+    },
+    {
+      "id": "2423",
+      "name": "Ulei pentru Par si Corp pentru vara - SPF15 - 150ml - Solarich",
+      "slug": "ulei-pentru-par-si-corp-pentru-vara-spf15-150ml-solarich",
+      "price": 178,
+      "inStock": true
+    },
+    {
+      "id": "2309",
+      "name": "Ulei revelator de stralucire Huile d'Étoile — 15 ml",
+      "slug": "ulei-revelator-de-stralucire-huile-detoile-15-ml",
+      "price": 60,
+      "inStock": true
+    },
+    {
+      "id": "2289",
+      "name": "Ulei Stralucire - 50ml",
+      "slug": "ulei-stralucire-50ml",
+      "price": 151,
+      "inStock": true
+    }
+  ],
+  "other": [
+    {
+      "id": "1147",
+      "name": "Balsam Cationic pentru lungimi foarte uscate si frizate -150ml",
+      "slug": "balsam-cationic-pentru-lungimi-foarte-uscate-si-frizate-150ml",
+      "price": 137,
+      "inStock": true
+    },
+    {
+      "id": "C692",
+      "name": "CONGRES DE TRICOLOGIE / PROBLEMELE SCALPULUI 29-30 IANUARIE 2024 IASI",
+      "slug": "congres-de-tricologie-_-problemele-scalpului-29-30-ianuarie-2024-iasi",
+      "price": 1060,
+      "inStock": false
+    },
+    {
+      "id": "C783",
+      "name": "CONGRES TRICOLOGIE TIMISOARA 9-10 IUNIE 2024",
+      "slug": "congres-tricologie-timisoara-9-10-iunie-2024",
+      "price": 1590,
+      "inStock": false
+    },
+    {
+      "id": "2407",
+      "name": "Gel Igienizant pentru Maini - fara clatire — 100 ml",
+      "slug": "gel-igienizant-pentru-maini-fara-clatire-100-ml",
+      "price": 64,
+      "inStock": true
+    },
+    {
+      "id": "2409",
+      "name": "Gel Igienizant pentru Maini - fara clatire — 500 ml",
+      "slug": "gel-igienizant-pentru-maini-fara-clatire-500-ml",
+      "price": 176,
+      "inStock": true
+    },
+    {
+      "id": "3112",
+      "name": "Spuma de par cu fixare puternica Idol 200ml - NU ACTIVA",
+      "slug": "spuma-de-par-cu-fixare-puternica-idol-200ml-nu-activa",
+      "price": 161,
+      "inStock": true
+    },
+    {
+      "id": "3111",
+      "name": "Spuma de par cu fixare usoara Idol 200ml",
+      "slug": "spuma-de-par-cu-fixare-usoara-idol-200ml",
+      "price": 161,
+      "inStock": true
+    }
+  ],
+  "scalp": [
+    {
+      "id": "301078",
+      "name": "Cadou SCALP ACTIVE - Medavita",
+      "slug": "cadou-scalp-active-medavita",
+      "price": 297,
+      "inStock": false
+    },
+    {
+      "id": "1199",
+      "name": "Elisier - Ser fortifiant cu efect regenerator - 50ml",
+      "slug": "elisier-ser-fortifiant-cu-efect-regenerator-50ml",
+      "price": 260,
+      "inStock": true
+    },
+    {
+      "id": "1171",
+      "name": "Masca pentru Detoxifiere - Revitalizanta - 150ml",
+      "slug": "masca-pentru-detoxifiere-revitalizanta-150ml",
+      "price": 137,
+      "inStock": true
+    },
+    {
+      "id": "40526",
+      "name": "Perie pentru Masaj Scalp - material Silicon",
+      "slug": "perie-pentru-masaj-scalp-material-silicon",
+      "price": 45,
+      "inStock": true
+    },
+    {
+      "id": "1169",
+      "name": "Sampon pt Detoxifiere si Revitalizare - Oxygen Detox — 250 ml",
+      "slug": "sampon-pt-detoxifiere-si-revitalizare-oxygen-detox-250-ml",
+      "price": 114,
+      "inStock": true
+    },
+    {
+      "id": "01169-X",
+      "name": "Sampon pt Detoxifiere si Revitalizare - Oxygen Detox — 55 ml",
+      "slug": "sampon-pt-detoxifiere-si-revitalizare-oxygen-detox-55-ml",
+      "price": 50,
+      "inStock": false
+    }
+  ]
+}

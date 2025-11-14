@@ -1,0 +1,73 @@
+{
+  "totalCategories": 102,
+  "topLevelCategories": 17,
+  "categoriesByLevel": {
+    "0": 17,
+    "1": 33,
+    "2": 26,
+    "3": 4,
+    "4": 22
+  },
+  "topCategories": [
+    {
+      "name": "Branduri Premium",
+      "slug": "branduri-premium",
+      "count": 759,
+      "level": 0
+    },
+    {
+      "name": "BRANDURI PRODUSE PENTRU PĂR",
+      "slug": "branduri-produse-pentru-par",
+      "count": 610,
+      "level": 1
+    },
+    {
+      "name": "MEDAVITA",
+      "slug": "medavita",
+      "count": 461,
+      "level": 2
+    },
+    {
+      "name": "Produse Ingrijire Par",
+      "slug": "produse-ingrijire-par",
+      "count": 392,
+      "level": 0
+    },
+    {
+      "name": "Tratamente Lungimi",
+      "slug": "tratamente-lungimi",
+      "count": 277,
+      "level": 0
+    },
+    {
+      "name": "Lungimi",
+      "slug": "lungimi",
+      "count": 187,
+      "level": 3
+    },
+    {
+      "name": "Tratamente Scalp",
+      "slug": "tratamente-scalp",
+      "count": 117,
+      "level": 0
+    },
+    {
+      "name": "Sampon",
+      "slug": "sampon",
+      "count": 97,
+      "level": 1
+    },
+    {
+      "name": "Masca de par",
+      "slug": "masca-de-par",
+      "count": 93,
+      "level": 1
+    },
+    {
+      "name": "Styling& Finish",
+      "slug": "styling-finish",
+      "count": 71,
+      "level": 3
+    }
+  ]
+}

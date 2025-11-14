@@ -1,0 +1,643 @@
+import React, { useState, useMemo, useEffect } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
+import { Search, Filter, Grid, List, Heart, ShoppingCart, Star } from 'lucide-react';
+import { useRealProducts } from '../hooks/useRealProducts';
+import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
+import { productLoader } from '../utils/productLoader';
+import CategoryDrawer from '../components/shop/CategoryDrawer';
+import ActiveFilters from '../components/shop/ActiveFilters';
+import CategoryBreadcrumb from '../components/shop/CategoryBreadcrumb';
+import PriceRangeSlider from '../components/shop/PriceRangeSlider';
+import Pagination from '../components/shop/Pagination';
+import SEO from '../components/common/SEO';
+import LoadingSpinner from '../components/common/LoadingSpinner';
+
+const ShopPage = () => {
+  const { addToCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
+  const { products, loading, error } = useRealProducts();
+  const [searchParams, setSearchParams] = useSearchParams();
+  
+  // Category system state
+  const [categoryTree, setCategoryTree] = useState(null);
+  const [isCategoryDrawerOpen, setIsCategoryDrawerOpen] = useState(false);
+  const [breadcrumbPath, setBreadcrumbPath] = useState([]);
+  
+  // Calculate dynamic price range based on real products
+  const priceStats = useMemo(() => {
+    if (!products || products.length === 0) return { min: 0, max: 500 };
+    const prices = products.map(p => p.price || 0).filter(price => price > 0);
+    return {
+      min: Math.min(...prices),
+      max: Math.max(...prices)
+    };
+  }, [products]);
+  
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedBrands, setSelectedBrands] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [activeCategory, setActiveCategory] = useState(null); // Single active category
+  const [priceRange, setPriceRange] = useState([priceStats.min, priceStats.max]);
+  const [minRating, setMinRating] = useState(0);
+  const [showInStockOnly, setShowInStockOnly] = useState(false);
+  const [sortBy, setSortBy] = useState('name');
+  const [viewMode, setViewMode] = useState('grid');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(12);
+
+  // Load category tree on mount
+  useEffect(() => {
+    productLoader.loadCategoryTree().then(setCategoryTree);
+  }, []);
+
+  // Sync category filter with URL parameters
+  useEffect(() => {
+    const categoryParam = searchParams.get('category');
+    setActiveCategory(categoryParam || null);
+  }, [searchParams]);
+
+  // Update breadcrumb when category filter changes
+  useEffect(() => {
+    if (activeCategory && categoryTree) {
+      productLoader.getCategoryPath(activeCategory).then(setBreadcrumbPath);
+    } else {
+      setBreadcrumbPath([]);
+    }
+  }, [activeCategory, categoryTree]);
+
+  // Handle category filter change (single selection)
+  const handleCategoryFilterChange = (categorySlug) => {
+    setActiveCategory(categorySlug);
+    if (categorySlug) {
+      setSearchParams({ category: categorySlug });
+    } else {
+      setSearchParams({});
+    }
+  };
+
+  // Get category name for active filter display
+  const activeCategoryFilter = useMemo(() => {
+    if (!categoryTree || !activeCategory) return null;
+    
+    const findCategory = (tree, targetSlug) => {
+      for (const category of Object.values(tree)) {
+        if (category.slug === targetSlug) {
+          return { slug: category.slug, name: category.name };
+        }
+        if (Object.keys(category.children).length > 0) {
+          const found = findCategory(category.children, targetSlug);
+          if (found) return found;
+        }
+      }
+      return null;
+    };
+    
+    return findCategory(categoryTree, activeCategory);
+  }, [activeCategory, categoryTree]);
+
+  // Filter and sort products
+  const filteredProducts = useMemo(() => {
+    if (!products || products.length === 0) return [];
+    
+    let filtered = products.filter(product => {
+      const matchesSearch = product.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           product.brand?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           product.description?.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      // For brands, check if selected brands match product brand
+      const matchesBrand = selectedBrands.length === 0 ||
+                          selectedBrands.includes(product.brand?.name) ||
+                          selectedBrands.includes(product.brand?.id);
+      
+      // New hierarchical category filtering (single selection)
+      const matchesHierarchicalCategory = !activeCategory ||
+        (product.categoryPaths && product.categoryPaths.some(path =>
+          path.levels.some(level => {
+            const levelSlug = level.toLowerCase()
+              .normalize('NFD')
+              .replace(/[\u0300-\u036f]/g, '')
+              .replace(/[^\w\s-]/g, '')
+              .replace(/\s+/g, '-')
+              .replace(/-+/g, '-')
+              .trim();
+            return levelSlug === activeCategory;
+          })
+        ));
+      
+      // Legacy category filtering (for backward compatibility)
+      const matchesCategory = selectedCategories.length === 0 ||
+                             selectedCategories.includes(product.category) ||
+                             selectedCategories.includes(product.subcategory);
+      
+      const matchesPrice = product.price >= priceRange[0] && product.price <= priceRange[1];
+      const matchesRating = (product.rating || 0) >= minRating;
+      const matchesStock = !showInStockOnly || product.inStock;
+        
+      return matchesSearch && matchesBrand && matchesHierarchicalCategory && matchesCategory && matchesPrice && matchesRating && matchesStock;
+    });
+
+    // Debug first few products
+    if (filtered.length > 0 && filtered[0].images) {
+      console.log('Sample product images:', {
+        name: filtered[0].name,
+        images: filtered[0].images,
+        localImages: filtered[0].localImages
+      });
+    }
+
+    // Sort
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case 'price-low':
+          return (a.price || 0) - (b.price || 0);
+        case 'price-high':
+          return (b.price || 0) - (a.price || 0);
+        case 'rating':
+          return (b.rating || 0) - (a.rating || 0);
+        case 'name':
+        default:
+          return (a.name || '').localeCompare(b.name || '');
+      }
+    });
+
+    return filtered;
+  }, [products, searchTerm, selectedBrands, selectedCategories, activeCategory, priceRange, minRating, showInStockOnly, sortBy]);
+
+  // Pagination
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedProducts = filteredProducts.slice(startIndex, startIndex + itemsPerPage);
+
+  // Reset to page 1 when filters change
+  useMemo(() => {
+    setCurrentPage(1);
+  }, [searchTerm, selectedBrands, selectedCategories, activeCategory, priceRange, minRating, showInStockOnly]);
+
+  const handleAddToCart = (e, product) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addToCart(product);
+  };
+
+  const handleToggleWishlist = (e, product) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleWishlist(product);
+  };
+
+  // Show loading state
+  if (loading) {
+    return (
+      <>
+        <SEO
+          title="Shop - Loading... | BeautyArena"
+          description="Browse our collection of premium beauty products from top brands."
+          keywords="shop beauty products, buy cosmetics online, makeup shop, skincare products, haircare products, beauty brands"
+        />
+        <div className="min-h-screen bg-gray-50 pt-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="text-center">
+              <LoadingSpinner />
+              <p className="mt-4 text-gray-600">Se încarcă produsele...</p>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <>
+        <SEO
+          title="Shop - Error | BeautyArena"
+          description="Browse our collection of premium beauty products from top brands."
+          keywords="shop beauty products, buy cosmetics online, makeup shop, skincare products, haircare products, beauty brands"
+        />
+        <div className="min-h-screen bg-gray-50 pt-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="text-center">
+              <div className="bg-red-50 border border-red-200 rounded-lg p-8">
+                <h2 className="text-xl font-semibold text-red-800 mb-2">Eroare la încărcarea produselor</h2>
+                <p className="text-red-600 mb-4">{error}</p>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="btn-primary"
+                >
+                  Reîncarcă pagina
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <SEO
+        title="Shop - Premium Beauty Products | BeautyArena"
+        description="Browse our collection of 173+ premium beauty products from top brands. Filter by brand, category, price, and rating. Free shipping on orders over 200 lei."
+        keywords="shop beauty products, buy cosmetics online, makeup shop, skincare products, haircare products, beauty brands"
+      />
+      <div className="min-h-screen bg-gray-50 pt-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Page Header */}
+          <div className="mb-8">
+            <h1 className="text-4xl font-elegant font-bold text-gray-900 mb-4">
+              Magazin produse
+            </h1>
+            <p className="text-lg text-gray-600">
+              Descoperă {filteredProducts.length} produse de frumusețe premium
+            </p>
+            
+            {/* Category Breadcrumb */}
+            {breadcrumbPath.length > 0 && (
+              <div className="mt-4">
+                <CategoryBreadcrumb
+                  path={breadcrumbPath}
+                  onNavigate={(slug) => {
+                    handleCategoryFilterChange(slug);
+                  }}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Active Category Filter */}
+          {activeCategoryFilter && (
+            <ActiveFilters
+              filters={[activeCategoryFilter]}
+              onRemove={() => handleCategoryFilterChange(null)}
+              onClearAll={() => handleCategoryFilterChange(null)}
+            />
+          )}
+
+          {/* Search and Filters Bar */}
+          <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
+            <div className="flex flex-col lg:flex-row gap-4">
+              {/* Category Button - Desktop */}
+              <button
+                onClick={() => setIsCategoryDrawerOpen(true)}
+                className="px-4 py-3 border-2 border-beauty-pink text-beauty-pink rounded-lg hover:bg-beauty-pink hover:text-gray-900 transition-all font-medium flex items-center justify-center gap-2"
+              >
+                <Filter className="w-5 h-5" />
+                <span>Categorii</span>
+                {activeCategory && (
+                  <span className="bg-beauty-pink text-white px-2 py-0.5 rounded-full text-xs">
+                    1
+                  </span>
+                )}
+              </button>
+
+              {/* Search */}
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <input
+                  type="text"
+                  placeholder="Caută produse sau branduri..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-beauty-pink transition-colors"
+                />
+              </div>
+
+              {/* Sort */}
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-beauty-pink"
+              >
+                <option value="name">Sortare după nume</option>
+                <option value="price-low">Preț crescător</option>
+                <option value="price-high">Preț descrescător</option>
+                <option value="rating">Cele mai apreciate</option>
+              </select>
+
+              {/* View Mode */}
+              <div className="flex border border-gray-200 rounded-lg overflow-hidden">
+                <button
+                  onClick={() => setViewMode('grid')}
+                  className={`p-3 ${viewMode === 'grid' ? 'bg-beauty-pink text-white' : 'text-gray-600'} transition-colors`}
+                >
+                  <Grid className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={() => setViewMode('list')}
+                  className={`p-3 ${viewMode === 'list' ? 'bg-beauty-pink text-white' : 'text-gray-600'} transition-colors`}
+                >
+                  <List className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex gap-6">
+            {/* Mobile Category Filter Button */}
+            <button
+              onClick={() => setIsCategoryDrawerOpen(true)}
+              className="lg:hidden fixed bottom-20 right-4 z-30 bg-beauty-pink text-white p-4 rounded-full shadow-lg hover:bg-beauty-pink-dark transition-all hover:scale-110"
+              aria-label="Open category filters"
+            >
+              <Filter className="w-6 h-6" />
+            </button>
+
+            {/* Category Drawer */}
+            <CategoryDrawer
+              isOpen={isCategoryDrawerOpen}
+              onClose={() => setIsCategoryDrawerOpen(false)}
+              categoryTree={categoryTree}
+              activeFilter={activeCategory}
+              onFilterChange={handleCategoryFilterChange}
+            />
+
+            {/* Filters Sidebar */}
+            <aside className="hidden lg:block w-64 flex-shrink-0">
+              <div className="bg-white rounded-lg shadow-sm p-6 sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto space-y-6">
+                <h3 className="text-lg font-semibold flex items-center">
+                  <Filter className="w-5 h-5 mr-2" />
+                  Filtre
+                </h3>
+
+                {/* Brand Filter */}
+                <div className="pb-6 border-b border-gray-200">
+                  <h4 className="font-medium mb-3">Branduri</h4>
+                  <div className="space-y-2 max-h-48 overflow-y-auto">
+                    {Array.from(new Set(products.map(p => p.brand?.name).filter(Boolean))).map(brandName => (
+                      <label key={brandName} className="flex items-center cursor-pointer hover:bg-gray-50 p-1 rounded transition-colors">
+                        <input
+                          type="checkbox"
+                          checked={selectedBrands.includes(brandName)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedBrands([...selectedBrands, brandName]);
+                            } else {
+                              setSelectedBrands(selectedBrands.filter(name => name !== brandName));
+                            }
+                          }}
+                          className="rounded text-beauty-pink focus:ring-beauty-pink"
+                        />
+                        <span className="ml-2 text-sm">{brandName}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Category Filter */}
+                <div className="pb-6 border-b border-gray-200">
+                  <h4 className="font-medium mb-3">Categorii</h4>
+                  <div className="space-y-2">
+                    {Array.from(new Set(products.map(p => p.category).filter(Boolean))).map(category => (
+                      <label key={category} className="flex items-center cursor-pointer hover:bg-gray-50 p-1 rounded transition-colors">
+                        <input
+                          type="checkbox"
+                          checked={selectedCategories.includes(category)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedCategories([...selectedCategories, category]);
+                            } else {
+                              setSelectedCategories(selectedCategories.filter(cat => cat !== category));
+                            }
+                          }}
+                          className="rounded text-beauty-pink focus:ring-beauty-pink"
+                        />
+                        <span className="ml-2 text-sm">{category.charAt(0).toUpperCase() + category.slice(1)}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Price Range Filter */}
+                <div className="pb-6 border-b border-gray-200">
+                  <h4 className="font-medium mb-3">Interval preț</h4>
+                  <PriceRangeSlider
+                    min={priceStats.min}
+                    max={priceStats.max}
+                    value={priceRange}
+                    onChange={setPriceRange}
+                  />
+                </div>
+
+                {/* Rating Filter */}
+                <div className="pb-6 border-b border-gray-200">
+                  <h4 className="font-medium mb-3">Rating minim</h4>
+                  <div className="space-y-2">
+                    {[4, 3, 2, 1, 0].map(rating => (
+                      <label key={rating} className="flex items-center cursor-pointer hover:bg-gray-50 p-1 rounded transition-colors">
+                        <input
+                          type="radio"
+                          name="rating"
+                          checked={minRating === rating}
+                          onChange={() => setMinRating(rating)}
+                          className="text-beauty-pink focus:ring-beauty-pink"
+                        />
+                        <div className="ml-2 flex items-center gap-1">
+                          {rating > 0 ? (
+                            <>
+                              <Star className="w-4 h-4 text-beauty-peach fill-current" />
+                              <span className="text-sm">{rating}+ stele</span>
+                            </>
+                          ) : (
+                            <span className="text-sm">Toate produsele</span>
+                          )}
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Stock Filter */}
+                <div className="pb-6 border-b border-gray-200">
+                  <label className="flex items-center cursor-pointer hover:bg-gray-50 p-1 rounded transition-colors">
+                    <input
+                      type="checkbox"
+                      checked={showInStockOnly}
+                      onChange={(e) => setShowInStockOnly(e.target.checked)}
+                      className="rounded text-beauty-pink focus:ring-beauty-pink"
+                    />
+                    <span className="ml-2 text-sm font-medium">Doar produse în stoc</span>
+                  </label>
+                </div>
+
+                {/* Clear Filters */}
+                {(selectedBrands.length > 0 || selectedCategories.length > 0 || minRating > 0 || showInStockOnly || priceRange[0] !== priceStats.min || priceRange[1] !== priceStats.max) && (
+                  <button
+                    onClick={() => {
+                      setSelectedBrands([]);
+                      setSelectedCategories([]);
+                      setPriceRange([priceStats.min, priceStats.max]);
+                      setMinRating(0);
+                      setShowInStockOnly(false);
+                    }}
+                    className="w-full text-sm text-beauty-pink hover:text-beauty-pink-dark transition-colors font-medium"
+                  >
+                    Resetează toate filtrele
+                  </button>
+                )}
+              </div>
+            </aside>
+
+            {/* Products Grid */}
+            <div className="flex-1">
+              {filteredProducts.length === 0 ? (
+                <div className="bg-white rounded-lg shadow-sm p-12 text-center">
+                  <p className="text-gray-600 text-lg mb-4">Nu am găsit produse care să corespundă criteriilor tale.</p>
+                  <button
+                    onClick={() => {
+                      setSearchTerm('');
+                      setSelectedBrands([]);
+                      setSelectedCategories([]);
+                      setPriceRange([priceStats.min, priceStats.max]);
+                      setMinRating(0);
+                      setShowInStockOnly(false);
+                    }}
+                    className="btn-secondary"
+                  >
+                    Resetează toate filtrele
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <div className={`grid ${viewMode === 'grid' ? 'grid-cols-2 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'} gap-3 md:gap-6`}>
+                    {paginatedProducts.map(product => (
+                      <Link
+                        key={product.id}
+                        to={`/product/${product.slug}`}
+                        className="card-beauty group block"
+                      >
+                        {/* Product Image - Mobile optimized */}
+                        <div className="relative aspect-square bg-beauty-pink/10 rounded-lg mb-2 md:mb-4 overflow-hidden">
+                          {product.localImages && product.localImages.length > 0 ? (
+                            <img
+                              src={product.localImages[0]}
+                              alt={product.name}
+                              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                              onError={(e) => {
+                                console.error(`Failed to load image: ${product.localImages[0]}`);
+                                e.target.style.display = 'none';
+                                e.target.nextSibling.style.display = 'flex';
+                              }}
+                            />
+                          ) : product.images && product.images.length > 0 && product.images[0] && product.images[0].startsWith('http') ? (
+                            <img
+                              src={product.images[0]}
+                              alt={product.name}
+                              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                              onError={(e) => {
+                                console.error(`Failed to load external image: ${product.images[0]}`);
+                                e.target.style.display = 'none';
+                                e.target.nextSibling.style.display = 'flex';
+                              }}
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                              <div className="text-3xl md:text-6xl text-gray-400">🎨</div>
+                            </div>
+                          )}
+                          
+                          {/* Fallback placeholder */}
+                          <div
+                            className="hidden w-full h-full items-center justify-center bg-gray-100"
+                            style={{ display: 'none' }}
+                          >
+                            <div className="text-3xl md:text-6xl text-gray-400">🎨</div>
+                          </div>
+                          
+                          {/* Badges - Smaller on mobile */}
+                          <div className="absolute top-1 left-1 md:top-2 md:left-2 flex flex-col gap-1">
+                            {product.isNew && (
+                              <span className="bg-beauty-pink text-white text-xs px-1 py-0.5 md:px-2 md:py-1 rounded-full text-xs">Nou</span>
+                            )}
+                            {product.discount > 0 && (
+                              <span className="bg-beauty-pink-dark text-white text-xs px-1 py-0.5 md:px-2 md:py-1 rounded-full text-xs">-{product.discount}%</span>
+                            )}
+                            {!product.inStock && (
+                              <span className="bg-gray-500 text-white text-xs px-1 py-0.5 md:px-2 md:py-1 rounded-full text-xs">Stoc epuizat</span>
+                            )}
+                          </div>
+
+                          {/* Wishlist Button - Smaller on mobile */}
+                          <button
+                            onClick={(e) => handleToggleWishlist(e, product)}
+                            className="absolute top-1 right-1 md:top-2 md:right-2 p-1 md:p-2 bg-white/80 backdrop-blur-sm rounded-full hover:bg-white transition-all duration-300 group/wishlist"
+                          >
+                            <Heart
+                              className={`w-3 h-3 md:w-4 md:h-4 transition-colors ${
+                                isInWishlist(product.id)
+                                  ? 'fill-beauty-pink text-beauty-pink'
+                                  : 'text-gray-600 group-hover/wishlist:text-beauty-pink'
+                              }`}
+                            />
+                          </button>
+                        </div>
+
+                        {/* Product Info - Mobile optimized */}
+                        <div className="space-y-1 md:space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs text-gray-500">{product.brand?.name}</span>
+                            <div className="flex items-center gap-1">
+                              <Star className="w-3 h-3 text-beauty-peach fill-current" />
+                              <span className="text-xs text-gray-600">{product.rating}</span>
+                              <span className="text-xs text-gray-400">({product.reviewCount})</span>
+                            </div>
+                          </div>
+
+                          <h3 className="text-xs md:text-sm font-semibold line-clamp-2 group-hover:text-beauty-pink transition-colors">
+                            {product.name}
+                          </h3>
+
+                          <div className="flex items-center gap-1 md:gap-2">
+                            <span className="text-sm md:text-lg font-bold text-beauty-pink">
+                              {product.price.toFixed(2)} lei
+                            </span>
+                            {product.originalPrice && (
+                              <span className="text-xs md:text-sm text-gray-500 line-through">
+                                {product.originalPrice.toFixed(2)} lei
+                              </span>
+                            )}
+                          </div>
+
+                          <button
+                            onClick={(e) => handleAddToCart(e, product)}
+                            disabled={!product.inStock}
+                            className={`w-full flex items-center justify-center gap-1 md:gap-2 text-xs md:text-sm py-1.5 md:py-2 rounded-lg font-medium transition-all duration-300 ${
+                              product.inStock
+                                ? 'btn-primary hover:scale-105'
+                                : 'btn-disabled'
+                            }`}
+                          >
+                            <ShoppingCart className="w-3 h-3 md:w-4 md:h-4" />
+                            {product.inStock ? 'Adaugă în coș' : 'Stoc epuizat'}
+                          </button>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+
+                  {/* Pagination */}
+                  {totalPages > 1 && (
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      onPageChange={setCurrentPage}
+                      itemsPerPage={itemsPerPage}
+                      onItemsPerPageChange={(value) => {
+                        setItemsPerPage(value);
+                        setCurrentPage(1);
+                      }}
+                    />
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default ShopPage;

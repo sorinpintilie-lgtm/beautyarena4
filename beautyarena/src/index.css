@@ -1,0 +1,194 @@
+@import "tailwindcss";
+
+/* Elegant Peach Rose Theme - Global Styles */
+
+/* Gradient text utility */
+.gradient-text {
+  background: linear-gradient(135deg, #FFAB9D 0%, #FF8B7A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Peach gradient backgrounds */
+.bg-gradient-peach {
+  background: linear-gradient(135deg, #FFAB9D 0%, #FFB6A3 100%);
+}
+
+.bg-gradient-peach-light {
+  background: linear-gradient(135deg, #FFD5CC 0%, #FFAB9D 100%);
+}
+
+.bg-gradient-peach-dark {
+  background: linear-gradient(135deg, #FF8B7A 0%, #FFAB9D 100%);
+}
+
+/* Backdrop blur utility for modern glass effect */
+.backdrop-blur-beauty {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background-color: rgba(255, 255, 255, 0.85);
+}
+
+/* Section padding utility - Reduced gaps */
+.section-padding {
+  padding: 2rem 1rem;
+}
+
+@media (min-width: 768px) {
+  .section-padding {
+    padding: 3rem 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-padding {
+    padding: 4rem 2rem;
+  }
+}
+
+/* Card beauty utility */
+.card-beauty {
+  @apply bg-white rounded-2xl shadow-lg p-6 transition-all duration-300;
+}
+
+.card-beauty:hover {
+  @apply shadow-xl transform -translate-y-1;
+}
+
+/* Button utilities */
+.btn-primary {
+  background: linear-gradient(to right, #FFAB9D, #FF8B7A);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  font-weight: 500;
+  transition: all 0.3s;
+  transform: scale(1);
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+}
+
+.btn-primary:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+}
+
+.btn-secondary {
+  background: #FFD5CC;
+  color: #1f2937;
+  border: 2px solid #FFAB9D;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.btn-secondary:hover {
+  background: #FFAB9D;
+  color: white;
+}
+
+/* Disabled button styles for better visibility */
+.btn-disabled {
+  background: #FFD5CC !important;
+  color: #6B7280 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05) !important;
+}
+
+.btn-disabled:hover {
+  background: #FFD5CC !important;
+  color: #6B7280 !important;
+  transform: none !important;
+}
+
+/* Prevent horizontal overflow */
+body {
+  overflow-x: hidden;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar with peach theme */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #FFAB9D;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #FF8B7A;
+}
+
+/* Focus visible for accessibility */
+*:focus-visible {
+  outline: 2px solid #FFAB9D;
+  outline-offset: 2px;
+}
+
+/* Animation utilities */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Peach glow effect */
+.glow-peach {
+  box-shadow: 0 0 20px rgba(255, 171, 157, 0.3);
+}
+
+.glow-peach:hover {
+  box-shadow: 0 0 30px rgba(255, 171, 157, 0.5);
+}
+
+/* Loading animation with peach colors */
+@keyframes pulse-peach {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse-peach {
+  animation: pulse-peach 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Hide scrollbar utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
