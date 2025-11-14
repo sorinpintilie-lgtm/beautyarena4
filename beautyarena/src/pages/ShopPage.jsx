@@ -35,7 +35,6 @@ const ShopPage = () => {
   }, [products]);
   
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedBrands, setSelectedBrands] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [activeCategory, setActiveCategory] = useState(null); // Single active category
   const [priceRange, setPriceRange] = useState([priceStats.min, priceStats.max]);
@@ -102,14 +101,8 @@ const ShopPage = () => {
     
     let filtered = products.filter(product => {
       const matchesSearch = product.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           product.brand?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            product.description?.toLowerCase().includes(searchTerm.toLowerCase());
-      
-      // For brands, check if selected brands match product brand
-      const matchesBrand = selectedBrands.length === 0 ||
-                          selectedBrands.includes(product.brand?.name) ||
-                          selectedBrands.includes(product.brand?.id);
-      
+       
       // New hierarchical category filtering (single selection)
       const matchesHierarchicalCategory = !activeCategory ||
         (product.categoryPaths && product.categoryPaths.some(path =>
@@ -124,17 +117,17 @@ const ShopPage = () => {
             return levelSlug === activeCategory;
           })
         ));
-      
+       
       // Legacy category filtering (for backward compatibility)
       const matchesCategory = selectedCategories.length === 0 ||
                              selectedCategories.includes(product.category) ||
                              selectedCategories.includes(product.subcategory);
-      
+       
       const matchesPrice = product.price >= priceRange[0] && product.price <= priceRange[1];
       const matchesRating = (product.rating || 0) >= minRating;
       const matchesStock = !showInStockOnly || product.inStock;
-        
-      return matchesSearch && matchesBrand && matchesHierarchicalCategory && matchesCategory && matchesPrice && matchesRating && matchesStock;
+         
+      return matchesSearch && matchesHierarchicalCategory && matchesCategory && matchesPrice && matchesRating && matchesStock;
     });
 
     // Debug first few products
@@ -162,7 +155,7 @@ const ShopPage = () => {
     });
 
     return filtered;
-  }, [products, searchTerm, selectedBrands, selectedCategories, activeCategory, priceRange, minRating, showInStockOnly, sortBy]);
+  }, [products, searchTerm, selectedCategories, activeCategory, priceRange, minRating, showInStockOnly, sortBy]);
 
   // Pagination
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
@@ -172,7 +165,7 @@ const ShopPage = () => {
   // Reset to page 1 when filters change
   useMemo(() => {
     setCurrentPage(1);
-  }, [searchTerm, selectedBrands, selectedCategories, activeCategory, priceRange, minRating, showInStockOnly]);
+  }, [searchTerm, selectedCategories, activeCategory, priceRange, minRating, showInStockOnly]);
 
   const handleAddToCart = (e, product) => {
     e.preventDefault();
@@ -192,8 +185,8 @@ const ShopPage = () => {
       <>
         <SEO
           title="Shop - Loading... | BeautyArena"
-          description="Browse our collection of premium beauty products from top brands."
-          keywords="shop beauty products, buy cosmetics online, makeup shop, skincare products, haircare products, beauty brands"
+          description="Browse our collection of premium beauty products."
+          keywords="shop beauty products, buy cosmetics online, makeup shop, skincare products, haircare products, beauty products"
         />
         <div className="min-h-screen bg-gray-50 pt-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -213,8 +206,8 @@ const ShopPage = () => {
       <>
         <SEO
           title="Shop - Error | BeautyArena"
-          description="Browse our collection of premium beauty products from top brands."
-          keywords="shop beauty products, buy cosmetics online, makeup shop, skincare products, haircare products, beauty brands"
+          description="Browse our collection of premium beauty products."
+          keywords="shop beauty products, buy cosmetics online, makeup shop, skincare products, haircare products, beauty products"
         />
         <div className="min-h-screen bg-gray-50 pt-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -240,8 +233,8 @@ const ShopPage = () => {
     <>
       <SEO
         title="Shop - Premium Beauty Products | BeautyArena"
-        description="Browse our collection of 173+ premium beauty products from top brands. Filter by brand, category, price, and rating. Free shipping on orders over 200 lei."
-        keywords="shop beauty products, buy cosmetics online, makeup shop, skincare products, haircare products, beauty brands"
+        description="Browse our collection of 173+ premium beauty products. Filter by category, price, and rating. Free shipping on orders over 200 lei."
+        keywords="shop beauty products, buy cosmetics online, makeup shop, skincare products, haircare products, beauty products"
       />
       <div className="min-h-screen bg-gray-50 pt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -298,7 +291,7 @@ const ShopPage = () => {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
                   type="text"
-                  placeholder="Caută produse sau branduri..."
+                  placeholder="Caută produse..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-beauty-pink transition-colors"
@@ -361,30 +354,6 @@ const ShopPage = () => {
                   <Filter className="w-5 h-5 mr-2" />
                   Filtre
                 </h3>
-
-                {/* Brand Filter */}
-                <div className="pb-6 border-b border-gray-200">
-                  <h4 className="font-medium mb-3">Branduri</h4>
-                  <div className="space-y-2 max-h-48 overflow-y-auto">
-                    {Array.from(new Set(products.map(p => p.brand?.name).filter(Boolean))).map(brandName => (
-                      <label key={brandName} className="flex items-center cursor-pointer hover:bg-gray-50 p-1 rounded transition-colors">
-                        <input
-                          type="checkbox"
-                          checked={selectedBrands.includes(brandName)}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setSelectedBrands([...selectedBrands, brandName]);
-                            } else {
-                              setSelectedBrands(selectedBrands.filter(name => name !== brandName));
-                            }
-                          }}
-                          className="rounded text-beauty-pink focus:ring-beauty-pink"
-                        />
-                        <span className="ml-2 text-sm">{brandName}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
 
                 {/* Category Filter */}
                 <div className="pb-6 border-b border-gray-200">
@@ -463,10 +432,9 @@ const ShopPage = () => {
                 </div>
 
                 {/* Clear Filters */}
-                {(selectedBrands.length > 0 || selectedCategories.length > 0 || minRating > 0 || showInStockOnly || priceRange[0] !== priceStats.min || priceRange[1] !== priceStats.max) && (
+                {(selectedCategories.length > 0 || minRating > 0 || showInStockOnly || priceRange[0] !== priceStats.min || priceRange[1] !== priceStats.max) && (
                   <button
                     onClick={() => {
-                      setSelectedBrands([]);
                       setSelectedCategories([]);
                       setPriceRange([priceStats.min, priceStats.max]);
                       setMinRating(0);
@@ -488,7 +456,6 @@ const ShopPage = () => {
                   <button
                     onClick={() => {
                       setSearchTerm('');
-                      setSelectedBrands([]);
                       setSelectedCategories([]);
                       setPriceRange([priceStats.min, priceStats.max]);
                       setMinRating(0);
