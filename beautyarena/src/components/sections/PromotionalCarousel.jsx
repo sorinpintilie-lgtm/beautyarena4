@@ -8,7 +8,7 @@ const PromotionalCarousel = () => {
   const promotionalSlides = [
     {
       id: 1,
-      image: '/imaginisite/1.JPG',
+      image: '/imaginisite/beauty-hairstyle-and-people-concept-happy-young-2025-10-09-19-09-23-utc.jpg',
       title: 'REDUCERI DE IARNĂ',
       subtitle: 'Până la 50% reducere',
       description: 'Produse premium pentru îngrijirea frumuseții',
