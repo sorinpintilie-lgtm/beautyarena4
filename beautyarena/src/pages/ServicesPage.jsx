@@ -292,26 +292,31 @@ const ServicesPage = () => {
 
             {/* Category Carousel */}
             <div className="relative mb-12">
-              <div className="flex overflow-x-auto scrollbar-hide gap-4 pb-4 px-2">
+              <div className="flex overflow-x-auto gap-6 pb-4 px-4 snap-x snap-mandatory">
                 {serviceCategories.map((category, index) => (
                   <div
                     key={category.id}
                     onClick={() => setActiveCategoryIndex(index)}
-                    className={`flex-shrink-0 w-48 h-48 rounded-2xl overflow-hidden shadow-lg cursor-pointer transition-all duration-300 ${
+                    className={`flex-shrink-0 w-64 h-64 md:w-72 md:h-72 rounded-3xl overflow-hidden shadow-xl cursor-pointer transition-all duration-300 snap-center ${
                       index === activeCategoryIndex
-                        ? 'ring-4 ring-beauty-pink scale-105'
-                        : 'hover:scale-102'
+                        ? 'ring-4 ring-beauty-pink scale-105 shadow-2xl'
+                        : 'hover:scale-105 hover:shadow-2xl'
                     }`}
                   >
                     <img
                       src={category.image}
                       alt={category.title}
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.src = '/images/envato-labs-image-edit-34.png'; // fallback
+                      }}
                     />
-                    <div className="absolute inset-0 bg-black/40 flex items-end justify-center pb-4">
-                      <h3 className="text-white font-semibold text-center px-2">
-                        {category.title}
-                      </h3>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex items-end">
+                      <div className="p-6 w-full">
+                        <h3 className="text-white font-bold text-lg md:text-xl text-center leading-tight">
+                          {category.title}
+                        </h3>
+                      </div>
                     </div>
                   </div>
                 ))}
