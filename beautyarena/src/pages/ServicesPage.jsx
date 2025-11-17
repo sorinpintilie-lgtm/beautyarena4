@@ -291,12 +291,12 @@ const ServicesPage = () => {
 
             {/* Category Carousel */}
             <div className="relative mb-12">
-              <div className="flex overflow-x-auto gap-6 pb-4 px-4">
+              <div className="flex overflow-x-auto gap-6 pb-4 px-4 snap-x snap-mandatory scrollbar-hide">
                 {serviceCategories.map((category, index) => (
                   <div
                     key={category.id}
                     onClick={() => setActiveCategoryIndex(index)}
-                    className={`flex-shrink-0 w-64 h-48 rounded-2xl overflow-hidden shadow-lg cursor-pointer transition-all duration-300 ${
+                    className={`relative flex-shrink-0 w-64 h-48 rounded-2xl overflow-hidden shadow-lg cursor-pointer transition-all duration-300 snap-center ${
                       index === activeCategoryIndex
                         ? 'ring-4 ring-beauty-pink scale-105'
                         : 'hover:scale-105'
@@ -310,8 +310,8 @@ const ServicesPage = () => {
                         e.target.src = '/images/envato-labs-image-edit-34.png';
                       }}
                     />
-                    <div className="absolute inset-0 bg-black/40 flex items-end justify-center">
-                      <h3 className="text-white font-bold text-center px-4 text-sm md:text-base">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent flex items-end justify-center pb-6">
+                      <h3 className="text-white font-bold text-center px-4 text-base md:text-lg">
                         {category.title}
                       </h3>
                     </div>
