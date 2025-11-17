@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Star, Calendar, ArrowRight, Check, Sparkles, Award } from 'lucide-react';
 import SEO from '../components/common/SEO';
-import InfiniteCarousel from '../components/common/InfiniteCarousel';
 import { useRealProducts } from '../hooks/useRealProducts';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
@@ -292,15 +291,15 @@ const ServicesPage = () => {
 
             {/* Category Carousel */}
             <div className="relative mb-12">
-              <div className="flex overflow-x-auto gap-6 pb-4 px-4 snap-x snap-mandatory">
+              <div className="flex overflow-x-auto gap-6 pb-4 px-4">
                 {serviceCategories.map((category, index) => (
                   <div
                     key={category.id}
                     onClick={() => setActiveCategoryIndex(index)}
-                    className={`flex-shrink-0 w-64 h-64 md:w-72 md:h-72 rounded-3xl overflow-hidden shadow-xl cursor-pointer transition-all duration-300 snap-center ${
+                    className={`flex-shrink-0 w-64 h-48 rounded-2xl overflow-hidden shadow-lg cursor-pointer transition-all duration-300 ${
                       index === activeCategoryIndex
-                        ? 'ring-4 ring-beauty-pink scale-105 shadow-2xl'
-                        : 'hover:scale-105 hover:shadow-2xl'
+                        ? 'ring-4 ring-beauty-pink scale-105'
+                        : 'hover:scale-105'
                     }`}
                   >
                     <img
@@ -308,15 +307,13 @@ const ServicesPage = () => {
                       alt={category.title}
                       className="w-full h-full object-cover"
                       onError={(e) => {
-                        e.target.src = '/images/envato-labs-image-edit-34.png'; // fallback
+                        e.target.src = '/images/envato-labs-image-edit-34.png';
                       }}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex items-end">
-                      <div className="p-6 w-full">
-                        <h3 className="text-white font-bold text-lg md:text-xl text-center leading-tight">
-                          {category.title}
-                        </h3>
-                      </div>
+                    <div className="absolute inset-0 bg-black/40 flex items-end justify-center">
+                      <h3 className="text-white font-bold text-center px-4 text-sm md:text-base">
+                        {category.title}
+                      </h3>
                     </div>
                   </div>
                 ))}
