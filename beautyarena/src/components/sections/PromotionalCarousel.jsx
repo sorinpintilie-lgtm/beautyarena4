@@ -10,7 +10,7 @@ const PromotionalCarousel = () => {
       id: 1,
       image: '/imaginisite/1.JPG',
       title: 'REDUCERI DE IARNĂ',
-      subtitle: 'Până la 50% reduction',
+      subtitle: 'Până la 50% reducere',
       description: 'Produse premium pentru îngrijirea frumuseții',
       buttonText: 'Descoperă Oferte',
       buttonLink: '/shop',
@@ -20,12 +20,12 @@ const PromotionalCarousel = () => {
     {
       id: 2,
       image: '/imaginisite/2.jpg',
-      title: 'TRATAMENTE PREMIUM',
-      subtitle: 'Servicii profesionale',
-      description: 'Servicii de înaltă calitate pentru frumusețea ta',
-      buttonText: 'Rezervă Acum',
+      title: 'EPILARE DEFINITIVĂ',
+      subtitle: 'Elimină părul nedorit permanent',
+      description: 'Tratament laser profesional pentru rezultate durabile',
+      buttonText: 'Rezervă Tratament',
       buttonLink: '/servicii',
-      badge: 'NOU',
+      badge: 'POPULAR',
       badgeColor: 'bg-beauty-pink'
     },
     {

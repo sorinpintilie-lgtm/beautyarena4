@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingCart, Heart, Star, Clock, Calendar, ArrowRight, Scissors, Sparkles, Palette } from 'lucide-react';
+import { ShoppingCart, Heart, Star, Clock, Calendar, ArrowRight, Scissors, Sparkles, Palette, Zap as Laser } from 'lucide-react';
 import { useRealProducts } from '../../hooks/useRealProducts';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
@@ -33,15 +33,15 @@ const ShopAndServicesSection = () => {
     },
     {
       id: 2,
-      icon: Sparkles,
+      icon: Laser,
       iconColor: 'text-beauty-pink',
       iconBg: 'bg-beauty-pink/10',
-      title: 'Îngrijire unghii',
-      description: 'Manichiură și pedichiură profesională, extensii cu gel sau acril și nail art personalizat.',
-      duration: '45-90 min',
-      price: 'De la 60 lei',
-      rating: 4.8,
-      reviews: 189,
+      title: 'Epilare definitivă',
+      description: 'Tratament laser profesional pentru eliminarea permanentă a părului nedorit, rezultate durabile.',
+      duration: '30-60 min',
+      price: 'De la 150 lei',
+      rating: 4.9,
+      reviews: 312,
     },
     {
       id: 3,

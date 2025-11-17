@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clock, Star, ArrowRight, Calendar, Scissors, Sparkles, Palette, Heart, Zap } from 'lucide-react';
+import { Clock, Star, ArrowRight, Calendar, Scissors, Sparkles, Palette, Heart, Zap, Zap as Laser } from 'lucide-react';
 
 const ServicesSection = () => {
   const services = [
@@ -18,6 +18,19 @@ const ServicesSection = () => {
     },
     {
       id: 2,
+      icon: Laser,
+      iconColor: 'text-beauty-pink',
+      iconBg: 'bg-beauty-pink/10',
+      title: 'Epilare definitivă',
+      description: 'Tratament laser profesional pentru eliminarea permanentă a părului nedorit, rezultate durabile și sigure.',
+      duration: '30-60 min',
+      price: 'De la 150 lei',
+      rating: 4.9,
+      reviews: 312,
+      features: ['Tehnologie laser avansată', 'Consultanță gratuită', 'Rezultate permanente']
+    },
+    {
+      id: 3,
       icon: Sparkles,
       iconColor: 'text-beauty-pink',
       iconBg: 'bg-beauty-pink/10',
@@ -30,7 +43,7 @@ const ServicesSection = () => {
       features: ['Manichiură clasică', 'Extensii profesionale', 'Nail art']
     },
     {
-      id: 3,
+      id: 4,
       icon: Star,
       iconColor: 'text-beauty-peach',
       iconBg: 'bg-beauty-peach/10',
@@ -43,7 +56,7 @@ const ServicesSection = () => {
       features: ['Analiză profesională', 'Tratamente personalizate', 'Produse bio']
     },
     {
-      id: 4,
+      id: 5,
       icon: Palette,
       iconColor: 'text-beauty-pink-dark',
       iconBg: 'bg-beauty-pink-dark/10',
@@ -56,7 +69,7 @@ const ServicesSection = () => {
       features: ['Machiaj eveniment', 'Ședințe foto', 'Consultanță personalizată']
     },
     {
-      id: 5,
+      id: 6,
       icon: Heart,
       iconColor: 'text-beauty-pink',
       iconBg: 'bg-beauty-pink/10',
@@ -69,7 +82,7 @@ const ServicesSection = () => {
       features: ['Masaj relaxant', 'Aromaterapie', 'Meditație ghidată']
     },
     {
-      id: 6,
+      id: 7,
       icon: Zap,
       iconColor: 'text-beauty-pink',
       iconBg: 'bg-beauty-pink/10',

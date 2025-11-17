@@ -1,9 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Clock, Star, Calendar, ArrowRight, Check, Sparkles, Award, ShoppingCart, Heart } from 'lucide-react';
+import { Star, Calendar, ArrowRight, Check, Sparkles, Award } from 'lucide-react';
 import SEO from '../components/common/SEO';
 import InfiniteCarousel from '../components/common/InfiniteCarousel';
-import { HairIcon, SkincareIcon, MakeupIcon, NailIcon, WellnessIcon, SpecialIcon } from '../components/icons/CustomServiceIcons';
 import { useRealProducts } from '../hooks/useRealProducts';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
@@ -14,78 +13,177 @@ const ServicesPage = () => {
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
   
-  const services = [
+  const serviceCategories = [
     {
       id: 1,
-      icon: HairIcon,
-      title: 'Coafură profesională',
-      description: 'Servicii complete de coafură de la tuns și vopsit până la styling avansat cu produse premium.',
-      duration: '60-120 min',
-      price: 'De la 80 lei',
-      rating: 4.9,
-      reviews: 234,
-      features: ['Consultanță personalizată', 'Produse premium', 'Styling inclus', 'Tratamente speciale'],
-      color: 'from-beauty-pink-light to-beauty-pink'
+      title: 'COAFURĂ',
+      image: '/imaginisite/hairdresser-brushing-hair-of-attractive-woman-in-b-2024-11-19-16-03-04-utc.jpg',
+      services: [
+        { name: 'Spălat păr', details: 'Kerastase - 48 lei, L\'oreal - 31-36 lei, Wella - 28-37 lei' },
+        { name: 'Uscat păr', details: '25-31 lei' },
+        { name: 'Masaj capilar', details: '32-41 lei' },
+        { name: 'Tuns', details: 'Femei - 37-46 lei, Bărbați - 33-44 lei, Breton - 18-24 lei, Barbă - 21-27 lei' },
+        { name: 'Coafat', details: 'Lung - 56-73 lei, Mediu - 50-65 lei, Scurt - 44-58 lei' },
+        { name: 'Coafat Special (60-75 min)', details: '133-195 lei' },
+        { name: 'Coafat Afro', details: 'F. Lung - 209-306 lei, Lung - 160-238 lei, Mediu - 103-166 lei, Scurt - 94-116 lei, Creponat/Conic - 57-73 lei' },
+        { name: 'Impletitură', details: '29-38 lei' },
+        { name: 'Impletitură Specială', details: '56-71 lei' },
+        { name: 'Coafat Extensii', details: '81-98 lei' },
+        { name: 'Scos extensii Tape-on', details: '272 lei' },
+        { name: 'Manoperă aplicat extensii Tape-on', details: '406-501 lei' },
+        { name: 'Manoperă meșe Clip-on', details: '33-42 lei' },
+        { name: 'Manoperă Balayage', details: 'Lung - 94-116 lei, Mediu - 76-111 lei, Scurt - 61-78 lei' },
+        { name: 'Manoperă vopsit păr', details: 'Lung - 51-69 lei, Mediu - 48-59 lei, Scurt - 45-56 lei' },
+        { name: 'Manoperă vopsit păr bărbat', details: 'Mediu - 43-54 lei, Scurt - 39-48 lei' },
+        { name: 'Pudră (decolorare)', details: 'Wella - 22 lei/cupa, L\'oreal - 30 lei/cupa, Wella Plex Pudră - 30 lei/cupa' },
+        { name: 'Pudră cremă Wella 200g (decolorare)', details: '124 lei/tub' },
+        { name: 'Tub vopsea', details: 'Wella Color Touch - 69 lei, Wella Create Color - 73 lei, Wella Ilumina - 81 lei, Wella Koleston - 73 lei, Wella Shinefinity - 65 lei, L\'oreal Dialight - 65 lei, L\'oreal Inoa - 69 lei, L\'oreal Majirel - 65 lei' },
+        { name: 'Ser reparator', details: '12 lei' },
+        { name: 'Tratament par', details: 'Kerastase Fusio Dose - 91 lei, Kerastase Fusio Scrub - 71 lei, Wella 100% Repair - 63-80 lei, Wella Perfect Hair - 47-62 lei, L\'oreal Masca - 28-31 lei, L\'oreal Absolute Molecular - 85-93 lei' },
+        { name: 'Tratament păr premium', details: 'Kerastase Premiere - 135-144 lei, Kerastase Chronologiste - 90 lei, Kerastase Masca - 71 lei, L\'oreal Metal Detox - 91 lei, Wella Masca - 26-32 lei' }
+      ]
     },
     {
       id: 2,
-      icon: NailIcon,
-      title: 'Îngrijire unghii',
-      description: 'Manichiură și pedichiură profesională, extensii cu gel sau acril și nail art personalizat.',
-      duration: '45-90 min',
-      price: 'De la 60 lei',
-      rating: 4.8,
-      reviews: 189,
-      features: ['Manichiură clasică', 'Extensii profesionale', 'Nail art', 'Tratamente întărire'],
-      color: 'from-beauty-peach to-beauty-pink-light'
+      title: 'COSMETICA',
+      image: '/imaginisite/beautiful-woman-hands-with-fresh-french-manicure-2025-02-12-22-39-13-utc.jpg',
+      services: [
+        { name: 'Make-up profesional', details: '162-217 lei' },
+        { name: 'Aplicat gene cu adeziv', details: '19-24 lei' },
+        { name: 'Scos oja semi-permanenta', details: '23-29 lei' },
+        { name: 'Demontat gel', details: '27-36 lei' },
+        { name: 'Oja clasica', details: '16-20 lei' },
+        { name: 'Oja semi-permanenta', details: '50-66 lei' },
+        { name: 'Oja semi-permanenta cu apex', details: '86 lei' },
+        { name: 'Tratament unghii slabe și deteriorate', details: '19-25 lei' },
+        { name: 'Manichiura clasica', details: '38-49 lei' },
+        { name: 'Manichiura barbați', details: '43-54 lei' },
+        { name: 'Pedichiura clasica', details: 'Femei - 49-68 lei, Barbați - 55-70 lei' },
+        { name: 'Pedichiura dificila', details: '72-82 lei' },
+        { name: 'Protecție cu gel', details: 'Gel pe unghia naturala - 90-112 lei' },
+        { name: 'Constructie gel', details: '133-149 lei' },
+        { name: 'Constructie slim', details: '165-181 lei' },
+        { name: 'Constructie french din gel', details: '29-33 lei' },
+        { name: 'Baby Boomer', details: '29-33 lei' },
+        { name: 'Tips + Gel', details: '112-140 lei' },
+        { name: 'Tips simplu', details: '10-14 lei/unghie' },
+        { name: 'Model french', details: '9-12 lei' },
+        { name: 'Design nivel 1', details: 'Foițe de transfer, punctulețe - 4 lei/unghie' },
+        { name: 'Design nivel 2', details: 'Puncte, linii, design-uri minimaliste - 10 lei/unghie' },
+        { name: 'Design nivel 3', details: 'Pictat pe unghii, design-uri complexe - 17 lei/unghie' },
+        { name: 'Sclipici', details: '3 lei/unghie' },
+        { name: 'Ştrasuri', details: '4 lei/unghie' },
+        { name: 'Intretinere gel', details: '90-112 lei' },
+        { name: 'Intretinere slim', details: '135-151 lei' },
+        { name: 'Intretinere cu schimbarea arhitecturii in slim', details: '165-181 lei' }
+      ]
     },
     {
       id: 3,
-      icon: SkincareIcon,
-      title: 'Îngrijire ten',
-      description: 'Tratamente faciale personalizate, curățare profundă și terapii anti-aging cu tehnologie avansată.',
-      duration: '75-90 min',
-      price: 'De la 120 lei',
-      rating: 4.9,
-      reviews: 156,
-      features: ['Analiză profesională', 'Tratamente personalizate', 'Produse bio', 'Masaj facial'],
-      color: 'from-beauty-pink to-beauty-pink-dark'
+      title: 'EPILARE DEFINITIVĂ',
+      image: '/imaginisite/photo-epilation-close-up-of-hair-removal-procedu-2025-03-14-05-57-47-utc.jpg',
+      services: [
+        { name: 'Epilare definitiva femei - Altesse Nanolaser Trilogy', details: 'S - 64-79 lei (areola, barbie, inghinal partial, interfesier, linie abdomen, mustața, perciuni, pomeți), M - 120-136 lei (antebraț, axila, ceafa, fața integral, gât, inghinal integral, labe picior, lombar, mâini), L - 175-191 lei (abdomen, brațe integral, coapse, dorsali, fese, omoplați, picioare parțial, piept, umeri), XL - 282-312 lei (picioare integral, spate integral)' },
+        { name: 'Epilare definitiva barbați - Altesse Nanolaser Trilogy', details: 'S - 85-95 lei (areola, barbie, inghinal partial, interfesier, linie abdomen, mustața, perciuni, pomeți), M - 169-209 lei (antebraț, axila, ceafa, fața integral, gât, inghinal integral, labe picior, lombar, mâini), L - 252-285 lei (abdomen, brațe integral, coapse, dorsali, fese, omoplați, picioare parțial, piept, umeri), XL - 415-468 lei (picioare integral, spate integral)' }
+      ]
     },
     {
       id: 4,
-      icon: MakeupIcon,
-      title: 'Machiaj profesional',
-      description: 'Machiaj pentru ocazii speciale, ședințe foto și evenimente cu produse de lux.',
-      duration: '45-60 min',
-      price: 'De la 100 lei',
-      rating: 4.7,
-      reviews: 98,
-      features: ['Machiaj eveniment', 'Ședințe foto', 'Consultanță personalizată', 'Produse premium'],
-      color: 'from-beauty-pink-dark to-beauty-pink'
+      title: 'TRATAMENTE FACIALE',
+      image: '/imaginisite/closeup-finger-nail-care-by-manicure-specialist-in-2025-01-10-00-16-57-utc.jpg',
+      services: [
+        { name: 'Anubis Barcelona Adio Acnee', details: '242-270 lei' },
+        { name: 'Anubis Barcelona Booster Frumusete', details: '242-270 lei' },
+        { name: 'Anubis Barcelona Contur Facial Perfect', details: '242-270 lei' },
+        { name: 'Anubis Barcelona Ten de Vedeta', details: '242-270 lei' },
+        { name: 'Mezoterapie Virtuala', details: '108-149 lei' },
+        { name: 'Microdermo-abraziune', details: '108-149 lei' },
+        { name: 'Oxigen Hiperbaric', details: '108-149 lei' },
+        { name: 'Oxygenera Pro', details: '301-344 lei' },
+        { name: 'Hydradermie Jeuness', details: '277 lei' },
+        { name: 'Guinot Skinovage Beautiful Eyes', details: '134 lei' },
+        { name: 'Guinot Skinovage Hydraboost', details: '190 lei' },
+        { name: 'Guinot Skynovage System Care', details: '190 lei' },
+        { name: 'Guinot Soin Age Summum', details: '382 lei' },
+        { name: 'Guinot Soin Eye Lift', details: '277 lei' },
+        { name: 'Guinot Soin Hydradermie Jeun Age Logic', details: '402 lei' },
+        { name: 'Guinot Soin Hydradermie Lift', details: '402 lei' },
+        { name: 'Extracție puncte negre', details: '39-45 lei' }
+      ]
     },
     {
       id: 5,
-      icon: WellnessIcon,
-      title: 'Relaxare și wellness',
-      description: 'Sesiuni de relaxare, masaj facial și corporal pentru revitalizare completă.',
-      duration: '60-90 min',
-      price: 'De la 150 lei',
-      rating: 4.8,
-      reviews: 67,
-      features: ['Masaj relaxant', 'Aromaterapie', 'Meditație ghidată', 'Terapie holistică'],
-      color: 'from-beauty-peach to-beauty-pink'
+      title: 'LAMINAȚII ȘI VOPSIT SPRÂNCENE/GENE',
+      image: '/imaginisite/joyful-woman-experiencing-a-relaxing-hair-wash-bef-2025-03-10-02-10-48-utc.jpg',
+      services: [
+        { name: 'Laminare gene', details: '135-143 lei' },
+        { name: 'Laminare sprancene', details: '181-197 lei' },
+        { name: 'Vopsit gene sau sprancene', details: '22-26 lei' },
+        { name: 'Aplicat gene fir cu fir', details: '177-207 lei' },
+        { name: 'Aplicat gene fir cu fir 2D/3D', details: '202-232 lei' },
+        { name: 'Scos gene false fir cu fir', details: '38-42 lei' }
+      ]
     },
     {
       id: 6,
-      icon: SpecialIcon,
-      title: 'Tratamente speciale',
-      description: 'Servicii exclusive și tratamente personalizate pentru ocazii speciale.',
-      duration: '90-120 min',
-      price: 'De la 200 lei',
-      rating: 5.0,
-      reviews: 45,
-      features: ['Consultație gratuită', 'Tratamente personalizate', 'Follow-up inclus', 'Pachete exclusive'],
-      color: 'from-beauty-pink-light to-beauty-peach'
+      title: 'MICROPIGMENTARE',
+      image: '/imaginisite/portrait-of-beautiful-young-woman-getting-haircut-2025-03-14-16-38-29-utc.jpg',
+      services: [
+        { name: 'Pensat', details: 'Femeie - 30-36 lei, Barbat - 34-40 lei' },
+        { name: 'Micro-pigmentare buze sau sprancene', details: '781-851 lei' },
+        { name: 'Micro-pigmentare buze Make-up', details: '625-763 lei' },
+        { name: 'Retuș micro-pigmentare', details: '292-322 lei' }
+      ]
+    },
+    {
+      id: 7,
+      title: 'MASAJ',
+      image: '/imaginisite/hairdresser-drying-hair-of-young-attractive-woman-2024-11-19-01-02-14-utc.jpg',
+      services: [
+        { name: 'Relaxare', details: '95-131 lei' },
+        { name: 'Anticelulitic', details: '110-138 lei' },
+        { name: 'Relaxare si Anticelulitic', details: '149-207 lei' },
+        { name: 'Bețe de bambus', details: '112-128 lei' },
+        { name: 'Facial', details: '50-56 lei' },
+        { name: 'Facial Dermoled', details: '49 lei' }
+      ]
+    },
+    {
+      id: 8,
+      title: 'EPILARE CEARĂ',
+      image: '/imaginisite/happy-woman-dyeing-her-hair-at-the-hairdresser-2025-10-16-23-42-15-utc.jpg',
+      services: [
+        { name: 'Epilare ceara - abdomen', details: 'Femeie - 17-21 lei, Barbat - 28-34 lei' },
+        { name: 'Epilare ceara - axila', details: 'Femeie - 22-26 lei, Barbat - 24-30 lei' },
+        { name: 'Epilare ceara - barbie', details: '17-21 lei' },
+        { name: 'Epilare ceara - brate', details: 'Femeie - 32-36 lei, Barbat - 32-38 lei' },
+        { name: 'Epilare ceara - fața', details: 'Femeie - 27-33 lei, Barbat - 37-43 lei' },
+        { name: 'Epilare ceara - fese', details: '22-26 lei' },
+        { name: 'Epilare ceara - inghinal parțial', details: '29-33 lei' },
+        { name: 'Epilare ceara - inghinal total', details: '40-46 lei' },
+        { name: 'Epilare ceara - inghinal barbați', details: '66-80 lei' },
+        { name: 'Epilare ceara - interfesieri', details: '17-21 lei' },
+        { name: 'Epilare ceara - linie abdomen', details: '10-14 lei' },
+        { name: 'Epilare ceara - picioare partial', details: '33-37 lei' },
+        { name: 'Epilare ceara - picioare integral', details: 'Femeie - 40-46 lei, Barbat - 51-57 lei' },
+        { name: 'Epilare ceara - mustata', details: '16-20 lei' },
+        { name: 'Epilare ceara - nari', details: '9-12 lei' },
+        { name: 'Epilare ceara - perciuni', details: '9-12 lei' },
+        { name: 'Epilare ceara - piept barbati', details: '33-37 lei' },
+        { name: 'Epilare ceara - pomeți', details: '12-15 lei' },
+        { name: 'Epilare ceara - spate', details: 'Femeie - 22-26 lei, Barbat - 39-45 lei' },
+        { name: 'Epilare ceara - urechi', details: '11-15 lei' },
+        { name: 'Epilare ceara - zona lombara', details: '12-16 lei' }
+      ]
+    },
+    {
+      id: 9,
+      title: 'TRATAMENTE CORPORALE - SCULPTOR',
+      image: '/imaginisite/young-woman-undergoing-laser-epilation-for-smooth-2025-05-02-06-04-28-utc.jpg',
+      services: [
+        { name: 'Pachet Body Supreme', details: '822 lei' },
+        { name: 'Himfu + CryoRH + Drenaj Limfatic', details: 'CryoRH - 361 lei, Fermitate/elasticitate Himfu - 411 lei, Slabire localizata - 361 lei, Fermitate/elasticitate - 361 lei' }
+      ]
     }
   ];
 
@@ -116,197 +214,45 @@ const ServicesPage = () => {
     }
   ];
 
-  // Get top 6 products for the carousel
-  const topProducts = React.useMemo(() => {
-    if (!products || products.length === 0) return [];
-    return products.slice(0, 6);
-  }, [products]);
 
-  const getProductImage = (product) => {
-    if (product.localImages && product.localImages.length > 0) {
-      return product.localImages[0];
-    }
-    if (product.images && product.images.length > 0) {
-      return product.images[0];
-    }
-    return null;
-  };
 
-  const renderProductCard = (product) => {
-    const productImage = getProductImage(product);
-    
+  const renderServiceCategory = (category) => {
     return (
-      <div className="group h-full">
-        <Link
-          to={`/product/${product.slug}`}
-          className="block bg-white border-2 border-gray-100 rounded-3xl p-6 hover:border-beauty-pink hover:shadow-2xl transition-all duration-500 h-full flex flex-col relative overflow-hidden"
-        >
-          {/* Product Image */}
-          <div className="relative aspect-square bg-beauty-pink/10 rounded-2xl mb-4 overflow-hidden flex-shrink-0">
-            {productImage ? (
-              <img
-                src={productImage}
-                alt={product.name}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                  e.target.nextSibling.style.display = 'flex';
-                }}
-              />
-            ) : null}
-            
-            {/* Fallback placeholder */}
-            <div className={`${productImage ? 'hidden' : 'flex'} items-center justify-center w-full h-full`}>
-              <div className="text-4xl text-gray-400">🎨</div>
-            </div>
-            
-            {/* Wishlist Button */}
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                toggleWishlist(product);
-              }}
-              className="absolute top-3 right-3 p-2 bg-white/80 backdrop-blur-sm rounded-full hover:bg-white transition-all duration-300 group/wishlist"
-            >
-              <Heart
-                className={`w-4 h-4 transition-colors ${
-                  isInWishlist(product.id)
-                    ? 'fill-beauty-pink text-beauty-pink'
-                    : 'text-gray-600 group-hover/wishlist:text-beauty-pink'
-                }`}
-              />
-            </button>
-
-            {/* Badges */}
-            <div className="absolute top-3 left-3 flex flex-col gap-1">
-              {product.isNew && (
-                <span className="bg-beauty-pink text-white text-xs px-2 py-1 rounded-full">Nou</span>
-              )}
-              {product.discount > 0 && (
-                <span className="bg-beauty-pink-dark text-white text-xs px-2 py-1 rounded-full">-{product.discount}%</span>
-              )}
-            </div>
-          </div>
-
-          {/* Product Info */}
-          <div className="flex-grow flex flex-col">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs text-gray-500">{product.brand?.name}</span>
-              <div className="flex items-center gap-1">
-                <Star className="w-3 h-3 text-beauty-peach fill-current" />
-                <span className="text-xs text-gray-600">{product.rating}</span>
+      <section key={category.id} className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Category Header with Image */}
+          <div className="text-center mb-12">
+            <div className="relative inline-block mb-8">
+              <div className="w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden shadow-2xl mx-auto">
+                <img
+                  src={category.image}
+                  alt={category.title}
+                  className="w-full h-full object-cover"
+                />
               </div>
-            </div>
-
-            <h3 className="text-sm font-semibold text-gray-900 mb-3 line-clamp-2 group-hover:text-beauty-pink transition-colors duration-300 flex-grow">
-              {product.name}
-            </h3>
-
-            {/* Price */}
-            <div className="flex items-center gap-2 mb-4">
-              <span className="text-lg font-bold text-beauty-pink">
-                {product.price.toFixed(2)} lei
-              </span>
-              {product.originalPrice && (
-                <span className="text-sm text-gray-500 line-through">
-                  {product.originalPrice.toFixed(2)} lei
-                </span>
-              )}
-            </div>
-
-            {/* Add to Cart Button */}
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                addToCart(product);
-              }}
-              disabled={!product.inStock}
-              className={`w-full flex items-center justify-center gap-2 py-3 rounded-full font-medium transition-all duration-300 text-sm ${
-                product.inStock
-                  ? 'bg-beauty-pink text-white hover:bg-beauty-pink-dark hover:scale-105'
-                  : 'bg-gray-200 text-gray-500 cursor-not-allowed'
-              }`}
-            >
-              <ShoppingCart className="w-4 h-4" />
-              {product.inStock ? 'Adaugă în coș' : 'Stoc epuizat'}
-            </button>
-          </div>
-        </Link>
-      </div>
-    );
-  };
-
-  const renderServiceCard = (service) => {
-    const IconComponent = service.icon;
-    return (
-      <div className="group h-full">
-        <div className="bg-white border-2 border-gray-100 rounded-3xl p-8 hover:border-beauty-pink hover:shadow-2xl transition-all duration-500 h-full flex flex-col relative overflow-hidden">
-          {/* Decorative background gradient */}
-          <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${service.color} opacity-10 rounded-full blur-3xl group-hover:opacity-20 transition-opacity duration-500`}></div>
-          
-          {/* Icon with animation */}
-          <div className="relative mb-6 flex justify-center">
-            <div className="relative">
-              <div className={`absolute inset-0 bg-gradient-to-br ${service.color} opacity-20 rounded-full blur-xl group-hover:opacity-40 transition-opacity duration-500`}></div>
-              <div className="relative bg-gradient-to-br from-beauty-pink-light/50 to-white rounded-2xl p-6 group-hover:scale-110 transition-transform duration-500">
-                <IconComponent className="w-20 h-20 group-hover:animate-float" />
+              <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 bg-beauty-pink text-white px-6 py-2 rounded-full font-semibold text-sm shadow-lg">
+                {category.title}
               </div>
             </div>
           </div>
 
-          {/* Rating */}
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="flex items-center gap-1">
-              <Star className="w-4 h-4 text-beauty-peach fill-current" />
-              <span className="text-sm font-semibold text-gray-900">{service.rating}</span>
-            </div>
-            <span className="text-xs text-gray-500">({service.reviews} recenzii)</span>
-          </div>
-
-          {/* Service Info */}
-          <h3 className="text-2xl font-elegant font-bold text-gray-900 mb-3 text-center group-hover:text-beauty-pink transition-colors duration-300">
-            {service.title}
-          </h3>
-          <p className="text-gray-600 text-sm leading-relaxed mb-6 text-center flex-grow">
-            {service.description}
-          </p>
-
-          {/* Features */}
-          <ul className="space-y-2 mb-6">
-            {service.features.map((feature, idx) => (
-              <li key={idx} className="flex items-center text-sm text-gray-700">
-                <div className="w-5 h-5 rounded-full bg-beauty-pink/10 flex items-center justify-center mr-3 flex-shrink-0">
-                  <Check className="w-3 h-3 text-beauty-pink" />
-                </div>
-                {feature}
-              </li>
-            ))}
-          </ul>
-
-          {/* Price and Duration */}
-          <div className="flex items-center justify-between p-4 bg-gradient-to-r from-beauty-pink-light/30 to-transparent rounded-xl mb-4">
-            <div className="flex items-center text-sm text-gray-700">
-              <Clock className="w-4 h-4 mr-2 text-beauty-pink" />
-              {service.duration}
-            </div>
-            <div className="text-xl font-bold text-beauty-pink">
-              {service.price}
+          {/* Services List */}
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-gray-50 rounded-2xl p-8 shadow-lg">
+              <div className="space-y-4">
+                {category.services.map((service, idx) => (
+                  <div key={idx} className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-gray-900 mb-1">{service.name}</h4>
+                      <p className="text-sm text-gray-600">{service.details}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-
-          {/* Action Button */}
-          <Link
-            to="/programare"
-            className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-[#FFB6A3] text-white rounded-full font-semibold hover:bg-[#FFAB9D] hover:shadow-lg hover:scale-105 transition-all duration-300"
-          >
-            <Calendar className="w-5 h-5" />
-            Programează-te acum
-            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-          </Link>
         </div>
-      </div>
+      </section>
     );
   };
 
@@ -368,185 +314,10 @@ const ServicesPage = () => {
           </div>
         </section>
 
-        {/* Image Carousel Section - NEW */}
-        <section className="py-16 bg-gradient-to-b from-white to-beauty-pink-light/10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-elegant font-bold text-gray-900 mb-4">
-                Atmosfera salonului nostru
-              </h2>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Descoperă mediul profesional și relaxant în care îți oferim serviciile
-              </p>
-            </div>
 
-            {/* Horizontal Scrolling Carousel */}
-            <div className="relative">
-              <div className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
-                {/* Image 1 */}
-                <div className="flex-shrink-0 w-[300px] md:w-[400px] snap-center">
-                  <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-xl">
-                    <img
-                      src="/imaginisite/hairdresser-brushing-hair-of-attractive-woman-in-b-2024-11-19-16-03-04-utc.jpg"
-                      alt="Servicii profesionale de coafură"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                </div>
 
-                {/* Image 2 */}
-                <div className="flex-shrink-0 w-[300px] md:w-[400px] snap-center">
-                  <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-xl">
-                    <img
-                      src="/imaginisite/beautiful-woman-hands-with-fresh-french-manicure-2025-02-12-22-39-13-utc.jpg"
-                      alt="Manichiură profesională"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                </div>
-
-                {/* Image 3 */}
-                <div className="flex-shrink-0 w-[300px] md:w-[400px] snap-center">
-                  <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-xl">
-                    <img
-                      src="/imaginisite/closeup-finger-nail-care-by-manicure-specialist-in-2025-01-10-00-16-57-utc.jpg"
-                      alt="Tratamente unghii"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                </div>
-
-                {/* Image 4 */}
-                <div className="flex-shrink-0 w-[300px] md:w-[400px] snap-center">
-                  <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-xl">
-                    <img
-                      src="/imaginisite/joyful-woman-experiencing-a-relaxing-hair-wash-bef-2025-03-10-02-10-48-utc.jpg"
-                      alt="Tratamente relaxante"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                </div>
-
-                {/* Image 5 */}
-                <div className="flex-shrink-0 w-[300px] md:w-[400px] snap-center">
-                  <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-xl">
-                    <img
-                      src="/imaginisite/portrait-of-beautiful-young-woman-getting-haircut-2025-03-14-16-38-29-utc.jpg"
-                      alt="Tuns profesional"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                </div>
-
-                {/* Image 6 */}
-                <div className="flex-shrink-0 w-[300px] md:w-[400px] snap-center">
-                  <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-xl">
-                    <img
-                      src="/imaginisite/hairdresser-drying-hair-of-young-attractive-woman-2024-11-19-01-02-14-utc.jpg"
-                      alt="Styling profesional"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                </div>
-
-                {/* Image 7 */}
-                <div className="flex-shrink-0 w-[300px] md:w-[400px] snap-center">
-                  <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-xl">
-                    <img
-                      src="/imaginisite/happy-woman-dyeing-her-hair-at-the-hairdresser-2025-10-16-23-42-15-utc.jpg"
-                      alt="Vopsit păr profesional"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Services Carousel Section */}
-        <section id="servicii" className="py-20 bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-6 py-3 bg-white border-2 border-beauty-pink/20 rounded-full mb-6 shadow-lg">
-                <Sparkles className="w-5 h-5 text-beauty-pink" />
-                <span className="text-sm font-semibold text-beauty-pink">Servicii premium</span>
-              </div>
-              
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-elegant font-bold text-gray-900 mb-6">
-                Transformă-ți
-                <span className="block gradient-text">frumusețea naturală</span>
-              </h1>
-              <p className="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto mb-10 leading-relaxed">
-                Descoperă gama completă de servicii profesionale de frumusețe, realizate de experți cu produse de calitate premium și tehnici inovatoare.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <Link
-                  to="/programare"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-[#FFB6A3] text-white rounded-full font-semibold hover:bg-[#FFAB9D] hover:shadow-lg hover:scale-105 transition-all duration-300 text-sm"
-                >
-                  <Calendar className="w-4 h-4" />
-                  Programează-te acum
-                </Link>
-                <Link
-                  to="/servicii"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-[#FFB6A3] text-white rounded-full font-semibold hover:bg-[#FFAB9D] hover:shadow-lg hover:scale-105 transition-all duration-300 text-sm"
-                >
-                  <ArrowRight className="w-4 h-4" />
-                  Vezi serviciile
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Infinite Services Carousel */}
-        <section className="py-16 bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-elegant font-bold text-gray-900 mb-4">
-                Explorează serviciile noastre
-              </h2>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Fiecare serviciu este conceput pentru a-ți evidenția frumusețea naturală
-              </p>
-            </div>
-
-            {/* Desktop Carousel - 3 items */}
-            <div className="hidden lg:block">
-              <InfiniteCarousel
-                items={services}
-                renderItem={renderServiceCard}
-                autoPlay={true}
-                interval={4000}
-                itemsPerView={3}
-              />
-            </div>
-
-            {/* Tablet Carousel - 2 items */}
-            <div className="hidden md:block lg:hidden">
-              <InfiniteCarousel
-                items={services}
-                renderItem={renderServiceCard}
-                autoPlay={true}
-                interval={4000}
-                itemsPerView={2}
-              />
-            </div>
-
-            {/* Mobile Carousel - 1 item */}
-            <div className="block md:hidden">
-              <InfiniteCarousel
-                items={services}
-                renderItem={renderServiceCard}
-                autoPlay={true}
-                interval={4000}
-                itemsPerView={1}
-              />
-            </div>
-          </div>
-        </section>
+        {/* Services Categories */}
+        {serviceCategories.map((category) => renderServiceCategory(category))}
 
         {/* Why Choose Us - Bento Grid Style */}
         <section className="py-16 bg-gradient-to-br from-beauty-pink-light/20 to-white">

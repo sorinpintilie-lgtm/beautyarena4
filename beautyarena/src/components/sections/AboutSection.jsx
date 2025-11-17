@@ -131,7 +131,7 @@ const AboutSection = () => {
                 <div className="w-12 h-12 bg-beauty-pink-dark/20 rounded-full flex items-center justify-center mx-auto mb-2">
                   <Users className="w-6 h-6 text-beauty-pink-dark" />
                 </div>
-                <h4 className="font-semibold text-gray-900 mb-1">Caring</h4>
+                <h4 className="font-semibold text-gray-900 mb-1">Îngrijire</h4>
                 <p className="text-sm text-gray-600">Grija pentru fiecare client</p>
               </div>
             </div>
@@ -156,7 +156,7 @@ const AboutSection = () => {
                   </div>
                   <div>
                     <h3 className="text-2xl font-elegant font-bold">15+ ani de excelență</h3>
-                    <p className="text-beauty-pink-light">Profesiști pasionați în fiecare sesiune</p>
+                    <p className="text-beauty-pink-light">Profesioniști pasionați în fiecare sesiune</p>
                   </div>
                 </div>
                 <p className="text-white/90 mb-4 leading-relaxed">
@@ -192,7 +192,7 @@ const AboutSection = () => {
             Echipa noastră de experți
           </h3>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Profesiști pasionați și dedicați, mereu la curent cu ultimele tendințe și tehnici 
+            Profesioniști pasionați și dedicați, mereu la curent cu ultimele tendințe și tehnici
             din industria frumuseții.
           </p>
         </div>

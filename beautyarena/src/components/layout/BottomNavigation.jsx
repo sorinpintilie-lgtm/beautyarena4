@@ -16,22 +16,15 @@ const BottomNavigation = ({ onMenuClick, onCartClick }) => {
       isActive: location.pathname === '/'
     },
     {
-      id: 'shop',
-      label: 'Magazin',
+      id: 'services',
+      label: 'Services',
       icon: ShoppingBag,
-      path: '/shop',
-      isActive: location.pathname.startsWith('/shop')
-    },
-    {
-      id: 'about',
-      label: 'Despre',
-      icon: User,
-      path: '/despre',
-      isActive: location.pathname === '/despre'
+      path: '/servicii',
+      isActive: location.pathname === '/servicii'
     },
     {
       id: 'booking',
-      label: 'Programare',
+      label: 'Programează',
       icon: Calendar,
       path: '/programare',
       isActive: location.pathname === '/programare'
