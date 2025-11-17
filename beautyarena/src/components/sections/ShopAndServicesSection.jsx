@@ -84,7 +84,7 @@ const ShopAndServicesSection = () => {
       {/* Banner-style Header with Full-Width Image */}
       <div className="relative w-full h-[300px] md:h-[400px] lg:h-[500px] overflow-hidden">
         <img
-          src="/imaginisite/envato-labs-image-edit-37.png"
+          src="/images/envato-labs-image-edit-34.png"
           alt="BeautyArena - Experiență completă de frumusețe"
           className="w-full h-full object-cover object-center"
         />

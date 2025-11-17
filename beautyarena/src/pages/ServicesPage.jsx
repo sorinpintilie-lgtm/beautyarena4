@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Star, Calendar, ArrowRight, Check, Sparkles, Award } from 'lucide-react';
 import SEO from '../components/common/SEO';
@@ -9,6 +9,7 @@ import { useWishlist } from '../context/WishlistContext';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
 const ServicesPage = () => {
+  const [activeCategoryIndex, setActiveCategoryIndex] = useState(0);
   const { products, loading: productsLoading, error: productsError } = useRealProducts();
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
@@ -90,7 +91,7 @@ const ServicesPage = () => {
     {
       id: 4,
       title: 'TRATAMENTE FACIALE',
-      image: '/imaginisite/closeup-finger-nail-care-by-manicure-specialist-in-2025-01-10-00-16-57-utc.jpg',
+      image: '/imaginisite/beauty-face-of-young-adult-woman-with-makeup-perf-2025-10-16-04-02-24-utc.jpg',
       services: [
         { name: 'Anubis Barcelona Adio Acnee', details: '242-270 lei' },
         { name: 'Anubis Barcelona Booster Frumusete', details: '242-270 lei' },
@@ -114,7 +115,7 @@ const ServicesPage = () => {
     {
       id: 5,
       title: 'LAMINAȚII ȘI VOPSIT SPRÂNCENE/GENE',
-      image: '/imaginisite/joyful-woman-experiencing-a-relaxing-hair-wash-bef-2025-03-10-02-10-48-utc.jpg',
+      image: '/images/make-up-artists-shading-eyes-2025-03-16-07-53-24-utc-min.jpg',
       services: [
         { name: 'Laminare gene', details: '135-143 lei' },
         { name: 'Laminare sprancene', details: '181-197 lei' },
@@ -127,7 +128,7 @@ const ServicesPage = () => {
     {
       id: 6,
       title: 'MICROPIGMENTARE',
-      image: '/imaginisite/portrait-of-beautiful-young-woman-getting-haircut-2025-03-14-16-38-29-utc.jpg',
+      image: '/images/top-view-of-tools-for-permanent-makeup-on-black-ta-2024-11-17-13-20-03-utc-min.jpg',
       services: [
         { name: 'Pensat', details: 'Femeie - 30-36 lei, Barbat - 34-40 lei' },
         { name: 'Micro-pigmentare buze sau sprancene', details: '781-851 lei' },
@@ -138,7 +139,7 @@ const ServicesPage = () => {
     {
       id: 7,
       title: 'MASAJ',
-      image: '/imaginisite/hairdresser-drying-hair-of-young-attractive-woman-2024-11-19-01-02-14-utc.jpg',
+      image: '/imaginisite/cute-woman-looking-happy-after-getting-professiona-2024-10-18-08-14-22-utc.jpg',
       services: [
         { name: 'Relaxare', details: '95-131 lei' },
         { name: 'Anticelulitic', details: '110-138 lei' },
@@ -151,7 +152,7 @@ const ServicesPage = () => {
     {
       id: 8,
       title: 'EPILARE CEARĂ',
-      image: '/imaginisite/happy-woman-dyeing-her-hair-at-the-hairdresser-2025-10-16-23-42-15-utc.jpg',
+      image: '/imaginisite/photo-epilation-close-up-of-hair-removal-procedu-2025-03-31-03-42-49-utc.jpg',
       services: [
         { name: 'Epilare ceara - abdomen', details: 'Femeie - 17-21 lei, Barbat - 28-34 lei' },
         { name: 'Epilare ceara - axila', details: 'Femeie - 22-26 lei, Barbat - 24-30 lei' },
@@ -216,45 +217,6 @@ const ServicesPage = () => {
 
 
 
-  const renderServiceCategory = (category) => {
-    return (
-      <section key={category.id} className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Category Header with Image */}
-          <div className="text-center mb-12">
-            <div className="relative inline-block mb-8">
-              <div className="w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden shadow-2xl mx-auto">
-                <img
-                  src={category.image}
-                  alt={category.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 bg-beauty-pink text-white px-6 py-2 rounded-full font-semibold text-sm shadow-lg">
-                {category.title}
-              </div>
-            </div>
-          </div>
-
-          {/* Services List */}
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-gray-50 rounded-2xl p-8 shadow-lg">
-              <div className="space-y-4">
-                {category.services.map((service, idx) => (
-                  <div key={idx} className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-gray-900 mb-1">{service.name}</h4>
-                      <p className="text-sm text-gray-600">{service.details}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    );
-  };
 
   return (
     <>
@@ -316,8 +278,66 @@ const ServicesPage = () => {
 
 
 
-        {/* Services Categories */}
-        {serviceCategories.map((category) => renderServiceCategory(category))}
+        {/* Services Categories Carousel */}
+        <section className="py-16 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-elegant font-bold text-gray-900 mb-4">
+                Categoriile noastre de servicii
+              </h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                Alege categoria care te interesează și descoperă serviciile disponibile.
+              </p>
+            </div>
+
+            {/* Category Carousel */}
+            <div className="relative mb-12">
+              <div className="flex overflow-x-auto scrollbar-hide gap-4 pb-4 px-2">
+                {serviceCategories.map((category, index) => (
+                  <div
+                    key={category.id}
+                    onClick={() => setActiveCategoryIndex(index)}
+                    className={`flex-shrink-0 w-48 h-48 rounded-2xl overflow-hidden shadow-lg cursor-pointer transition-all duration-300 ${
+                      index === activeCategoryIndex
+                        ? 'ring-4 ring-beauty-pink scale-105'
+                        : 'hover:scale-102'
+                    }`}
+                  >
+                    <img
+                      src={category.image}
+                      alt={category.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/40 flex items-end justify-center pb-4">
+                      <h3 className="text-white font-semibold text-center px-2">
+                        {category.title}
+                      </h3>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Services List for Active Category */}
+            <div className="max-w-4xl mx-auto">
+              <div className="bg-gray-50 rounded-2xl p-8 shadow-lg">
+                <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+                  {serviceCategories[activeCategoryIndex].title}
+                </h3>
+                <div className="space-y-4">
+                  {serviceCategories[activeCategoryIndex].services.map((service, idx) => (
+                    <div key={idx} className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-gray-900 mb-1">{service.name}</h4>
+                        <p className="text-sm text-gray-600">{service.details}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* Why Choose Us - Bento Grid Style */}
         <section className="py-16 bg-gradient-to-br from-beauty-pink-light/20 to-white">

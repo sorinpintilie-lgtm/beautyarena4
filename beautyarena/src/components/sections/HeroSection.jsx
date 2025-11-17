@@ -10,7 +10,7 @@ const HeroSection = () => {
         {/* Background image */}
         <div className="absolute inset-0">
           <img
-            src="/images/envato-labs-image-edit-34.png"
+            src="/imaginisite/envato-labs-image-edit-37.png"
             alt="Frumusețea ta unică"
             className="w-full h-full object-cover object-center"
           />
