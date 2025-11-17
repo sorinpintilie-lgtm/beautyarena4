@@ -12,7 +12,7 @@ const HeroSection = () => {
           <img
             src="/imaginisite/envato-labs-image-edit-37.png"
             alt="Frumusețea ta unică"
-            className="w-full h-full object-cover object-center"
+            className="w-full h-full object-cover md:object-center object-top"
           />
         </div>
         
@@ -37,8 +37,8 @@ const HeroSection = () => {
           </h1>
 
           {/* Subtitle - Enhanced for Better Visibility - Hidden on mobile */}
-          <p className="hidden sm:block text-base sm:text-lg text-white mt-4 sm:mt-6 font-medium leading-relaxed text-center text-justify" style={{textShadow: '2px 2px 4px rgba(0,0,0,0.8), 1px 1px 2px rgba(0,0,0,0.6)'}}>
-            Explorează cosmetice premium și tratamente profesionale de frumusețe pentru a-ți evidenția frumusețea naturală
+          <p className="hidden sm:block text-base sm:text-lg text-white mt-4 sm:mt-6 font-medium leading-relaxed text-center" style={{textShadow: '2px 2px 4px rgba(0,0,0,0.8), 1px 1px 2px rgba(0,0,0,0.6)'}}>
+            Cosmetice premium și tratamente profesionale
           </p>
 
           {/* Spacer for mobile to maintain button position */}

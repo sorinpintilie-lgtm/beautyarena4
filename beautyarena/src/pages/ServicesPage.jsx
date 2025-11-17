@@ -234,7 +234,7 @@ const ServicesPage = () => {
             <img
               src="/imaginisite/woman-sitting-at-beauty-salon-making-hairdo-2025-03-18-17-52-06-utc.jpg"
               alt="Servicii profesionale de frumusețe"
-              className="w-full h-full object-cover object-center"
+              className="w-full h-full object-cover md:object-center object-top"
             />
             {/* Overlay for text readability */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60"></div>
@@ -253,7 +253,7 @@ const ServicesPage = () => {
                   <span className="block text-beauty-pink-light">frumusețea naturală</span>
                 </h1>
                 <p className="text-lg md:text-xl text-white/95 max-w-3xl mx-auto mb-10 leading-relaxed drop-shadow-md">
-                  Descoperă gama completă de servicii profesionale de frumusețe, realizate de experți cu produse de calitate premium și tehnici inovatoare.
+                  Servicii profesionale realizate de experți cu produse premium
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                   <Link
