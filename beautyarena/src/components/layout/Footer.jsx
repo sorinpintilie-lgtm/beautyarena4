@@ -18,7 +18,7 @@ const Footer = () => {
     { name: 'Îngrijire unghii', href: '/servicii' },
     { name: 'Îngrijire ten', href: '/servicii' },
     { name: 'Machiaj', href: '/servicii' },
-    { name: 'Programează', href: '/programare' },
+    { name: 'Programează-te', href: '/programare' },
   ];
 
   const socialLinks = [

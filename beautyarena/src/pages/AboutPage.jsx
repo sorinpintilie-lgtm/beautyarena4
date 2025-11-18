@@ -190,62 +190,92 @@ const AboutPage = () => {
               </div>
             </div>
 
-            {/* Values Section */}
-            <div className="text-center mb-14">
-              <h2 className="text-2xl md:text-3xl font-elegant font-bold text-black mb-8">
-                Valorile Noastre
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {[
-                  { title: 'Tradiție', desc: 'Peste 17 ani de experiență și încredere' },
-                  { title: 'Profesionalism', desc: 'Echipă de specialiști dedicați' },
-                  { title: 'Inovație', desc: 'Tehnologie modernă și servicii noi' }
-                ].map((value, index) => (
-                  <div key={index} className="text-center">
-                    <div className="w-16 h-16 bg-gradient-to-br from-beauty-pink to-beauty-pink-dark rounded-full flex items-center justify-center mx-auto mb-4">
-                      <span className="text-white font-bold text-xl">{value.title[0]}</span>
-                    </div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{value.title}</h3>
-                    <p className="text-gray-600">{value.desc}</p>
-                  </div>
-                ))}
+            {/* Values + Mission – compact */}
+            <div className="mt-4 mb-4">
+              <div className="text-center mb-4">
+                <h2 className="text-2xl md:text-3xl font-elegant font-bold text-black mb-2">
+                  Valorile noastre
+                </h2>
+                <p className="text-xs md:text-sm text-gray-600 max-w-xl mx-auto">
+                  Ce ne ghidează în fiecare zi în salon.
+                </p>
               </div>
-            </div>
 
-            {/* Mission Statement */}
-            <div className="text-center bg-gradient-to-r from-beauty-pink to-beauty-pink-dark text-white rounded-3xl p-8 md:p-12">
-              <Heart className="w-12 h-12 mx-auto mb-6" />
-              <h2 className="text-2xl md:text-3xl font-elegant font-bold mb-6">
-                Misiunea Noastră
-              </h2>
-              <p className="text-lg md:text-xl leading-relaxed max-w-3xl mx-auto">
-                <strong>Beauty Arena înseamnă tradiție, profesionalism și inovație.</strong> 
-                Suntem aici pentru a-ți oferi frumusețe fără compromisuri — ieri, azi și în anii care vin.
-              </p>
+              {/* 2 cards on primul rând, 1 card pe al doilea rând care span‑uiește 2 coloane */}
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+                {/* Tradiție */}
+                <div className="bg-white border border-gray-100 rounded-2xl p-3 sm:p-4 flex flex-col items-center text-center shadow-sm">
+                  <Award className="w-5 h-5 sm:w-6 sm:h-6 text-beauty-pink mb-2" />
+                  <h3 className="text-xs sm:text-sm font-semibold text-gray-900 mb-1">
+                    Tradiție
+                  </h3>
+                  <p className="text-[11px] sm:text-xs text-gray-600">
+                    17 ani de experiență și încredere
+                  </p>
+                </div>
+
+                {/* Profesionalism */}
+                <div className="bg-white border border-gray-100 rounded-2xl p-3 sm:p-4 flex flex-col items-center text-center shadow-sm">
+                  <Users className="w-5 h-5 sm:w-6 sm:h-6 text-beauty-pink mb-2" />
+                  <h3 className="text-xs sm:text-sm font-semibold text-gray-900 mb-1">
+                    Profesionalism
+                  </h3>
+                  <p className="text-[11px] sm:text-xs text-gray-600">
+                    Echipă de specialiști dedicați
+                  </p>
+                </div>
+
+                {/* Inovație – spans full width on second row on mobile */}
+                <div className="bg-white border border-gray-100 rounded-2xl p-3 sm:p-4 flex flex-col items-center text-center shadow-sm col-span-2 md:col-span-1">
+                  <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-beauty-pink mb-2" />
+                  <h3 className="text-xs sm:text-sm font-semibold text-gray-900 mb-1">
+                    Inovație
+                  </h3>
+                  <p className="text-[11px] sm:text-xs text-gray-600">
+                    Tehnologie modernă și servicii noi
+                  </p>
+                </div>
+              </div>
+
+              <div className="text-center bg-gradient-to-r from-beauty-pink to-beauty-pink-dark rounded-3xl p-4 sm:p-5">
+                <h2
+                  className="text-lg md:text-xl font-elegant font-bold mb-2"
+                  style={{ color: '#000' }}
+                >
+                  Misiunea noastră
+                </h2>
+                <p
+                  className="text-xs sm:text-sm md:text-base leading-relaxed max-w-2xl mx-auto"
+                  style={{ color: '#000' }}
+                >
+                  <strong>Beauty Arena înseamnă tradiție, profesionalism și inovație.</strong> Suntem aici
+                  pentru a-ți oferi frumusețe fără compromisuri — ieri, azi și în anii care vin.
+                </p>
+              </div>
             </div>
           </div>
         </section>
 
         {/* Achievements Section */}
-        <section className="py-12 bg-gray-50">
+        <section className="pt-4 pb-8 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-elegant font-bold text-black mb-4">
-                Realizările Noastre
+            <div className="text-center mb-6">
+              <h2 className="text-2xl md:text-3xl font-elegant font-bold text-black mb-2">
+                Realizările noastre
               </h2>
-              <p className="text-lg text-gray-600">
+              <p className="text-sm md:text-base text-gray-600">
                 Cifrele care vorbesc despre experiența noastră
               </p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {achievements.map((achievement, index) => (
                 <div key={index} className="text-center">
-                  <div className="bg-white border-2 border-beauty-pink/20 rounded-2xl p-6 hover:border-beauty-pink transition-colors">
-                    <div className="text-3xl md:text-4xl font-bold text-beauty-pink-dark mb-2">
+                  <div className="bg-white border-2 border-beauty-pink/20 rounded-2xl p-4 hover:border-beauty-pink transition-colors">
+                    <div className="text-2xl md:text-3xl font-bold text-beauty-pink-dark mb-1">
                       {achievement.number}
                     </div>
-                    <div className="text-gray-700 font-medium text-sm md:text-base">
+                    <div className="text-gray-700 font-medium text-xs sm:text-sm md:text-base">
                       {achievement.label}
                     </div>
                   </div>

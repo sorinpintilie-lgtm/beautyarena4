@@ -14,13 +14,16 @@ const ContactPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
+  const mapsLink =
+    'https://www.google.com/maps/place/Salon+Beauty+Arena/@44.4326188,26.1524149,805m/data=!3m2!1e3!4b1!4m6!3m5!1s0x40b1fecc42670a79:0xec62769fb5307edc!8m2!3d44.4326188!4d26.1524149!16s%2Fg%2F11b6nk_kl6?entry=ttu&g_ep=EgoyMDI1MTExMS4wIKXMDSoASAFQAw%3D%3D';
+
   const contactInfo = [
     {
       icon: <MapPin className="w-6 h-6" />,
       title: 'Adresă',
       details: ['Bulevardul Basarabia 96', 'București'],
       action: 'Vezi pe hartă',
-      link: 'https://www.google.com/maps/place/Salon+Beauty+Arena/@44.4326188,26.1524149,805m/data=!3m2!1e3!4b1!4m6!3m5!1s0x40b1fecc42670a79:0xec62769fb5307edc!8m2!3d44.4326188!4d26.1524149!16s%2Fg%2F11b6nk_kl6?entry=ttu&g_ep=EgoyMDI1MTExMS4wIKXMDSoASAFQAw%3D%3D'
+      link: mapsLink
     },
     {
       icon: <Phone className="w-6 h-6" />,
@@ -32,7 +35,7 @@ const ContactPage = () => {
     {
       icon: <Mail className="w-6 h-6" />,
       title: 'Email',
-      details: ['info@beautyarena.ro', 'programari@beautyarena.ro'],
+      details: ['info@beautyarena.ro'],
       action: 'Trimite email'
     },
     {
@@ -93,14 +96,14 @@ const ContactPage = () => {
 
       <div className="min-h-screen bg-white pt-16">
         {/* Hero Section */}
-        <section className="bg-beauty-pink/10 py-16">
+        <section className="bg-beauty-pink/10 py-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-elegant font-bold text-black mb-6">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-elegant font-bold text-black mb-4">
                 Contactează-ne
               </h1>
               <p className="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto">
-                Ai întrebări sau vrei să afli mai multe despre serviciile noastre? 
+                Ai întrebări sau vrei să afli mai multe despre serviciile noastre?
                 Suntem aici pentru tine și îți vom răspunde cât mai curând posibil.
               </p>
             </div>
@@ -108,13 +111,13 @@ const ContactPage = () => {
         </section>
 
         {/* Contact Content */}
-        <section className="py-16">
+        <section className="py-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Contact Form */}
-              <div className="bg-white border-2 border-gray-100 rounded-2xl p-8">
-                <div className="mb-6">
-                  <h2 className="text-3xl font-elegant font-bold text-black mb-2">
+              <div className="bg-white border-2 border-gray-100 rounded-2xl p-6">
+                <div className="mb-4">
+                  <h2 className="text-2xl font-elegant font-bold text-black mb-2">
                     Trimite-ne un mesaj
                   </h2>
                   <p className="text-gray-600">
@@ -247,13 +250,13 @@ const ContactPage = () => {
               </div>
 
               {/* Contact Information */}
-              <div className="space-y-8">
+              <div className="space-y-6">
                 {/* Contact Details */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-2 gap-6">
                   {contactInfo.map((info, index) => (
                     <div
                       key={index}
-                      className={`bg-white border-2 border-gray-100 rounded-2xl p-6 text-center hover:border-beauty-pink transition-colors ${info.link ? 'cursor-pointer' : ''}`}
+                      className={`bg-white border-2 border-gray-100 rounded-2xl p-5 text-center hover:border-beauty-pink transition-colors ${info.link ? 'cursor-pointer' : ''}`}
                       onClick={info.link ? () => window.open(info.link, '_blank') : undefined}
                     >
                       <div className="w-12 h-12 bg-beauty-pink/10 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -262,7 +265,7 @@ const ContactPage = () => {
                         </div>
                       </div>
                       <h3 className="font-semibold text-gray-900 mb-2">{info.title}</h3>
-                      <div className="space-y-1 mb-4">
+                      <div className="space-y-1 mb-3">
                         {info.details.map((detail, idx) => (
                           <p key={idx} className="text-gray-600 text-sm">{detail}</p>
                         ))}
@@ -275,24 +278,39 @@ const ContactPage = () => {
                     </div>
                   ))}
                 </div>
-
+ 
                 {/* Map Placeholder */}
-                <div className="bg-white border-2 border-gray-100 rounded-2xl p-6">
+                <div className="bg-white border-2 border-gray-100 rounded-2xl p-5">
                   <h3 className="font-semibold text-gray-900 mb-4 flex items-center">
                     <MapPin className="w-5 h-5 mr-2 text-beauty-pink" />
                     Locația noastră
                   </h3>
-                  <div className="bg-gray-100 rounded-lg h-64 flex items-center justify-center">
-                    <div className="text-center">
-                      <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-2" />
-                      <p className="text-gray-600">Hartă interactivă</p>
-                      <p className="text-sm text-gray-500">Bulevardul Basarabia 96, București</p>
+                  <a
+                    href={mapsLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block rounded-lg h-56 overflow-hidden relative cursor-pointer group"
+                  >
+                    <img
+                      src="/images/contact-map.png"
+                      alt="Hartă Beauty Arena - Bulevardul Basarabia 96, București"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
+                    <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white text-xs sm:text-sm">
+                      <div>
+                        <p className="font-semibold">Beauty Arena</p>
+                        <p className="opacity-90">Bulevardul Basarabia 96, București</p>
+                      </div>
+                      <span className="px-2 py-1 rounded-full bg-black/50 border border-white/20 whitespace-nowrap text-[10px] sm:text-xs">
+                        Deschide în Google Maps
+                      </span>
                     </div>
-                  </div>
+                  </a>
                 </div>
-
+ 
                 {/* Social Media */}
-                <div className="bg-white border-2 border-gray-100 rounded-2xl p-6">
+                <div className="bg-white border-2 border-gray-100 rounded-2xl p-5">
                   <h3 className="font-semibold text-gray-900 mb-4">Urmărește-ne pe social media</h3>
                   <div className="grid grid-cols-2 gap-4">
                     {socialLinks.map((social, index) => {
@@ -319,9 +337,9 @@ const ContactPage = () => {
         </section>
 
         {/* FAQ Section */}
-        <section className="py-16 bg-gray-50">
+        <section className="py-10 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
+            <div className="text-center mb-8">
               <h2 className="text-3xl md:text-4xl font-elegant font-bold text-black mb-4">
                 Întrebări frecvente
               </h2>
@@ -329,27 +347,41 @@ const ContactPage = () => {
                 Răspunsuri la cele mai comune întrebări despre serviciile noastre
               </p>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+ 
+            <div className="grid grid-cols-2 md:grid-cols-2 gap-5">
               {[
                 {
                   question: 'Cum pot programa o vizită?',
-                  answer: 'Poți programa o vizită online prin formularul nostru, telefonic la 0722402559, sau direct în salon.'
+                  answer:
+                    'Poți face o programare online din meniul „Programează-te”, telefonic la 0722 402 559 sau direct în salon, în funcție de disponibilitate.'
                 },
                 {
-                  question: 'Care este politica de anulare?',
-                  answer: 'Anulările se pot face cu minimum 24 de ore înainte. Pentru anulări de ultim moment, se aplică o taxă de 50%.'
+                  question: 'Ce tipuri de servicii oferiți?',
+                  answer:
+                    'Oferim servicii de coafor, manichiură / pedichiură, cosmetică și epilare definitivă cu laser, atât pentru femei, cât și pentru bărbați.'
                 },
                 {
-                  question: 'Acceptați plata cu cardul?',
-                  answer: 'Da, acceptăm toate cardurile majore: Visa, MasterCard, și plăți mobile (Apple Pay, Google Pay).'
+                  question: 'Unde este situat salonul?',
+                  answer:
+                    'Ne găsești în București, Bd. Basarabia, Nr. 96, Sector 2. Poți vedea locația exactă și pe Google Maps din secțiunea de contact.'
                 },
                 {
-                  question: 'Ce servicii oferiți?',
-                  answer: 'Oferim o gamă completă de servicii de frumusețe: coafură, machiaj, îngrijire ten, manichiură, pedichiură și tratamente specializate.'
+                  question: 'Oferiți epilare definitivă cu laser?',
+                  answer:
+                    'Da, oferim epilare definitivă cu laser, cu tehnologie modernă, pentru diferite zone ale corpului. Detaliile și prețurile se găsesc în pagina Servicii.'
+                },
+                {
+                  question: 'Pot cumpăra produse recomandate în salon și online?',
+                  answer:
+                    'Da. În salon folosim și recomandăm produse profesionale, iar o selecție de cosmetice premium este disponibilă și în magazinul online Beauty Arena.'
+                },
+                {
+                  question: 'Cum pot afla mai multe despre servicii și prețuri?',
+                  answer:
+                    'Poți consulta pagina Servicii pentru Lista de prețuri și detalii, iar pentru întrebări specifice ne poți scrie din formularul de contact sau suna la 0722 402 559.'
                 }
               ].map((faq, index) => (
-                <div key={index} className="bg-white border-2 border-gray-100 rounded-2xl p-6 hover:border-beauty-pink transition-colors">
+                <div key={index} className="bg-white border-2 border-gray-100 rounded-2xl p-5 hover:border-beauty-pink transition-colors">
                   <h4 className="font-semibold text-gray-900 mb-2">{faq.question}</h4>
                   <p className="text-gray-600 text-sm">{faq.answer}</p>
                 </div>
