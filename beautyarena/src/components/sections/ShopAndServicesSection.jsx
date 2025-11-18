@@ -99,11 +99,10 @@ const ShopAndServicesSection = () => {
               <span className="text-sm font-medium text-white">Produse & Servicii</span>
             </div>
             <h2 className="text-3xl md:text-4xl lg:text-6xl font-elegant font-bold text-white mb-6">
-              Descoperă frumusețea
-              <span className="block text-beauty-pink-light mt-2">la BeautyArena</span>
+              Frumusețea începe la Beauty Arena
             </h2>
             <p className="text-base md:text-lg lg:text-xl text-white/90 max-w-2xl mx-auto">
-              Explorează produsele noastre premium și serviciile profesionale pentru o experiență completă de frumusețe.
+              Explorează gama noastră de produse premium și serviciile de specialitate pentru o îngrijire desăvârșită.
             </p>
           </div>
         </div>

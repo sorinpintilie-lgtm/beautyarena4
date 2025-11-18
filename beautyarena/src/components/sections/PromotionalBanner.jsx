@@ -15,12 +15,11 @@ const PromotionalBanner = () => {
             </div>
 
             <h2 className="text-4xl md:text-5xl font-elegant font-bold leading-tight text-gray-900">
-              Magazinul nostru online
-              <span className="block mt-2">cu produse premium</span>
+              Magazinul online Beauty Arena
             </h2>
 
             <p className="text-lg text-gray-700 max-w-md">
-              Descoperiți gama completă de produse premium de frumusețe în magazinul nostru online! Oferim cosmetice și îngrijire.
+              Accesează gama completă de cosmetice premium și produse de îngrijire selectate de experții noștri. Calitate de salon, livrată direct acasă.
             </p>
 
             <Link

@@ -47,11 +47,11 @@ const Newsletter = () => {
 
         {/* Heading */}
         <h2 className="text-3xl md:text-4xl font-elegant font-bold text-gray-900 mb-4">
-          Rămâi la curent cu noutățile
+          Abonează-te la newsletter
         </h2>
         
         <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-          Abonează-te la newsletter-ul nostru și primește oferte exclusive, sfaturi de frumusețe și noutăți despre produsele tale preferate.
+          Primești primele informații despre noutăți și recomandări de frumusețe.
         </p>
 
         {/* Newsletter Form */}

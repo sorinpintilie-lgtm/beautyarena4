@@ -228,47 +228,96 @@ const ServicesPage = () => {
       <div className="min-h-screen bg-gradient-to-b from-white via-beauty-pink-light/10 to-white pt-16">
         {/* Enhanced Hero Section with Full-Width Banner */}
         <section className="relative overflow-hidden">
-          {/* Full-Width Hero Banner */}
-          <div className="relative w-full h-[500px] md:h-[550px] lg:h-[600px]">
-            <img
-              src="/imaginisite/woman-sitting-at-beauty-salon-making-hairdo-2025-03-18-17-52-06-utc.jpg"
-              alt="Servicii profesionale de frumusețe"
-              className="w-full h-full object-cover md:object-center object-top"
-            />
-            {/* Overlay for text readability */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60"></div>
-            
-            {/* Hero Content Centered */}
-            <div className="absolute inset-0 flex items-center justify-center z-10">
-              <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          {/* Mobile layout: clean portrait image + text below (no overlay on face) */}
+          <div className="block sm:hidden">
+            <div className="w-full max-h-[80vh] overflow-hidden flex justify-center bg-black">
+              <img
+                src="/imaginisite/woman-sitting-at-beauty-salon-making-hairdo-2025-03-18-17-52-06-utc.jpg"
+                alt="Servicii profesionale de frumusețe"
+                className="h-full w-auto object-contain"
+              />
+            </div>
+
+            <div className="px-4 pt-6 pb-8 bg-gradient-to-b from-black/85 via-black/90 to-black">
+              <div className="max-w-md mx-auto text-center">
                 {/* Badge */}
-                <div className="inline-flex items-center gap-2 px-6 py-3 bg-white/20 backdrop-blur-md border-2 border-white/30 rounded-full mb-6 shadow-lg">
+                <div className="inline-flex items-center gap-2 px-6 py-3 bg-white/15 backdrop-blur-md border border-white/30 rounded-full mb-6 shadow-lg">
                   <Sparkles className="w-5 h-5 text-white" />
                   <span className="text-sm font-semibold text-white">Servicii premium</span>
                 </div>
-                
-                <h1 className="text-4xl md:text-5xl lg:text-7xl font-elegant font-bold text-white mb-6 drop-shadow-lg">
+
+                <h1 className="text-3xl font-elegant font-bold text-white mb-4 leading-tight drop-shadow-lg">
                   Transformă-ți
                   <span className="block text-beauty-pink-light">frumusețea naturală</span>
                 </h1>
-                <p className="text-lg md:text-xl text-white/95 max-w-3xl mx-auto mb-10 leading-relaxed drop-shadow-md">
+                <p className="text-base text-white/95 max-w-md mx-auto mb-8 leading-relaxed drop-shadow-md">
                   Servicii profesionale realizate de experți cu produse premium
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+
+                <div className="flex flex-col gap-3 justify-center items-center">
                   <Link
                     to="/programare"
-                    className="inline-flex items-center gap-2 px-8 py-4 bg-beauty-pink text-white rounded-full font-semibold hover:bg-beauty-pink-dark hover:shadow-xl hover:scale-105 transition-all duration-300 text-base"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-beauty-pink text-white rounded-full font-semibold hover:bg-beauty-pink-dark hover:shadow-xl hover:scale-105 transition-all duration-300 text-sm"
                   >
                     <Calendar className="w-5 h-5" />
                     Programează-te acum
                   </Link>
                   <Link
                     to="#servicii"
-                    className="inline-flex items-center gap-2 px-8 py-4 bg-white/20 backdrop-blur-md text-white border-2 border-white/40 rounded-full font-semibold hover:bg-white/30 hover:shadow-xl hover:scale-105 transition-all duration-300 text-base"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-md text-white border border-white/40 rounded-full font-semibold hover:bg-white/20 hover:shadow-xl hover:scale-105 transition-all duration-300 text-sm"
                   >
                     <ArrowRight className="w-5 h-5" />
                     Vezi serviciile
                   </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Desktop / Tablet layout: original overlay hero */}
+          <div className="hidden sm:block">
+            {/* Full-Width Hero Banner */}
+            <div className="relative w-full h-[500px] md:h-[550px] lg:h-[600px]">
+              <img
+                src="/imaginisite/woman-sitting-at-beauty-salon-making-hairdo-2025-03-18-17-52-06-utc.jpg"
+                alt="Servicii profesionale de frumusețe"
+                className="w-full h-full object-cover md:object-center object-top"
+              />
+              {/* Overlay for text readability */}
+              <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60"></div>
+              
+              {/* Hero Content Centered */}
+              <div className="absolute inset-0 flex items-center justify-center z-10">
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                  {/* Badge */}
+                  <div className="inline-flex items-center gap-2 px-6 py-3 bg-white/20 backdrop-blur-md border-2 border-white/30 rounded-full mb-6 shadow-lg">
+                    <Sparkles className="w-5 h-5 text-white" />
+                    <span className="text-sm font-semibold text-white">Servicii premium</span>
+                  </div>
+                  
+                  <h1 className="text-4xl md:text-5xl lg:text-7xl font-elegant font-bold text-white mb-6 drop-shadow-lg">
+                    Transformă-ți
+                    <span className="block text-beauty-pink-light">frumusețea naturală</span>
+                  </h1>
+                  <p className="text-lg md:text-xl text-white/95 max-w-3xl mx-auto mb-10 leading-relaxed drop-shadow-md">
+                    Servicii profesionale realizate de experți cu produse premium
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <Link
+                      to="/programare"
+                      className="inline-flex items-center gap-2 px-8 py-4 bg-beauty-pink text-white rounded-full font-semibold hover:bg-beauty-pink-dark hover:shadow-xl hover:scale-105 transition-all duration-300 text-base"
+                    >
+                      <Calendar className="w-5 h-5" />
+                      Programează-te acum
+                    </Link>
+                    <Link
+                      to="#servicii"
+                      className="inline-flex items-center gap-2 px-8 py-4 bg-white/20 backdrop-blur-md text-white border-2 border-white/40 rounded-full font-semibold hover:bg-white/30 hover:shadow-xl hover:scale-105 transition-all duration-300 text-base"
+                    >
+                      <ArrowRight className="w-5 h-5" />
+                      Vezi serviciile
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>

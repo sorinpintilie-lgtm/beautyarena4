@@ -9,9 +9,9 @@ const PromotionalCarousel = () => {
     {
       id: 1,
       image: '/imaginisite/beauty-hairstyle-and-people-concept-happy-young-2025-10-09-19-09-23-utc.jpg',
-      title: 'REDUCERI DE IARNĂ',
-      subtitle: 'Până la 50% reducere',
-      description: 'Produse premium pentru îngrijirea frumuseții',
+      title: 'Frumusețe la nivel profesional',
+      subtitle: 'Coafor, cosmetică, manichiură — 17 ani de experiență pentru rezultate impecabile.',
+      description: 'Coafor, cosmetică, manichiură — 17 ani de experiență pentru rezultate impecabile.',
       buttonText: 'Descoperă Oferte',
       buttonLink: '/shop',
       badge: '50% OFF',
@@ -20,9 +20,9 @@ const PromotionalCarousel = () => {
     {
       id: 2,
       image: '/imaginisite/2.jpg',
-      title: 'EPILARE DEFINITIVĂ',
-      subtitle: 'Elimină părul nedorit permanent',
-      description: 'Tratament laser profesional pentru rezultate durabile',
+      title: 'NOU: Epilare definitivă cu laser',
+      subtitle: 'Tehnologie avansată pentru o piele fină, fără efort. Programări disponibile acum.',
+      description: 'Tehnologie avansată pentru o piele fină, fără efort. Programări disponibile acum.',
       buttonText: 'Rezervă Tratament',
       buttonLink: '/servicii',
       badge: 'POPULAR',
@@ -31,9 +31,9 @@ const PromotionalCarousel = () => {
     {
       id: 3,
       image: '/imaginisite/3.jpg',
-      title: 'COSMETICE PROFESIONALE',
-      subtitle: 'Calitate garantată',
-      description: 'Gama completă de produse profesionale',
+      title: 'Produse premium, livrate la tine',
+      subtitle: 'Descoperă în shop gama noastră de îngrijire profesională — selectată de experți.',
+      description: 'Descoperă în shop gama noastră de îngrijire profesională — selectată de experți.',
       buttonText: 'Explorează',
       buttonLink: '/shop',
       badge: 'PRO',
@@ -104,16 +104,16 @@ const PromotionalCarousel = () => {
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-beauty-pink/20 backdrop-blur-sm rounded-full border border-beauty-pink/30 mb-4">
             <Tag className="w-4 h-4 text-beauty-pink-dark" />
-            <span className="text-sm font-medium text-beauty-pink-dark">Oferte Speciale</span>
+            <span className="text-sm font-medium text-beauty-pink-dark">Serviciu nou</span>
           </div>
           
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-elegant font-bold text-gray-900 mb-4">
-            Descoperă
-            <span className="block text-beauty-pink">Oferte Incredible</span>
+            Serviciu nou:
+            <span className="block text-beauty-pink">Epilare definitivă cu laser</span>
           </h2>
           
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Profitați de ofertele noastre exclusive și descoperiți produse și servicii de cea mai înaltă calitate
+            Piele fină, fără compromis
           </p>
         </div>
 
@@ -135,24 +135,24 @@ const PromotionalCarousel = () => {
             <div className="bg-beauty-pink/20 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
               <Percent className="w-6 h-6 text-beauty-pink-dark" />
             </div>
-            <h3 className="font-semibold text-gray-900 mb-2">Reduceri Până la 50%</h3>
-            <p className="text-sm text-gray-600">Produse selectate cu prețuri speciale</p>
+            <h3 className="font-semibold text-gray-900 mb-2">Servicii Profesionale</h3>
+            <p className="text-sm text-gray-600">Îngrijire realizată de specialiști cu peste 17 ani de experiență</p>
           </div>
           
           <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 text-center border border-beauty-pink/20">
             <div className="bg-beauty-pink/20 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
               <Sparkles className="w-6 h-6 text-beauty-pink-dark" />
             </div>
-            <h3 className="font-semibold text-gray-900 mb-2">Calitate Premium</h3>
-            <p className="text-sm text-gray-600">Produse și servicii de înaltă calitate</p>
+            <h3 className="font-semibold text-gray-900 mb-2">Programare Online</h3>
+            <p className="text-sm text-gray-600">Rezervă rapid, la orice oră — direct de pe website</p>
           </div>
           
           <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 text-center border border-beauty-pink/20">
             <div className="bg-beauty-pink/20 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
               <Clock className="w-6 h-6 text-beauty-pink-dark" />
             </div>
-            <h3 className="font-semibold text-gray-900 mb-2">Livrare Rapidă</h3>
-            <p className="text-sm text-gray-600">Livrare gratuită pentru comenzi peste 200 RON</p>
+            <h3 className="font-semibold text-gray-900 mb-2">Produse Verificate de Experți</h3>
+            <p className="text-sm text-gray-600">O selecție atentă de cosmetice profesionale pentru rezultate reale</p>
           </div>
         </div>
       </div>
