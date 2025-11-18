@@ -279,7 +279,7 @@ const ShopAndServicesSection = () => {
             </div>
 
             {/* View All Services Button */}
-            <Link to="/services" className="block mt-2 md:mt-3">
+            <Link to="/servicii" className="block mt-2 md:mt-3">
               <button className="w-full btn-secondary text-xs md:text-sm py-2 md:py-3">
                 Vezi toate serviciile
                 <ArrowRight className="w-3 h-3 md:w-4 md:h-4 ml-1 md:ml-2 inline" />

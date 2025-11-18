@@ -4,6 +4,7 @@ import { Menu, X, Calendar, Heart, ShoppingCart, User } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
+import Logo from '../../../BeautyArena_logo_white.png';
 
 const Header = ({ onCartClick }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -37,12 +38,14 @@ const Header = ({ onCartClick }) => {
               WebkitBackdropFilter: 'none'
             }}>
       <div className="pl-6 pr-4 sm:px-6 lg:px-8" style={{backgroundColor: 'transparent'}}>
-        <div className="flex items-center justify-between h-14 lg:h-16">
+        <div className="flex items-center justify-between py-1 lg:py-2">
           {/* Logo */}
-          <Link to="/" className="flex-shrink-0">
-            <h1 className="text-xl lg:text-2xl font-elegant font-bold text-white drop-shadow-sm">
-              BeautyArena
-            </h1>
+          <Link to="/" className="flex-shrink-0 flex items-center">
+            <img
+              src={Logo}
+              alt="BeautyArena"
+              className="h-16 w-auto lg:h-24 drop-shadow-sm"
+            />
           </Link>
 
           {/* Desktop Navigation */}
