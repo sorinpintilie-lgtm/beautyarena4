@@ -27,6 +27,8 @@ const ContactPage = lazy(() => import('./pages/ContactPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const OrderConfirmationPage = lazy(() => import('./pages/OrderConfirmationPage'));
 const CarouselTest = lazy(() => import('./components/common/CarouselTest'));
+const LoginPage = lazy(() => import('./pages/LoginPage'));
+const AccountPage = lazy(() => import('./pages/AccountPage'));
 
 // Loading component
 const LoadingSpinner = () => (
@@ -48,7 +50,7 @@ function App() {
             <WishlistProvider>
               <ComparisonProvider>
                 <ServiceBookingProvider>
-                  <div className="min-h-screen flex flex-col pt-20 lg:pt-28">
+                  <div className="min-h-screen flex flex-col pt-[4.3rem] lg:pt-28">
                     <Header onCartClick={() => setIsCartOpen(true)} />
                     <main className="flex-grow">
                       <Suspense fallback={<LoadingSpinner />}>
@@ -65,6 +67,8 @@ function App() {
                           <Route path="/despre" element={<AboutPage />} />
                           <Route path="/programare" element={<BookingPage />} />
                           <Route path="/contact" element={<ContactPage />} />
+                          <Route path="/autentificare" element={<LoginPage />} />
+                          <Route path="/contul-meu" element={<AccountPage />} />
                           <Route path="/confirmare-comanda" element={<OrderConfirmationPage />} />
                           <Route path="/carousel-test" element={<CarouselTest />} />
                         </Routes>

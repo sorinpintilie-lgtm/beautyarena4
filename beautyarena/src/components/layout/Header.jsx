@@ -93,11 +93,17 @@ const Header = ({ onCartClick }) => {
 
             {/* User Account */}
             {isAuthenticated ? (
-              <button className="p-2 text-white/90 hover:text-white transition-colors duration-300">
+              <button
+                className="p-2 text-white/90 hover:text-white transition-colors duration-300"
+                onClick={() => navigate('/contul-meu')}
+              >
                 <User className="w-5 h-5 drop-shadow-sm" />
               </button>
             ) : (
-              <button className="text-white/90 hover:text-white transition-colors duration-300 font-medium text-sm drop-shadow-sm">
+              <button
+                className="text-white/90 hover:text-white transition-colors duration-300 font-medium text-sm drop-shadow-sm"
+                onClick={() => navigate('/autentificare')}
+              >
                 AUTENTIFICARE
               </button>
             )}
@@ -105,7 +111,7 @@ const Header = ({ onCartClick }) => {
             {/* Book Appointment */}
             <Link to="/programare" className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg font-medium hover:bg-white/30 transition-colors flex items-center space-x-2 text-sm text-white border border-white/20">
               <Calendar className="w-4 h-4 drop-shadow-sm" />
-              <span>PROGRAMEAZĂ</span>
+              <span>PROGRAMEAZĂ-TE</span>
             </Link>
           </div>
 
@@ -145,16 +151,33 @@ const Header = ({ onCartClick }) => {
                 </Link>
               ))}
               
-              {!isAuthenticated && (
+              {!isAuthenticated ? (
                 <button
                   className="flex items-center px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 transition-all duration-300 rounded-lg mx-2 font-medium"
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    navigate('/autentificare');
+                  }}
                   style={{
                     animationDelay: `${navItems.length * 50}ms`,
                     animation: isMenuOpen ? 'slideInLeft 0.3s ease-out forwards' : 'none'
                   }}
                 >
                   AUTENTIFICARE
+                </button>
+              ) : (
+                <button
+                  className="flex items-center px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 transition-all duration-300 rounded-lg mx-2 font-medium"
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    navigate('/contul-meu');
+                  }}
+                  style={{
+                    animationDelay: `${navItems.length * 50}ms`,
+                    animation: isMenuOpen ? 'slideInLeft 0.3s ease-out forwards' : 'none'
+                  }}
+                >
+                  CONTUL MEU
                 </button>
               )}
 
@@ -169,7 +192,7 @@ const Header = ({ onCartClick }) => {
                   }}
                 >
                   <Calendar className="w-4 h-4 drop-shadow-sm" />
-                  <span>PROGRAMEAZĂ</span>
+                  <span>PROGRAMEAZĂ-TE</span>
                 </Link>
               </div>
             </nav>

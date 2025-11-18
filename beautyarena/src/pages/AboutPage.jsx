@@ -84,7 +84,7 @@ const AboutPage = () => {
         keywords="despre Salon Beauty Arena, istoric salon, echipa Salon Beauty Arena, 17 ani experienta, salon frumusete Bucuresti"
       />
 
-      <div className="min-h-screen bg-white pt-16">
+      <div className="min-h-screen bg-white">
         {/* Hero Section – full-bleed with image */}
         <section className="relative overflow-hidden min-h-[70vh] flex items-end">
           <div className="absolute inset-0">

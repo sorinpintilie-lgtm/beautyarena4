@@ -479,7 +479,7 @@ const ServicesPage = () => {
         keywords="servicii frumusețe, coafură, machiaj profesional, îngrijire ten, manichiură, pedichiură, salon frumusețe Cluj"
       />
 
-      <div className="min-h-screen bg-gradient-to-b from-white via-beauty-pink-light/10 to-white pt-16">
+      <div className="min-h-screen bg-gradient-to-b from-white via-beauty-pink-light/10 to-white">
         {/* Enhanced Hero Section with Full-Width Banner */}
         <section className="relative overflow-hidden min-h-[80vh] flex items-end">
           {/* Full-bleed background image */}

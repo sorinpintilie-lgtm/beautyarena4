@@ -41,7 +41,11 @@ const ContactPage = () => {
     {
       icon: <Clock className="w-6 h-6" />,
       title: 'Program',
-      details: ['Luni - Vineri: 9:00 - 20:00', 'Sâmbătă - Duminică: 10:00 - 18:00'],
+      details: [
+        'Luni - Vineri: 9:00 - 21:00',
+        'Sâmbătă: 9:00 - 17:00',
+        'Duminică: închis'
+      ],
       action: 'Vezi programările'
     }
   ];

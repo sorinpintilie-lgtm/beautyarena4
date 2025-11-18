@@ -132,8 +132,9 @@ const Footer = () => {
               <div className="flex items-start space-x-3">
                 <Clock className="w-5 h-5 text-beauty-pink mt-0.5 flex-shrink-0" />
                 <div className="text-gray-300">
-                  <div>Lun - Vin: 9:00 - 20:00</div>
-                  <div>Sâm - Dum: 10:00 - 18:00</div>
+                  <div>Luni - Vineri: 9:00 - 21:00</div>
+                  <div>Sâmbătă: 9:00 - 17:00</div>
+                  <div>Duminică: închis</div>
                 </div>
               </div>
             </div>
