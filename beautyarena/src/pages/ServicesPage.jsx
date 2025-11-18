@@ -360,7 +360,7 @@ const ServicesPage = () => {
     {
       id: 4,
       title: 'Cosmetică – epilare clasică',
-      image: '/imaginisite/photo-epilation-close-up-of-hair-removal-procedu-2025-03-31-03-42-49-utc.jpg',
+      image: '/beautician-giving-epilation-wax-treatment-to-woman-2025-03-09-19-36-43-utc-min.jpg',
       services: [
         // Epilat femei
         { name: 'Epilat femei – pensat', details: '55 RON' },
