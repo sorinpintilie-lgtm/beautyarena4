@@ -54,27 +54,26 @@ const PromotionalCarousel = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/70"></div>
       </div>
 
-
       {/* Content */}
-      <div className="absolute inset-0 z-10 flex flex-col justify-center items-center text-center px-6 md:px-12">
-        <div className="max-w-lg space-y-8">
+      <div className="absolute inset-0 z-10 flex items-end justify-center px-4 sm:px-8 pb-6 sm:pb-10">
+        <div className="w-full max-w-md space-y-2 sm:space-y-3 text-left sm:text-center">
           {/* Title */}
-          <h2 className="text-3xl md:text-5xl lg:text-6xl font-elegant font-bold text-white leading-tight drop-shadow-2xl">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-elegant font-bold text-white leading-tight drop-shadow-2xl">
             {slide.title}
           </h2>
           
           {/* Subtitle */}
-          <p className="text-xl md:text-2xl text-white font-semibold drop-shadow-lg">
+          <p className="text-sm sm:text-base md:text-lg text-white/90 font-medium drop-shadow-lg">
             {slide.subtitle}
           </p>
           
           {/* CTA Button */}
           <Link
             to={slide.buttonLink}
-            className="inline-flex items-center gap-3 px-10 py-5 bg-beauty-pink hover:bg-beauty-pink-dark text-white rounded-full font-semibold transition-all duration-300 transform hover:scale-105 shadow-2xl group/btn text-lg"
+            className="inline-flex items-center gap-2 px-6 py-2.5 sm:px-7 sm:py-3 bg-beauty-pink hover:bg-beauty-pink-dark text-white rounded-full font-semibold transition-all duration-300 transform hover:scale-105 shadow-2xl group/btn text-xs sm:text-sm"
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'scale(1.05) translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 20px 40px rgba(255, 171, 157, 0.4)';
+              e.currentTarget.style.boxShadow = '0 16px 32px rgba(255, 171, 157, 0.4)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'scale(1) translateY(0)';
@@ -82,7 +81,7 @@ const PromotionalCarousel = () => {
             }}
           >
             {slide.buttonText}
-            <ArrowRight className="w-6 h-6 group-hover/btn:translate-x-1 transition-transform" />
+            <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
           </Link>
         </div>
       </div>
@@ -130,7 +129,38 @@ const PromotionalCarousel = () => {
         </div>
 
         {/* Additional Info Bar */}
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Mobile layout: 2 cards on first row, third spanning full width under them */}
+        <div className="mt-12 md:hidden">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 text-center border border-beauty-pink/20">
+              <div className="bg-beauty-pink/20 w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Percent className="w-5 h-5 text-beauty-pink-dark" />
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-1 text-sm">Servicii Profesionale</h3>
+              <p className="text-xs text-gray-600">Îngrijire realizată de specialiști cu peste 17 ani de experiență</p>
+            </div>
+            
+            <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 text-center border border-beauty-pink/20">
+              <div className="bg-beauty-pink/20 w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Sparkles className="w-5 h-5 text-beauty-pink-dark" />
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-1 text-sm">Programare Online</h3>
+              <p className="text-xs text-gray-600">Rezervă rapid, la orice oră — direct de pe website</p>
+            </div>
+
+            {/* Second row: spans both columns so it aligns with the two above */}
+            <div className="col-span-2 bg-white/80 backdrop-blur-sm rounded-xl p-4 text-center border border-beauty-pink/20">
+              <div className="bg-beauty-pink/20 w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Clock className="w-5 h-5 text-beauty-pink-dark" />
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-1 text-sm">Produse Verificate de Experți</h3>
+              <p className="text-xs text-gray-600">O selecție atentă de cosmetice profesionale pentru rezultate reale</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop / tablet layout: original 3 in a row */}
+        <div className="mt-12 hidden md:grid md:grid-cols-3 gap-6">
           <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 text-center border border-beauty-pink/20">
             <div className="bg-beauty-pink/20 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
               <Percent className="w-6 h-6 text-beauty-pink-dark" />

@@ -290,7 +290,7 @@ const ShopAndServicesSection = () => {
 
           {/* Bottom CTA */}
           <div className="mt-16 text-center">
-            <div className="relative bg-beauty-pink rounded-2xl p-8 text-white overflow-hidden">
+            <div className="relative bg-beauty-pink rounded-2xl p-6 sm:p-8 text-white overflow-hidden">
               <div className="absolute inset-0">
                 <img
                   src="/images/makeup-artist-makes-makeup-to-a-girl-apply-beige-2025-03-13-10-07-09-utc-min.jpg"
@@ -298,24 +298,35 @@ const ShopAndServicesSection = () => {
                   className="w-full h-full object-cover opacity-60"
                 />
               </div>
-              <div className="relative z-10">
-                <h3 className="text-2xl md:text-3xl font-elegant font-bold mb-4 text-black">
-                  Experiență completă de frumusețe
-                </h3>
-                <p className="text-black/80 mb-6 max-w-2xl mx-auto">
-                  Combină produsele premium cu serviciile noastre profesionale pentru rezultate extraordinare.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Link to="/shop">
-                    <button className="px-6 py-3 rounded-full font-semibold transition-colors duration-300 flex items-center text-gray-800" style={{ backgroundColor: '#FFB6A3' }}>
-                      <ShoppingCart className="w-5 h-5 mr-2" />
-                      Explorează magazinul
+              <div className="relative z-10 flex flex-col justify-between min-h-[260px] sm:min-h-0">
+                {/* Title + text at top */}
+                <div>
+                  <h3 className="text-lg sm:text-2xl md:text-3xl font-elegant font-bold mb-2 sm:mb-4 text-black">
+                    Experiență completă de frumusețe
+                  </h3>
+                  <p className="text-[11px] sm:text-sm md:text-base text-black/80 max-w-2xl mx-auto text-justify sm:text-center leading-snug">
+                    Combină produsele noastre profesionale cu serviciile din salon pentru rezultate vizibile și de durată.
+                  </p>
+                </div>
+
+                {/* Buttons pinned toward bottom on mobile */}
+                <div className="mt-4 sm:mt-6 grid grid-cols-2 gap-3 sm:flex sm:flex-row sm:gap-4 sm:justify-center">
+                  <Link to="/shop" className="col-span-1">
+                    <button
+                      className="w-full px-4 py-2 sm:px-6 sm:py-3 rounded-full font-semibold transition-colors duration-300 flex items-center justify-center text-gray-800 text-xs sm:text-sm"
+                      style={{ backgroundColor: '#FFB6A3' }}
+                    >
+                      <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                      Magazin
                     </button>
                   </Link>
-                  <Link to="/booking">
-                    <button className="px-6 py-3 rounded-full font-semibold transition-colors duration-300 flex items-center text-gray-800" style={{ backgroundColor: '#FFB6A3' }}>
-                      <Calendar className="w-5 h-5 mr-2" />
-                      Programează acum
+                  <Link to="/booking" className="col-span-1">
+                    <button
+                      className="w-full px-4 py-2 sm:px-6 sm:py-3 rounded-full font-semibold transition-colors duration-300 flex items-center justify-center text-gray-800 text-xs sm:text-sm"
+                      style={{ backgroundColor: '#FFB6A3' }}
+                    >
+                      <Calendar className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                      Programează-te
                     </button>
                   </Link>
                 </div>

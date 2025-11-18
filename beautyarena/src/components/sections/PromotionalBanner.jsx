@@ -1,37 +1,34 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Tag, ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 const PromotionalBanner = () => {
   return (
     <section className="section-padding bg-gradient-to-br from-beauty-pink-light to-white">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 items-center">
           {/* Text Content */}
-          <div className="text-gray-900 space-y-6">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-beauty-pink/20 backdrop-blur-sm rounded-full border border-beauty-pink/30">
-              <Tag className="w-4 h-4 text-beauty-pink-dark" />
-              <span className="text-sm font-medium text-beauty-pink-dark">Magazin online</span>
-            </div>
-
-            <h2 className="text-4xl md:text-5xl font-elegant font-bold leading-tight text-gray-900">
+          <div className="text-gray-900 space-y-4 sm:space-y-6">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-elegant font-bold leading-tight text-gray-900">
               Magazinul online Beauty Arena
             </h2>
 
-            <p className="text-lg text-gray-700 max-w-md">
+            <p className="text-sm sm:text-base text-gray-700 max-w-md">
               Accesează gama completă de cosmetice premium și produse de îngrijire selectate de experții noștri. Calitate de salon, livrată direct acasă.
             </p>
 
-            <Link
-              to="/shop"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold transition-all duration-300 shadow-lg group active:scale-95 text-white"
-              style={{ backgroundColor: '#FFAB9D' }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#FF8B7A'}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#FFAB9D'}
-            >
-              Cumpără reducerile
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
+            <div className="flex justify-center lg:justify-start">
+              <Link
+                to="/shop"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold transition-all duration-300 shadow-lg group active:scale-95 text-sm sm:text-base text-white"
+                style={{ backgroundColor: '#FFAB9D' }}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#FF8B7A')}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#FFAB9D')}
+              >
+                Magazin
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
           </div>
 
           {/* Visual Element */}

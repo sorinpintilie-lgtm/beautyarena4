@@ -26,6 +26,17 @@ const AboutPage = () => {
     }
   ];
 
+  const teamMembers = [
+    { name: 'Loredana', role: 'Servicii coafor' },
+    { name: 'Camelia', role: 'Servicii coafor' },
+    { name: 'Dana', role: 'Servicii coafor' },
+    { name: 'Valentina', role: 'Servicii manichiură / pedichiură' },
+    { name: 'Teo', role: 'Servicii manichiură / pedichiură' },
+    { name: 'Camelia', role: 'Servicii manichiură / pedichiură' },
+    { name: 'Geo', role: 'Servicii cosmetică / epilare definitivă' },
+    { name: 'Mihaela', role: 'Servicii cosmetică / epilare definitivă' },
+  ];
+
   const achievements = [
     { number: '17', label: 'Ani de Experiență' },
     { number: '5000+', label: 'Clienți Mulțumiți' },
@@ -42,39 +53,71 @@ const AboutPage = () => {
       />
 
       <div className="min-h-screen bg-white pt-16">
-        {/* Hero Section */}
-        <section className="bg-gradient-to-br from-beauty-pink/10 to-beauty-pink-light/20 py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-elegant font-bold text-black mb-6">
-                Despre Noi
+        {/* Hero Section – full-bleed with image */}
+        <section className="relative overflow-hidden min-h-[70vh] flex items-end">
+          <div className="absolute inset-0">
+            <img
+              src="/images/hairdresser-doing-haircut-for-women-in-hairdressin-2025-10-16-23-09-35-utc-min.jpg"
+              alt="Echipa Beauty Arena în salon"
+              className="w-full h-full object-cover"
+              style={{ objectPosition: '30% center' }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
+          </div>
+
+          <div className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-10 sm:pb-14 flex justify-center lg:justify-start">
+            <div className="max-w-xl bg-black/35 sm:bg-black/25 backdrop-blur-sm rounded-2xl px-4 py-4 sm:px-6 sm:py-6 md:px-8 md:py-8">
+              <h1
+                className="text-3xl sm:text-4xl md:text-5xl font-elegant font-bold text-white leading-tight text-left"
+                style={{ textShadow: '3px 3px 6px rgba(0,0,0,0.7), 1px 1px 3px rgba(0,0,0,0.5)' }}
+              >
+                Despre Beauty Arena
               </h1>
-              <div className="w-24 h-1 bg-gradient-to-r from-beauty-pink to-beauty-pink-dark mx-auto mb-8"></div>
-              <p className="text-xl md:text-2xl text-gray-700 max-w-4xl mx-auto leading-relaxed">
-                Povestea Beauty Arena - unde frumusețea întâlnește profesionalismul
+              <p
+                className="mt-3 text-sm sm:text-base md:text-lg text-white/90 font-medium leading-relaxed text-left"
+                style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8), 1px 1px 2px rgba(0,0,0,0.6)' }}
+              >
+                Peste 17 ani de experiență, o echipă stabilă de specialiști și o singură promisiune:
+                frumusețe cu grijă și profesionalism, de fiecare dată.
               </p>
             </div>
           </div>
         </section>
 
         {/* Main Content */}
-        <section className="py-20">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Story Section */}
-            <div className="mb-16">
-              <div className="prose prose-lg max-w-none">
-                <p className="text-lg md:text-xl text-gray-700 leading-relaxed mb-8">
-                  <strong className="text-beauty-pink-dark">Beauty Arena a luat naștere acum 17 ani</strong> din dorința de a crea un spațiu în care frumusețea să fie tratată cu profesionalism, grijă și pasiune. De atunci, salonul nostru din București a crescut alături de clienți, devenind un loc în care oamenii vin nu doar pentru servicii, ci pentru experiență, încredere și rezultate pe măsura așteptărilor.
+        <section className="py-10">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Story Section with image */}
+            <div className="mb-10 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:items-center">
+              <div>
+                <p className="text-base md:text-lg text-gray-700 leading-relaxed mb-4">
+                  <strong className="text-beauty-pink-dark">Beauty Arena a luat naștere acum 17 ani</strong>{' '}
+                  din dorința de a crea un spațiu în care frumusețea să fie tratată cu profesionalism, grijă și
+                  pasiune. De atunci, salonul nostru din București a crescut alături de clienți, devenind un loc
+                  în care oamenii vin nu doar pentru servicii, ci pentru experiență, încredere și rezultate pe
+                  măsura așteptărilor.
                 </p>
 
-                <p className="text-lg text-gray-700 leading-relaxed mb-8">
-                  Specializați în <strong className="text-beauty-pink-dark">coafură și manichiură</strong>, am construit în timp o echipă stabilă de profesioniști care își perfecționează constant tehnicile și înțeleg importanța fiecărui detaliu. Credem în calitate, în evoluție și în relații autentice cu cei care ne trec pragul.
+                <p className="text-base md:text-lg text-gray-700 leading-relaxed">
+                  Specializați în <strong className="text-beauty-pink-dark">coafură, manichiură și cosmetică</strong>,
+                  am construit în timp o echipă stabilă de profesioniști care își perfecționează constant
+                  tehnicile și înțeleg importanța fiecărui detaliu. Credem în calitate, în evoluție și în relații
+                  autentice cu cei care ne trec pragul.
                 </p>
+              </div>
+
+              <div className="relative h-64 sm:h-72 lg:h-80 rounded-3xl overflow-hidden shadow-xl">
+                <img
+                  src="/images/a-woman-at-the-beauty-salon-2025-10-14-10-53-53-utc-min.jpg"
+                  alt="Clientă în salonul Beauty Arena"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
               </div>
             </div>
 
             {/* Features Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
               {features.map((feature, index) => (
                 <div key={index} className="bg-white border-2 border-gray-100 rounded-2xl p-8 hover:border-beauty-pink transition-all duration-300 hover:shadow-lg">
                   <div className="w-16 h-16 bg-beauty-pink/10 rounded-full flex items-center justify-center mb-6 text-beauty-pink">
@@ -87,7 +130,7 @@ const AboutPage = () => {
             </div>
 
             {/* Innovation Section */}
-            <div className="bg-gradient-to-r from-beauty-pink/5 to-beauty-pink-light/10 rounded-3xl p-8 md:p-12 mb-16">
+            <div className="bg-gradient-to-r from-beauty-pink/5 to-beauty-pink-light/10 rounded-3xl p-6 md:p-10 mb-10">
               <div className="flex items-center mb-6">
                 <Zap className="w-8 h-8 text-beauty-pink mr-3" />
                 <h2 className="text-2xl md:text-3xl font-elegant font-bold text-black">
@@ -103,8 +146,39 @@ const AboutPage = () => {
               </div>
             </div>
 
+            {/* Team Section */}
+            <div className="mb-14">
+              <h2 className="text-2xl md:text-3xl font-elegant font-bold text-black mb-6 text-center">
+                Echipa Beauty Arena
+              </h2>
+              <p className="text-base md:text-lg text-gray-700 max-w-3xl mx-auto text-center mb-8">
+                În spatele fiecărei transformări reușite se află oameni dedicați. Echipa noastră reunește
+                specialiști cu experiență în coafor, manichiură / pedichiură și cosmetică / epilare definitivă.
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
+                {teamMembers.map((member, index) => (
+                  <div
+                    key={`${member.name}-${index}`}
+                    className="bg-white border border-gray-100 rounded-2xl p-4 flex flex-col items-center text-center shadow-sm hover:shadow-md transition-shadow"
+                  >
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden mb-3 bg-gradient-to-br from-beauty-pink to-beauty-pink-dark flex items-center justify-center">
+                      <span className="text-white text-xl sm:text-2xl font-bold">
+                        {member.name.charAt(0)}
+                      </span>
+                    </div>
+                    <p className="text-sm sm:text-base font-semibold text-gray-900">
+                      {member.name}
+                    </p>
+                    <p className="mt-1 text-xs sm:text-sm text-gray-600 leading-snug">
+                      {member.role}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {/* New Website Section */}
-            <div className="mb-16">
+            <div className="mb-14">
               <h2 className="text-2xl md:text-3xl font-elegant font-bold text-black mb-6 text-center">
                 Noul Site Web
               </h2>
@@ -117,7 +191,7 @@ const AboutPage = () => {
             </div>
 
             {/* Values Section */}
-            <div className="text-center mb-16">
+            <div className="text-center mb-14">
               <h2 className="text-2xl md:text-3xl font-elegant font-bold text-black mb-8">
                 Valorile Noastre
               </h2>
@@ -153,7 +227,7 @@ const AboutPage = () => {
         </section>
 
         {/* Achievements Section */}
-        <section className="py-16 bg-gray-50">
+        <section className="py-12 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-elegant font-bold text-black mb-4">

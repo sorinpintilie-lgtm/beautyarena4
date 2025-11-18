@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Calendar, Clock, User, Mail, Phone, MessageSquare, Check, ChevronLeft, ChevronRight, Scissors, Sparkles, Star, Palette, Heart, Zap } from 'lucide-react';
 import SEO from '../components/common/SEO';
+import { useServiceBooking } from '../context/ServiceBookingContext';
 
 const BookingPage = () => {
   const navigate = useNavigate();
@@ -16,6 +17,11 @@ const BookingPage = () => {
     message: ''
   });
   const [errors, setErrors] = useState({});
+  const {
+    selectedServices: bookedServices,
+    totalPrice: servicesCartTotal,
+    removeService,
+  } = useServiceBooking();
 
   const services = [
     { id: 1, icon: Scissors, name: 'Coafură profesională', duration: 90, price: 80 },
@@ -56,8 +62,8 @@ const BookingPage = () => {
   const validateStep = (step) => {
     const newErrors = {};
     
-    if (step === 1 && formData.selectedServices.length === 0) {
-      newErrors.services = 'Selectează cel puțin un serviciu';
+    if (step === 1 && formData.selectedServices.length === 0 && bookedServices.length === 0) {
+      newErrors.services = 'Selectează cel puțin un serviciu (din această listă sau din lista de prețuri)';
     }
     
     if (step === 2) {
@@ -104,6 +110,7 @@ const BookingPage = () => {
 
   const { totalDuration, totalPrice } = calculateTotal();
   const selectedServicesList = services.filter(s => formData.selectedServices.includes(s.id));
+  const combinedTotalPrice = totalPrice + servicesCartTotal;
 
   return (
     <>
@@ -172,6 +179,37 @@ const BookingPage = () => {
             </div>
           </div>
 
+          {/* Mobile summary (always visible on phone) */}
+          {(formData.selectedServices.length > 0 || bookedServices.length > 0) && (
+            <div className="mb-6 lg:hidden bg-white rounded-lg shadow-sm p-4 border border-gray-100">
+              <h3 className="text-base font-semibold text-gray-900 mb-2">
+                Sumar programare
+              </h3>
+              <div className="space-y-2 mb-2">
+                {selectedServicesList.map(service => (
+                  <div key={service.id} className="flex justify-between text-xs">
+                    <span className="text-gray-700">{service.name}</span>
+                    <span className="font-medium text-gray-900">{service.price} lei</span>
+                  </div>
+                ))}
+                {bookedServices.map(service => (
+                  <div key={service.key} className="flex justify-between text-xs">
+                    <span className="text-gray-700">{service.name}</span>
+                    <span className="font-medium text-gray-900">
+                      {service.price ? `${service.price} lei` : '-'}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-gray-600">Total estimat:</span>
+                <span className="font-bold text-beauty-pink">
+                  {combinedTotalPrice} lei
+                </span>
+              </div>
+            </div>
+          )}
+
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Main Form */}
             <div className="lg:col-span-2">
@@ -179,57 +217,132 @@ const BookingPage = () => {
                 {/* Step 1: Select Services */}
                 {currentStep === 1 && (
                   <div className="space-y-4">
-                    <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+                    <h2 className="text-2xl font-semibold text-gray-900 mb-2">
                       Selectează serviciile dorite
                     </h2>
-                    <p className="text-gray-600 mb-6">
-                      Poți selecta mai multe servicii pentru aceeași programare
+                    <p className="text-gray-600">
+                      Poți selecta servicii din lista de prețuri sau din opțiunile rapide de mai jos.
                     </p>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {services.map((service) => {
-                        const IconComponent = service.icon;
-                        const isSelected = formData.selectedServices.includes(service.id);
-                        
-                        return (
-                          <button
-                            key={service.id}
-                            onClick={() => toggleService(service.id)}
-                            className={`text-left p-4 rounded-lg border-2 transition-all ${
-                              isSelected
-                                ? 'border-beauty-pink bg-beauty-pink/5'
-                                : 'border-gray-200 hover:border-beauty-pink/50'
-                            }`}
+
+                    {bookedServices.length > 0 && (
+                      <div className="mt-4 space-y-3">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                          <p className="text-sm text-gray-700">
+                            <span className="font-semibold">{bookedServices.length}</span>{' '}
+                            servicii selectate din lista de prețuri ·{' '}
+                            <span className="font-semibold text-beauty-pink">
+                              Total estimat: {servicesCartTotal} lei
+                            </span>
+                          </p>
+                          <Link
+                            to="/servicii"
+                            className="self-start sm:self-end inline-flex items-center justify-center gap-1 text-xs font-medium text-beauty-pink hover:text-beauty-pink-dark"
                           >
-                            <div className="flex items-start gap-3">
-                              <div
-                                className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-                                style={{
-                                  backgroundColor: isSelected ? '#FFAB9D' : '#F3F4F6',
-                                  color: isSelected ? 'white' : '#6B7280'
-                                }}
-                              >
-                                <IconComponent className="w-5 h-5" />
-                              </div>
+                            Editează din lista de prețuri
+                            <ChevronRight className="w-3 h-3" />
+                          </Link>
+                        </div>
+
+                        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-3">
+                          {bookedServices.map((service) => (
+                            <div
+                              key={service.key}
+                              className="flex flex-col sm:flex-row justify-between gap-3 bg-white rounded-lg px-3 py-3 border border-gray-100"
+                            >
                               <div className="flex-1">
-                                <h3 className="font-semibold text-gray-900 mb-1">{service.name}</h3>
-                                <div className="flex items-center gap-3 text-sm text-gray-600">
-                                  <span className="flex items-center gap-1">
-                                    <Clock className="w-4 h-4" />
-                                    {service.duration} min
-                                  </span>
-                                  <span className="font-semibold text-beauty-pink">
+                                <p className="font-medium text-gray-900">{service.name}</p>
+                                {service.categoryTitle && (
+                                  <p className="text-xs text-gray-500">
+                                    {service.categoryTitle}
+                                  </p>
+                                )}
+                                {service.details && (
+                                  <p className="mt-1 text-xs text-gray-500">
+                                    {service.details}
+                                  </p>
+                                )}
+                                {service.price > 0 && (
+                                  <p className="mt-1 text-sm font-semibold text-beauty-pink">
                                     {service.price} lei
-                                  </span>
-                                </div>
+                                  </p>
+                                )}
                               </div>
-                              {isSelected && (
-                                <Check className="w-5 h-5 text-beauty-pink flex-shrink-0" />
-                              )}
+                              <button
+                                type="button"
+                                onClick={() => removeService(service.key)}
+                                className="mt-1 sm:mt-0 self-end flex items-center justify-end px-3 py-1.5 rounded-full text-xs font-semibold border border-red-200 text-red-600 hover:bg-red-50 transition-colors"
+                              >
+                                Elimină
+                              </button>
                             </div>
-                          </button>
-                        );
-                      })}
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {bookedServices.length === 0 && (
+                      <p className="mt-4 text-sm text-gray-500">
+                        Nu ai selectat încă servicii din{' '}
+                        <Link
+                          to="/servicii"
+                          className="font-medium text-beauty-pink hover:text-beauty-pink-dark"
+                        >
+                          lista de prețuri
+                        </Link>
+                        . Poți continua cu opțiunile rapide de mai jos sau poți reveni la pagina
+                        Servicii pentru a alege exact serviciile dorite.
+                      </p>
+                    )}
+                    
+                    <div className="mt-6 space-y-3">
+                      <h3 className="text-sm font-semibold text-gray-900">
+                        Servicii rapide (opțional)
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {services.map((service) => {
+                          const IconComponent = service.icon;
+                          const isSelected = formData.selectedServices.includes(service.id);
+                          
+                          return (
+                            <button
+                              key={service.id}
+                              onClick={() => toggleService(service.id)}
+                              className={`text-left p-4 rounded-lg border-2 transition-all ${
+                                isSelected
+                                  ? 'border-beauty-pink bg-beauty-pink/5'
+                                  : 'border-gray-200 hover:border-beauty-pink/50'
+                              }`}
+                            >
+                              <div className="flex items-start gap-3">
+                                <div
+                                  className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                                  style={{
+                                    backgroundColor: isSelected ? '#FFAB9D' : '#F3F4F6',
+                                    color: isSelected ? 'white' : '#6B7280'
+                                  }}
+                                >
+                                  <IconComponent className="w-5 h-5" />
+                                </div>
+                                <div className="flex-1">
+                                  <h3 className="font-semibold text-gray-900 mb-1">{service.name}</h3>
+                                  <div className="flex items-center gap-3 text-sm text-gray-600">
+                                    <span className="flex items-center gap-1">
+                                      <Clock className="w-4 h-4" />
+                                      {service.duration} min
+                                    </span>
+                                    <span className="font-semibold text-beauty-pink">
+                                      {service.price} lei
+                                    </span>
+                                  </div>
+                                </div>
+                                {isSelected && (
+                                  <Check className="w-5 h-5 text-beauty-pink flex-shrink-0" />
+                                )}
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
                     
                     {errors.services && (
@@ -394,14 +507,28 @@ const BookingPage = () => {
                     <div className="bg-gray-50 rounded-lg p-6 space-y-4">
                       <div>
                         <h3 className="font-semibold text-gray-900 mb-2">Servicii selectate:</h3>
-                        <ul className="space-y-2">
-                          {selectedServicesList.map(service => (
-                            <li key={service.id} className="flex items-center justify-between text-gray-700">
-                              <span>{service.name}</span>
-                              <span className="font-medium">{service.price} lei</span>
-                            </li>
-                          ))}
-                        </ul>
+                        {(selectedServicesList.length > 0 || bookedServices.length > 0) ? (
+                          <ul className="space-y-2">
+                            {selectedServicesList.map(service => (
+                              <li key={service.id} className="flex items-center justify-between text-gray-700">
+                                <span>{service.name}</span>
+                                <span className="font-medium">{service.price} lei</span>
+                              </li>
+                            ))}
+                            {bookedServices.map(service => (
+                              <li key={service.key} className="flex items-center justify-between text-gray-700">
+                                <span>{service.name}</span>
+                                <span className="font-medium">
+                                  {service.price ? `${service.price} lei` : '-'}
+                                </span>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="text-sm text-gray-500">
+                            Niciun serviciu selectat încă
+                          </p>
+                        )}
                       </div>
 
                       <div className="border-t border-gray-200 pt-4">
@@ -484,7 +611,7 @@ const BookingPage = () => {
                   Sumar programare
                 </h3>
                 
-                {formData.selectedServices.length > 0 ? (
+                {(formData.selectedServices.length > 0 || bookedServices.length > 0) ? (
                   <>
                     <div className="space-y-3 mb-4">
                       {selectedServicesList.map(service => (
@@ -493,16 +620,24 @@ const BookingPage = () => {
                           <span className="font-medium text-gray-900">{service.price} lei</span>
                         </div>
                       ))}
+                      {bookedServices.map(service => (
+                        <div key={service.key} className="flex justify-between text-sm">
+                          <span className="text-gray-700">{service.name}</span>
+                          <span className="font-medium text-gray-900">
+                            {service.price ? `${service.price} lei` : '-'}
+                          </span>
+                        </div>
+                      ))}
                     </div>
                     
                     <div className="border-t border-gray-200 pt-4 space-y-2">
                       <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Durată totală:</span>
+                        <span className="text-gray-600">Durată totală (estimativă):</span>
                         <span className="font-medium text-gray-900">{totalDuration} min</span>
                       </div>
                       <div className="flex justify-between text-lg font-bold">
-                        <span className="text-gray-900">Total:</span>
-                        <span className="text-beauty-pink">{totalPrice} lei</span>
+                        <span className="text-gray-900">Total estimat:</span>
+                        <span className="text-beauty-pink">{combinedTotalPrice} lei</span>
                       </div>
                     </div>
                   </>

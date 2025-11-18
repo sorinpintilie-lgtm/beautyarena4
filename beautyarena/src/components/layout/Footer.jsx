@@ -56,51 +56,56 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* Quick Links + Services in 2 columns with divider */}
           <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-white">Legături rapide</h4>
-            <ul className="space-y-2">
-              {quickLinks.map((link) => {
-                const isHashLink = link.href.startsWith('/#');
-                
-                return (
-                  <li key={link.name}>
-                    {isHashLink ? (
-                      <a
-                        href={link.href}
-                        className="text-gray-300 hover:text-beauty-pink transition-colors duration-300"
-                      >
-                        {link.name}
-                      </a>
-                    ) : (
-                      <Link
-                        to={link.href}
-                        className="text-gray-300 hover:text-beauty-pink transition-colors duration-300"
-                      >
-                        {link.name}
-                      </Link>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
+            <div className="grid grid-cols-2 gap-4 items-start border border-gray-800/60 rounded-xl p-4">
+              {/* Quick Links */}
+              <div className="space-y-3 pr-0 sm:pr-4">
+                <h4 className="text-lg font-semibold text-white">Legături rapide</h4>
+                <ul className="space-y-2">
+                  {quickLinks.map((link) => {
+                    const isHashLink = link.href.startsWith('/#');
+                    
+                    return (
+                      <li key={link.name}>
+                        {isHashLink ? (
+                          <a
+                            href={link.href}
+                            className="text-gray-300 hover:text-beauty-pink transition-colors duration-300 text-sm"
+                          >
+                            {link.name}
+                          </a>
+                        ) : (
+                          <Link
+                            to={link.href}
+                            className="text-gray-300 hover:text-beauty-pink transition-colors duration-300 text-sm"
+                          >
+                            {link.name}
+                          </Link>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
 
-          {/* Services */}
-          <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-white">Serviciile noastre</h4>
-            <ul className="space-y-2">
-              {services.map((service) => (
-                <li key={service.name}>
-                  <Link
-                    to={service.href}
-                    className="text-gray-300 hover:text-beauty-pink transition-colors duration-300"
-                  >
-                    {service.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+              {/* Services */}
+              <div className="space-y-3 border-l border-gray-800/60 pl-4">
+                <h4 className="text-lg font-semibold text-white">Serviciile noastre</h4>
+                <ul className="space-y-2">
+                  {services.map((service) => (
+                    <li key={service.name}>
+                      <Link
+                        to={service.href}
+                        className="text-gray-300 hover:text-beauty-pink transition-colors duration-300 text-sm"
+                      >
+                        {service.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </div>
 
           {/* Contact Info */}
@@ -109,11 +114,11 @@ const Footer = () => {
             <div className="space-y-3">
               <div className="flex items-start space-x-3">
                 <MapPin className="w-5 h-5 text-beauty-pink mt-0.5 flex-shrink-0" />
-                <span className="text-gray-300">Strada Frumuseții 123, Orașul Glamour, CJ 400000</span>
+                <span className="text-gray-300">București, Bd. Basarabia, Nr. 96, Sector 2</span>
               </div>
               <div className="flex items-center space-x-3">
                 <Phone className="w-5 h-5 text-beauty-pink flex-shrink-0" />
-                <span className="text-gray-300">+40 264 123 456</span>
+                <span className="text-gray-300">0722 402 559</span>
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="w-5 h-5 text-beauty-pink flex-shrink-0" />

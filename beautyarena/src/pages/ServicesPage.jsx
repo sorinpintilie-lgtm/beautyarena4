@@ -6,12 +6,28 @@ import { useRealProducts } from '../hooks/useRealProducts';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import { useServiceBooking } from '../context/ServiceBookingContext';
+
+const parseServicePrice = (details) => {
+  if (!details) return 0;
+  const match = details.match(/(\d+)\s*(LEI|RON)/i);
+  if (!match) return 0;
+  const value = parseInt(match[1], 10);
+  return Number.isNaN(value) ? 0 : value;
+};
 
 const ServicesPage = () => {
   const [activeCategoryIndex, setActiveCategoryIndex] = useState(0);
   const { products, loading: productsLoading, error: productsError } = useRealProducts();
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
+  const {
+    selectedServices: bookedServices,
+    addService: addBookedService,
+    removeService: removeBookedService,
+    isSelected: isServiceBooked,
+    totalPrice: servicesCartTotal,
+  } = useServiceBooking();
   
   const serviceCategories = [
     {
@@ -187,6 +203,244 @@ const ServicesPage = () => {
     }
   ];
 
+  const priceCategories = [
+    {
+      id: 1,
+      title: 'Epilare definitivă laser',
+      image: '/imaginisite/young-woman-undergoing-laser-epilation-for-smooth-2025-05-02-06-04-28-utc.jpg',
+      services: [
+        {
+          name: 'Epilare definitivă cu 3 lungimi de undă',
+          details: '(Alexandrite, Diodă, ND-YAG)',
+        },
+        { name: 'Picioare scurt', details: '150 LEI' },
+        { name: 'Picioare lung', details: '250 LEI' },
+        { name: 'Inghinal total', details: '200 LEI' },
+        { name: 'Inghinal linie bikini', details: '70 LEI' },
+        { name: 'Abdomen / lombar', details: '150 LEI' },
+        { name: 'Brațe', details: '150 LEI' },
+        { name: 'Axilă', details: '100 LEI' },
+        { name: 'Spate / piept', details: '120 LEI' },
+        { name: 'Mustață', details: '50 LEI' },
+        { name: 'Față', details: '150 LEI' },
+        { name: 'Bărbie', details: '80 LEI' },
+        {
+          name: 'Epilat total – picioare lung, axilă, inghinal, brațe',
+          details: '770 LEI / 410 LEI',
+        },
+      ],
+    },
+    {
+      id: 2,
+      title: 'Coafor & frizerie',
+      image: '/imaginisite/hairdresser-brushing-hair-of-attractive-woman-in-b-2024-11-19-16-03-04-utc.jpg',
+      services: [
+        // Servicii coafor
+        { name: 'Tuns', details: '70 RON' },
+        { name: 'Breton', details: '25 RON' },
+        { name: 'Spălat păr scurt', details: '35 RON' },
+        { name: 'Spălat păr mediu', details: '45 RON' },
+        { name: 'Spălat păr lung', details: '45 RON' },
+        { name: 'Spălat păr foarte lung', details: '45 RON' },
+        { name: 'Coafat păr scurt', details: '55 RON' },
+        { name: 'Coafat păr mediu', details: '65 RON' },
+        { name: 'Coafat păr lung', details: '75 RON' },
+        { name: 'Coafat păr foarte lung', details: '85 RON' },
+        { name: 'Manoperă extensii clips', details: '55 RON' },
+        { name: 'Manoperă coc', details: '260 RON' },
+        { name: 'Permanent calotă', details: '200 RON' },
+        { name: 'Permanent păr scurt', details: '220 RON' },
+        { name: 'Permanent păr mediu', details: '240 RON' },
+        { name: 'Permanent păr lung', details: '275 RON' },
+        { name: 'Permanent Medavita', details: '400 RON' },
+
+        // Coafat ocazie
+        { name: 'Coafat ocazie păr scurt', details: '80 RON' },
+        { name: 'Coafat ocazie păr mediu', details: '100 RON' },
+        { name: 'Coafat ocazie păr lung', details: '115 RON' },
+        { name: 'Coafat ocazie păr foarte lung', details: '130 RON' },
+        { name: 'Burete pentru coafat', details: '50 RON' },
+        { name: 'Coafat mireasă', details: '350 RON' },
+
+        // Împletituri
+        { name: 'Împletitură spic', details: '60 RON' },
+        { name: 'Împletitură păr mediu', details: '55 RON' },
+        { name: 'Împletitură păr mediu și lung', details: '60 RON' },
+        { name: 'Împletitură păr foarte lung', details: '65 RON' },
+
+        // Șuvițe / vopsit / nuanțat
+        { name: 'Șuvițe păr scurt (spălat + coafat)', details: '210 RON' },
+        { name: 'Șuvițe păr mediu (spălat + coafat)', details: '230 RON' },
+        { name: 'Șuvițe păr lung (spălat + coafat)', details: '270 RON' },
+        { name: 'Șuvițe păr foarte lung (spălat + coafat)', details: '280 RON' },
+        { name: 'Meșe color crazy', details: '110 RON' },
+        { name: 'Nuanțat șuvițe păr scurt', details: '120 RON' },
+        { name: 'Nuanțat șuvițe păr mediu', details: '130 RON' },
+        { name: 'Nuanțat șuvițe păr lung', details: '140 RON' },
+        { name: 'Nuanțat șuvițe păr foarte lung', details: '160 RON' },
+
+        { name: 'Vopsit rădăcină (până în 50 gr. vopsea)', details: '240 RON' },
+        { name: 'Vopsit păr scurt', details: '240 RON' },
+        { name: 'Vopsit păr mediu', details: '280 RON' },
+        { name: 'Vopsit păr lung', details: '320 RON' },
+        { name: 'Vopsit păr foarte lung', details: '360 RON' },
+        { name: 'Vopsit / manoperă (vopsea clientă)', details: '70 RON' },
+
+        // Decolorare
+        { name: 'Decolorat păr scurt', details: '130 RON' },
+        { name: 'Decolorat păr mediu', details: '150 RON' },
+        { name: 'Decolorat păr lung', details: '200 RON' },
+        { name: 'Decolorat păr foarte lung', details: '240 RON' },
+
+        // Pachete ombre / balayage
+        {
+          name: 'Tehnica ombré (decolorat + vopsit + spălat + coafat)',
+          details: '800 RON',
+        },
+        {
+          name: 'Tehnica balayage (decolorat + vopsit + spălat + coafat)',
+          details: '800 RON',
+        },
+
+        // Abonamente coafor
+        {
+          name: 'Abonament coafor – spălat + coafat păr scurt (4+1 gratuit)',
+          details: '400 RON',
+        },
+        {
+          name: 'Abonament coafor – spălat + coafat păr mediu (4+1 gratuit)',
+          details: '500 RON',
+        },
+        {
+          name: 'Abonament coafor – spălat + coafat păr lung (4+1 gratuit)',
+          details: '550 RON',
+        },
+        {
+          name: 'Abonament coafor – spălat + coafat păr foarte lung (4+1 gratuit)',
+          details: '600 RON',
+        },
+        {
+          name: 'Ofertă 4+1',
+          details: 'Valabilă 30 zile de la data achiziționării',
+        },
+
+        // Tratamente păr și scalp
+        { name: 'Tratament Medavita B-Refibre', details: '325 RON' },
+        { name: 'Tratament fiole', details: '80 RON' },
+        { name: 'Tratament Milk Shake', details: '325 RON' },
+        { name: 'Tratament laminare', details: '325 RON' },
+        { name: 'Tratament scalp', details: '325 RON' },
+
+        // Servicii frizerie
+        { name: 'Frizerie – tuns', details: '45 RON / 55 RON' },
+        { name: 'Frizerie – spălat', details: '30 RON' },
+        { name: 'Frizerie – tuns barbă', details: '30 RON' },
+        { name: 'Frizerie – contur barbă', details: '30 RON' },
+      ],
+    },
+    {
+      id: 3,
+      title: 'Manichiură & pedichiură',
+      image: '/imaginisite/beautiful-woman-hands-with-fresh-french-manicure-2025-02-12-22-39-13-utc.jpg',
+      services: [
+        { name: 'Manichiură clasică + ojă', details: '70 RON' },
+        { name: 'Manichiură clasică french', details: '80 RON' },
+        { name: 'Pedichiură clasică + ojă', details: '75 RON' },
+        { name: 'Manichiură semipermanentă french', details: '130 RON' },
+        { name: 'Manichiură semipermanentă apex', details: '130 RON' },
+        { name: 'Manichiură semipermanentă', details: '120 RON' },
+        { name: 'Pedichiură semipermanentă', details: '130 RON' },
+        { name: 'Pedichiură semipermanentă french', details: '140 RON' },
+        { name: 'Aplicare ojă clasică', details: '35 RON' },
+        { name: 'Aplicare ojă semipermanentă', details: '75 RON' },
+        { name: 'Demontat ojă semipermanentă / gel', details: '40 RON' },
+        { name: 'Tatuaj / strasuri', details: '10 RON' },
+      ],
+    },
+    {
+      id: 4,
+      title: 'Cosmetică – epilare clasică',
+      image: '/imaginisite/photo-epilation-close-up-of-hair-removal-procedu-2025-03-31-03-42-49-utc.jpg',
+      services: [
+        // Epilat femei
+        { name: 'Epilat femei – pensat', details: '55 RON' },
+        { name: 'Epilat femei – vopsit sprâncene / gene', details: '15 RON' },
+        { name: 'Epilat femei – picioare lung', details: '70 RON' },
+        { name: 'Epilat femei – picioare scurt', details: '55 RON' },
+        { name: 'Epilat femei – mustață', details: '15 RON' },
+        { name: 'Epilat femei – inghinal total', details: '60 RON' },
+        { name: 'Epilat femei – inghinal parțial', details: '40 RON' },
+        { name: 'Epilat femei – lombar', details: '40 RON' },
+        { name: 'Epilat femei – axilă', details: '25 RON' },
+        { name: 'Epilat femei – brațe scurt', details: '40 RON' },
+        { name: 'Epilat femei – brațe lung', details: '55 RON' },
+        { name: 'Epilat femei – bărbie', details: '15 RON' },
+        { name: 'Epilat femei – fese', details: '45 RON' },
+        { name: 'Epilat femei – față total', details: '50 RON' },
+        { name: 'Epilat femei – interfesier', details: '20 RON' },
+        { name: 'Epilat femei – perciuni', details: '15 RON' },
+        { name: 'Epilat femei – pomeți', details: '15 RON' },
+        { name: 'Epilat femei – abdomen linie', details: '25 RON' },
+        { name: 'Epilat femei – abdomen total', details: '40 RON' },
+        { name: 'Epilat femei – spate total', details: '65 RON' },
+
+        // Epilat bărbați
+        { name: 'Epilat bărbați – pensat', details: '55 RON' },
+        { name: 'Epilat bărbați – abdomen', details: '45 RON' },
+        { name: 'Epilat bărbați – axilă', details: '35 RON' },
+        { name: 'Epilat bărbați – brațe', details: '60 RON' },
+        { name: 'Epilat bărbați – față', details: '50 RON' },
+        { name: 'Epilat bărbați – picioare scurt', details: '60 RON' },
+        { name: 'Epilat bărbați – picioare lung', details: '80 RON' },
+        { name: 'Epilat bărbați – piept', details: '50 RON' },
+        { name: 'Epilat bărbați – spate total', details: '75 RON' },
+        { name: 'Vopsit gene / sprâncene', details: '20 RON' },
+      ],
+    },
+    {
+      id: 5,
+      title: 'Tratamente faciale & masaj',
+      image: '/imaginisite/beauty-face-of-young-adult-woman-with-makeup-perf-2025-10-16-04-02-24-utc.jpg',
+      services: [
+        {
+          name: 'Tratament facial hidratare',
+          details:
+            'demachiant, tonic, peeling, extracții, ser, masaj facial – 270 RON',
+        },
+        {
+          name: 'Tratament anti-age',
+          details:
+            'demachiant, tonic, peeling, extracții, ser, masaj facial – 270 RON',
+        },
+        {
+          name: 'Mezoterapie virtuală / dermoporatie facială',
+          details: 'ședință 15 minute – 150 RON',
+        },
+        {
+          name: 'Tratament întreținere – hidratare ten fără extracții',
+          details: 'demachiant, tonic, peeling – 190 RON',
+        },
+        {
+          name: 'Tratament facial ten gras acneic',
+          details:
+            'demachiant, tonic, peeling, extracții, ser, masaj facial – 270 RON',
+        },
+        {
+          name: 'Întreținere ten microdermabraziune',
+          details: 'demachiant, microdermabraziune, cremă – 150 RON',
+        },
+        {
+          name: 'Tratament microdermabraziune complet',
+          details: 'demachiant, tonic, microdermabraziune – 310 RON',
+        },
+        { name: 'Masaj facial', details: '65 RON' },
+        { name: 'Gomaj', details: '50 RON' },
+        { name: 'Masaj relaxare (50 minute)', details: '150 RON' },
+        { name: 'Make-up', details: '300 RON' },
+        { name: 'Gene false', details: '60 RON' },
+      ],
+    },
+  ];
   const benefits = [
     {
       icon: Star,
@@ -234,23 +488,15 @@ const ServicesPage = () => {
               src="/imaginisite/woman-sitting-at-beauty-salon-making-hairdo-2025-03-18-17-52-06-utc.jpg"
               alt="Servicii profesionale de frumusețe"
               className="w-full h-full object-cover"
-              style={{ objectPosition: '30% center' }}
+              style={{ objectPosition: '68% 45%' }}
             />
             {/* Softer gradient from bottom for text */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
           </div>
 
           {/* Content card, aligned left, airy */}
-          <div className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 sm:pb-16 flex justify-start">
+          <div className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 sm:pb-10 flex justify-start">
             <div className="max-w-xl bg-black/30 sm:bg-black/25 backdrop-blur-sm rounded-2xl px-4 py-5 sm:px-6 sm:py-6 md:px-8 md:py-8">
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 mb-4">
-                <Sparkles className="w-4 h-4 text-beauty-pink-light" />
-                <span className="text-[11px] sm:text-xs font-medium text-white/90 uppercase tracking-[0.12em]">
-                  Servicii premium de frumusețe
-                </span>
-              </div>
-
               <h1
                 className="text-3xl sm:text-4xl md:text-5xl font-elegant font-bold text-white leading-tight text-left"
                 style={{ textShadow: '3px 3px 6px rgba(0,0,0,0.7), 1px 1px 3px rgba(0,0,0,0.5)' }}
@@ -276,17 +522,10 @@ const ServicesPage = () => {
               <div className="mt-5 sm:mt-6 flex flex-col xs:flex-row gap-3 sm:gap-4">
                 <Link
                   to="/programare"
-                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 bg-beauty-pink text-white rounded-full font-semibold text-sm sm:text-base hover:bg-beauty-pink-dark hover:shadow-xl hover:scale-105 transition-all duration-300"
-                >
-                  <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
-                  Programează-te acum
-                </Link>
-                <Link
-                  to="#servicii"
                   className="inline-flex items-center justify-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 bg-white/85 backdrop-blur-sm text-gray-900 border border-white/80 rounded-full font-semibold text-sm sm:text-base hover:bg-white hover:shadow-xl hover:scale-105 transition-all duration-300"
                 >
-                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
-                  Vezi serviciile
+                  <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
+                  Programează-te
                 </Link>
               </div>
             </div>
@@ -296,21 +535,21 @@ const ServicesPage = () => {
 
 
         {/* Services Categories Carousel */}
-        <section className="py-16 bg-white">
+        <section className="py-10 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
+            <div className="text-center mb-8">
               <h2 className="text-3xl md:text-4xl font-elegant font-bold text-gray-900 mb-4">
-                Categoriile noastre de servicii
+                Lista de prețuri
               </h2>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Alege categoria care te interesează și descoperă serviciile disponibile.
+                Alege categoria pentru a vedea prețurile detaliate pentru fiecare serviciu.
               </p>
             </div>
 
             {/* Category Carousel */}
-            <div className="relative mb-12">
+            <div className="relative mb-8">
               <div className="flex overflow-x-auto gap-6 pb-4 px-4 snap-x snap-mandatory scrollbar-hide">
-                {serviceCategories.map((category, index) => (
+                {priceCategories.map((category, index) => (
                   <div
                     key={category.id}
                     onClick={() => setActiveCategoryIndex(index)}
@@ -342,27 +581,85 @@ const ServicesPage = () => {
             <div className="max-w-4xl mx-auto">
               <div className="bg-gray-50 rounded-2xl p-8 shadow-lg">
                 <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-                  {serviceCategories[activeCategoryIndex].title}
+                  {priceCategories[activeCategoryIndex].title}
                 </h3>
                 <div className="space-y-4">
-                  {serviceCategories[activeCategoryIndex].services.map((service, idx) => (
-                    <div key={idx} className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-gray-900 mb-1">{service.name}</h4>
-                        <p className="text-sm text-gray-600">{service.details}</p>
+                  {priceCategories[activeCategoryIndex].services.map((service, idx) => {
+                    const category = priceCategories[activeCategoryIndex];
+                    const key = `${category.id}-${idx}-${service.name}`;
+                    const price = parseServicePrice(service.details);
+                    const selected = isServiceBooked(key);
+
+                    return (
+                      <div
+                        key={key}
+                        className="flex flex-col sm:flex-row p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow"
+                      >
+                        <div className="flex-1">
+                          <h4 className="font-semibold text-gray-900 mb-1">{service.name}</h4>
+                          <p className="text-sm text-gray-600">{service.details}</p>
+                        </div>
+                        <div className="mt-3 sm:mt-0 sm:ml-4 flex sm:flex-col justify-end items-end">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (selected) {
+                                removeBookedService(key);
+                              } else {
+                                addBookedService({
+                                  key,
+                                  categoryId: category.id,
+                                  categoryTitle: category.title,
+                                  name: service.name,
+                                  details: service.details,
+                                  price,
+                                });
+                              }
+                            }}
+                            className="inline-flex items-center justify-center px-3 py-1.5 rounded-full text-xs font-semibold text-white shadow-sm transition-transform transform hover:scale-105 active:scale-95"
+                            style={{ backgroundColor: '#FFAB9D' }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.backgroundColor = '#FF8B7A';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.backgroundColor = '#FFAB9D';
+                            }}
+                          >
+                            {selected ? 'Elimină din programare' : 'Adaugă la programare'}
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
+
+                {bookedServices.length > 0 && (
+                  <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
+                    <div className="text-gray-700">
+                      <span className="font-semibold">{bookedServices.length}</span>{' '}
+                      servicii selectate pentru programare ·
+                      <span className="font-semibold text-beauty-pink ml-1">
+                        Total estimat: {servicesCartTotal} RON
+                      </span>
+                    </div>
+                    <Link
+                      to="/programare"
+                      className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-beauty-pink text-white hover:bg-beauty-pink-dark hover:shadow-md transition-all"
+                    >
+                      <Calendar className="w-4 h-4" />
+                      Mergi la programare
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
           </div>
         </section>
 
         {/* Why Choose Us - Bento Grid Style */}
-        <section className="py-16 bg-gradient-to-br from-beauty-pink-light/20 to-white">
+        <section className="pt-10 pb-4 bg-gradient-to-br from-beauty-pink-light/20 to-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
+            <div className="text-center mb-8">
               <h2 className="text-3xl md:text-4xl font-elegant font-bold text-gray-900 mb-4">
                 De ce să ne alegi?
               </h2>
@@ -396,7 +693,7 @@ const ServicesPage = () => {
         </section>
 
         {/* Enhanced CTA Section with Split Layout */}
-        <section className="py-20 relative overflow-hidden bg-white">
+        <section className="pt-6 pb-10 relative overflow-hidden bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
               
@@ -447,12 +744,7 @@ const ServicesPage = () => {
 
               {/* Right Side - CTA Content */}
               <div className="text-center lg:text-left order-1 lg:order-2">
-                <div className="inline-flex items-center gap-2 px-6 py-3 bg-beauty-pink/10 rounded-full mb-6">
-                  <Sparkles className="w-5 h-5 text-beauty-pink" />
-                  <span className="text-sm font-semibold text-beauty-pink">Ofertă specială</span>
-                </div>
-                
-                <h2 className="text-3xl md:text-4xl lg:text-5xl font-elegant font-bold text-gray-900 mb-6">
+                <h2 className="text-3xl md:text-4xl lg:text-5xl font-elegant font-bold text-gray-900 mb-4">
                   Gata să începi
                   <span className="block gradient-text">transformarea ta?</span>
                 </h2>

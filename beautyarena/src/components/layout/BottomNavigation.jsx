@@ -1,48 +1,75 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, ShoppingBag, Calendar, User } from 'lucide-react';
+import { Sparkles, ShoppingBag, Calendar } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 
 const BottomNavigation = ({ onMenuClick, onCartClick }) => {
   const location = useLocation();
   const { cartCount } = useCart();
+  const [isHidden, setIsHidden] = useState(false);
+  const lastScrollY = useRef(0);
 
   const navItems = [
     {
-      id: 'home',
-      label: 'Acasă',
-      icon: Home,
-      path: '/',
-      isActive: location.pathname === '/'
+      id: 'services',
+      label: 'Servicii',
+      icon: Sparkles,
+      path: '/servicii',
+      isActive: location.pathname.startsWith('/servicii'),
     },
     {
-      id: 'services',
-      label: 'Services',
+      id: 'shop',
+      label: 'Magazin',
       icon: ShoppingBag,
-      path: '/servicii',
-      isActive: location.pathname === '/servicii'
+      path: '/shop',
+      isActive: location.pathname.startsWith('/shop'),
     },
     {
       id: 'booking',
-      label: 'Programează',
+      label: 'Programează-te',
       icon: Calendar,
       path: '/programare',
-      isActive: location.pathname === '/programare'
-    }
+      isActive: location.pathname.startsWith('/programare'),
+    },
   ];
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+      const diff = currentY - lastScrollY.current;
+
+      // Hide when scrolling down, show when scrolling up
+      if (currentY > 80 && diff > 5) {
+        setIsHidden(true);
+      } else if (diff < -5) {
+        setIsHidden(false);
+      }
+
+      lastScrollY.current = currentY;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleItemClick = (item) => {
     // Future item click handlers can be added here
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 lg:hidden">
+    <nav
+      className={`fixed bottom-0 left-0 right-0 z-50 lg:hidden transition-transform duration-300 ${
+        isHidden ? 'translate-y-full' : 'translate-y-0'
+      }`}
+    >
       {/* Bottom Navigation Bar */}
-      <div className="px-3 py-2 safe-area-pb shadow-lg"
-           style={{
-             backgroundColor: '#FFB6A3',
-             background: '#FFB6A3'
-           }}>
+      <div
+        className="px-3 py-2 safe-area-pb shadow-lg"
+        style={{
+          backgroundColor: '#FFB6A3',
+          background: '#FFB6A3',
+        }}
+      >
         <div className="flex items-center justify-around mx-auto">
           {navItems.map((item) => {
             const IconComponent = item.icon;

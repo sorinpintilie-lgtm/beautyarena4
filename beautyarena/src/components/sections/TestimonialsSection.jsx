@@ -5,49 +5,65 @@ const TestimonialsSection = () => {
   const testimonials = [
     {
       id: 1,
-      name: 'Andreea Munteanu',
-      location: 'Cluj-Napoca',
-      service: 'Tratament facial anti-aging',
+      name: 'Daniela Păduraru',
+      service: 'Coafor & manichiură',
       rating: 5,
-      review: 'Experiența la BeautyArena a fost absolut minunată! Echipa de profesioniști m-a ajutat să îmi redobândesc încrederea în sine. Rezultatele sunt vizibile și de lungă durată. Recomand cu încredere!',
-      avatar: 'client-1'
+      review:
+        'Am de fiecare data când merg, o experiență extraordinară la salonul Beauty Arena. Din momentul in care intri, ești întâmpinat cu profesionalism și amabilitate. Atmosfera este plăcută și relaxantă, iar echipa este foarte bine pregătită. Coafeza Loredana și manichiurista Teo, le recomand tuturor celor care doresc servicii de calitate!',
+      avatar: 'client-1',
     },
     {
       id: 2,
-      name: 'Maria Pop',
-      location: 'Cluj-Napoca',
-      service: 'Coafură & Machiaj pentru nuntă',
+      name: 'Simona Stancu Lepadatu',
+      service: 'Servicii salon',
       rating: 5,
-      review: 'Pentru ziua cea mai importantă din viața mea, am ales BeautyArena și nu am regretat deloc! Am fost transformată complet și m-am simțit ca o adevărată prințesă. Mulțumesc Elena pentru profesionalismul tău!',
-      avatar: 'client-2'
+      review:
+        'Personal si servicii exceptionale. Ambient prietenos ma simt excelent ori de cate ori merg.',
+      avatar: 'client-2',
     },
     {
       id: 3,
-      name: 'Elena Dragomir',
-      location: 'Floresti',
-      service: 'Tratamente pentru păr',
+      name: 'Laura Desaga',
+      service: 'Servicii salon',
       rating: 5,
-      review: 'Îmi place mult să vin la BeautyArena pentru îngrijirea părului. Maria are o mână magică și mereu ies de aici cu o coafură perfectă. Serviciile sunt de cea mai înaltă calitate.',
-      avatar: 'client-3'
+      review:
+        'Super profesioniști. Angajati foarte amabili. Voi reveni întotdeauna cu placere',
+      avatar: 'client-3',
     },
     {
       id: 4,
-      name: 'Simona Ionescu',
-      location: 'Cluj-Napoca',
-      service: 'Îngrijire unghii',
+      name: 'Mihaela Radu',
+      service: 'Servicii salon',
       rating: 5,
-      review: 'Ana este o expertă veritabilă! Nail art-ul meu este mereu impecabil și rezistă mult timp. Este o adevărată artă ceea ce face ea. Foarte mulțumită de rezultate!',
-      avatar: 'client-4'
+      review: 'Nota zece ptr tot personalul!',
+      avatar: 'client-4',
     },
     {
       id: 5,
-      name: 'Irina Georgescu',
-      location: 'Baciu',
-      service: 'Pachet complet frumusețe',
+      name: 'Carmen Stefanescu',
+      service: 'Servicii salon',
       rating: 5,
-      review: 'BeautyArena oferă cele mai complete servicii de frumusețe din oraș. Am beneficiat de tratamente multiple și fiecare a fost la un nivel de excelență. Îmi place foarte mult atmosfera relaxantă!',
-      avatar: 'client-5'
-    }
+      review: 'Personal politicos, plin de solicitidine si profesionist',
+      avatar: 'client-5',
+    },
+    {
+      id: 6,
+      name: 'Daniela Tapai',
+      service: 'Servicii salon',
+      rating: 5,
+      review:
+        'De fiecare data plec mulțumită. Numai doamne drăguțe si "profi"!!! Recomand cu drag acest salon',
+      avatar: 'client-1',
+    },
+    {
+      id: 7,
+      name: 'George Horia',
+      service: 'Tuns & styling',
+      rating: 5,
+      review:
+        'Am avut o experiență foarte plăcută la acest salon. Doamna Cami dă dovadă de profesionalism, atenție la detalii și o reală pasiune pentru ceea ce face. Tunsul a fost executat impecabil, exact conform cerințelor mele, iar atmosfera din salon este relaxantă și primitoare. Recomand cu încredere tuturor celor care caută servicii de calitate !',
+      avatar: 'client-2',
+    },
   ];
 
   const stats = [
@@ -100,7 +116,7 @@ const TestimonialsSection = () => {
   };
 
   return (
-    <section id="testimonials" className="relative section-padding bg-white">
+    <section id="testimonials" className="relative section-padding pb-4 md:pb-8 bg-white">
       {/* Background Images */}
       <div className="absolute top-1/4 left-0 w-1/3 h-2/3">
         <img
@@ -148,11 +164,10 @@ const TestimonialsSection = () => {
           ))}
         </div>
 
-        {/* Testimonials Grid - Staggered Layout */}
-        <div className="mb-16">
-          {/* First Row - 3 Reviews */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
-            {testimonials.slice(0, 3).map((testimonial) => (
+        {/* Testimonials Grid */}
+        <div className="mb-4 md:mb-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {testimonials.map((testimonial) => (
               <div
                 key={testimonial.id}
                 className="card-beauty group relative"
@@ -169,46 +184,6 @@ const TestimonialsSection = () => {
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900">{testimonial.name}</h4>
-                    <p className="text-sm text-gray-600">{testimonial.location}</p>
-                  </div>
-                </div>
-
-                {/* Rating */}
-                <div className="flex items-center mb-3">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 text-beauty-peach fill-current" />
-                  ))}
-                  <span className="ml-2 text-sm text-gray-600">{testimonial.service}</span>
-                </div>
-
-                {/* Review */}
-                <p className="text-gray-600 leading-relaxed text-sm">
-                  {testimonial.review}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          {/* Second Row - 2 Reviews Centered */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {testimonials.slice(3, 5).map((testimonial) => (
-              <div
-                key={testimonial.id}
-                className="card-beauty group relative"
-              >
-                {/* Quote Icon */}
-                <div className="absolute top-4 right-4 opacity-20 group-hover:opacity-30 transition-opacity duration-300">
-                  <Quote className="w-8 h-8 text-beauty-pink" />
-                </div>
-
-                {/* Client Avatar */}
-                <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 bg-beauty-pink/20 rounded-full flex items-center justify-center mr-3">
-                    {getClientIcon(testimonial.avatar)}
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900">{testimonial.name}</h4>
-                    <p className="text-sm text-gray-600">{testimonial.location}</p>
                   </div>
                 </div>
 
