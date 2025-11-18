@@ -27,14 +27,46 @@ const AboutPage = () => {
   ];
 
   const teamMembers = [
-    { name: 'Loredana', role: 'Servicii coafor' },
-    { name: 'Camelia', role: 'Servicii coafor' },
-    { name: 'Dana', role: 'Servicii coafor' },
-    { name: 'Valentina', role: 'Servicii manichiură / pedichiură' },
-    { name: 'Teo', role: 'Servicii manichiură / pedichiură' },
-    { name: 'Camelia', role: 'Servicii manichiură / pedichiură' },
-    { name: 'Geo', role: 'Servicii cosmetică / epilare definitivă' },
-    { name: 'Mihaela', role: 'Servicii cosmetică / epilare definitivă' },
+    {
+      name: 'Loredana',
+      role: 'Servicii coafor',
+      image: '/workers/attractive-girl-portrait-in-a-white-shirt-2024-10-19-10-54-55-utc-min.jpg'
+    },
+    {
+      name: 'Camelia',
+      role: 'Servicii coafor',
+      image: '/workers/blond-female-in-a-white-t-shirt-2025-01-26-15-44-10-utc-min.jpg'
+    },
+    {
+      name: 'Dana',
+      role: 'Servicii coafor',
+      image: '/workers/portrait-of-young-woman-2025-01-08-23-09-54-utc-min.jpg'
+    },
+    {
+      name: 'Valentina',
+      role: 'Servicii manichiură / pedichiură',
+      image: '/workers/redhead-girl-at-green-grass-at-village-outdoor-2024-09-26-02-13-33-utc-min.jpg'
+    },
+    {
+      name: 'Teo',
+      role: 'Servicii manichiură / pedichiură',
+      image: '/workers/portrait-of-a-blonde-girl-2024-12-02-22-39-43-utc-min.jpg'
+    },
+    {
+      name: 'Camelia',
+      role: 'Servicii manichiură / pedichiură',
+      image: '/workers/portrait-of-a-young-teenager-girl-in-the-park-spr-2025-03-10-12-31-17-utc-min.jpg'
+    },
+    {
+      name: 'Geo',
+      role: 'Servicii cosmetică / epilare definitivă',
+      image: '/workers/caucasian-woman-2025-03-24-09-04-54-utc-min.jpg'
+    },
+    {
+      name: 'Mihaela',
+      role: 'Servicii cosmetică / epilare definitivă',
+      image: '/workers/happy-woman-emotional-face-woman-portrait-beautif-2025-02-10-13-14-15-utc-min.jpg'
+    }
   ];
 
   const achievements = [
@@ -47,9 +79,9 @@ const AboutPage = () => {
   return (
     <>
       <SEO
-        title="Despre Noi - Beauty Arena"
-        description="Descoperă povestea Beauty Arena: 17 ani de experiență, profesionalism și pasiune pentru frumusețe în București. Echipa noastră de specialiști îți oferă servicii complete de coafură, manichiură și epilare laser."
-        keywords="despre Beauty Arena, istoric salon, echipa Beauty Arena, 17 ani experienta, salon frumusete Bucuresti"
+        title="Despre Noi - Salon Beauty Arena"
+        description="Descoperă povestea Salon Beauty Arena: 17 ani de experiență, profesionalism și pasiune pentru frumusețe în București. Echipa noastră de specialiști îți oferă servicii complete de coafură, manichiură și epilare laser."
+        keywords="despre Salon Beauty Arena, istoric salon, echipa Salon Beauty Arena, 17 ani experienta, salon frumusete Bucuresti"
       />
 
       <div className="min-h-screen bg-white pt-16">
@@ -58,7 +90,7 @@ const AboutPage = () => {
           <div className="absolute inset-0">
             <img
               src="/images/hairdresser-doing-haircut-for-women-in-hairdressin-2025-10-16-23-09-35-utc-min.jpg"
-              alt="Echipa Beauty Arena în salon"
+              alt="Echipa Salon Beauty Arena în salon"
               className="w-full h-full object-cover"
               style={{ objectPosition: '30% center' }}
             />
@@ -71,7 +103,7 @@ const AboutPage = () => {
                 className="text-3xl sm:text-4xl md:text-5xl font-elegant font-bold text-white leading-tight text-left"
                 style={{ textShadow: '3px 3px 6px rgba(0,0,0,0.7), 1px 1px 3px rgba(0,0,0,0.5)' }}
               >
-                Despre Beauty Arena
+                Despre Salon Beauty Arena
               </h1>
               <p
                 className="mt-3 text-sm sm:text-base md:text-lg text-white/90 font-medium leading-relaxed text-left"
@@ -91,7 +123,7 @@ const AboutPage = () => {
             <div className="mb-10 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:items-center">
               <div>
                 <p className="text-base md:text-lg text-gray-700 leading-relaxed mb-4">
-                  <strong className="text-beauty-pink-dark">Beauty Arena a luat naștere acum 17 ani</strong>{' '}
+                  <strong className="text-beauty-pink-dark">Salon Beauty Arena a luat naștere acum 17 ani</strong>{' '}
                   din dorința de a crea un spațiu în care frumusețea să fie tratată cu profesionalism, grijă și
                   pasiune. De atunci, salonul nostru din București a crescut alături de clienți, devenind un loc
                   în care oamenii vin nu doar pentru servicii, ci pentru experiență, încredere și rezultate pe
@@ -109,7 +141,7 @@ const AboutPage = () => {
               <div className="relative h-64 sm:h-72 lg:h-80 rounded-3xl overflow-hidden shadow-xl">
                 <img
                   src="/images/a-woman-at-the-beauty-salon-2025-10-14-10-53-53-utc-min.jpg"
-                  alt="Clientă în salonul Beauty Arena"
+                  alt="Clientă în Salonul Beauty Arena"
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
@@ -138,7 +170,7 @@ const AboutPage = () => {
                 </h2>
               </div>
               <p className="text-lg text-gray-700 leading-relaxed mb-6">
-                Pentru a duce experiența Beauty Arena la un nivel superior, am introdus <strong>serviciile de epilare definitivă cu laser</strong>, realizate cu tehnologie performantă și standarde ridicate de siguranță. În plus, am lansat propriul <strong>magazin online cu produse premium</strong> de îngrijire, selectate cu atenție pentru a oferi rezultate profesionale și acasă.
+                Pentru a duce experiența Salon Beauty Arena la un nivel superior, am introdus <strong>serviciile de epilare definitivă cu laser</strong>, realizate cu tehnologie performantă și standarde ridicate de siguranță. În plus, am lansat propriul <strong>magazin online cu produse premium</strong> de îngrijire, selectate cu atenție pentru a oferi rezultate profesionale și acasă.
               </p>
               <div className="flex items-center text-beauty-pink-dark">
                 <Clock className="w-5 h-5 mr-2" />
@@ -149,7 +181,7 @@ const AboutPage = () => {
             {/* Team Section */}
             <div className="mb-14">
               <h2 className="text-2xl md:text-3xl font-elegant font-bold text-black mb-6 text-center">
-                Echipa Beauty Arena
+                Echipa Salon Beauty Arena
               </h2>
               <p className="text-base md:text-lg text-gray-700 max-w-3xl mx-auto text-center mb-8">
                 În spatele fiecărei transformări reușite se află oameni dedicați. Echipa noastră reunește
@@ -162,9 +194,17 @@ const AboutPage = () => {
                     className="bg-white border border-gray-100 rounded-2xl p-4 flex flex-col items-center text-center shadow-sm hover:shadow-md transition-shadow"
                   >
                     <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden mb-3 bg-gradient-to-br from-beauty-pink to-beauty-pink-dark flex items-center justify-center">
-                      <span className="text-white text-xl sm:text-2xl font-bold">
-                        {member.name.charAt(0)}
-                      </span>
+                      {member.image ? (
+                        <img
+                          src={member.image}
+                          alt={`${member.name} - ${member.role} la Salon Beauty Arena`}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className="text-white text-xl sm:text-2xl font-bold">
+                          {member.name.charAt(0)}
+                        </span>
+                      )}
                     </div>
                     <p className="text-sm sm:text-base font-semibold text-gray-900">
                       {member.name}
@@ -248,7 +288,7 @@ const AboutPage = () => {
                   className="text-xs sm:text-sm md:text-base leading-relaxed max-w-2xl mx-auto"
                   style={{ color: '#000' }}
                 >
-                  <strong>Beauty Arena înseamnă tradiție, profesionalism și inovație.</strong> Suntem aici
+                  <strong>Salon Beauty Arena înseamnă tradiție, profesionalism și inovație.</strong> Suntem aici
                   pentru a-ți oferi frumusețe fără compromisuri — ieri, azi și în anii care vin.
                 </p>
               </div>

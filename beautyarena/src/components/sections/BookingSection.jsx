@@ -456,7 +456,15 @@ const BookingSection = () => {
 
         {/* Contact Info */}
         <div className="text-center mt-8 text-sm text-gray-600">
-          <p>Ai nevoie de ajutor? Sună-ne la <span className="font-semibold text-beauty-pink">+40 264 123 456</span></p>
+          <p>
+            Ai nevoie de ajutor? Sună-ne la{' '}
+            <a
+              href="tel:+40264123456"
+              className="font-semibold text-beauty-pink hover:underline"
+            >
+              +40 264 123 456
+            </a>
+          </p>
         </div>
       </div>
     </section>

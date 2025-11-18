@@ -9,6 +9,7 @@ const BookingPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     selectedServices: [],
+    workerId: '',
     date: '',
     time: '',
     name: '',
@@ -24,12 +25,25 @@ const BookingPage = () => {
   } = useServiceBooking();
 
   const services = [
-    { id: 1, icon: Scissors, name: 'Coafură profesională', duration: 90, price: 80 },
-    { id: 2, icon: Sparkles, name: 'Îngrijire unghii', duration: 60, price: 60 },
-    { id: 3, icon: Star, name: 'Îngrijire ten', duration: 75, price: 120 },
-    { id: 4, icon: Palette, name: 'Machiaj profesional', duration: 45, price: 100 },
-    { id: 5, icon: Heart, name: 'Relaxare și wellness', duration: 90, price: 150 },
-    { id: 6, icon: Zap, name: 'Tratamente speciale', duration: 120, price: 200 }
+    // Real, popular services derived from the actual Services page price list
+    { id: 1, icon: Scissors, name: 'Tuns + coafat păr mediu',        duration: 75, price: 180, area: 'coafor' },     // from coafor & frizerie
+    { id: 2, icon: Sparkles, name: 'Manichiură semipermanentă',      duration: 60, price: 120, area: 'nails' },      // from Manichiură & pedichiură
+    { id: 3, icon: Star,     name: 'Tratament facial hidratare',     duration: 75, price: 270, area: 'cosmetica' },  // from Tratamente faciale & masaj
+    { id: 4, icon: Zap,      name: 'Epilare definitivă picioare lung', duration: 60, price: 250, area: 'epilare' }, // from Epilare definitivă laser
+    { id: 5, icon: Heart,    name: 'Masaj relaxare (50 minute)',     duration: 50, price: 150, area: 'cosmetica' },  // from Tratamente faciale & masaj
+    { id: 6, icon: Palette,  name: 'Machiaj profesional',            duration: 45, price: 300, area: 'cosmetica' }   // from servicii cosmetică / make-up
+  ];
+
+  const specialists = [
+    { id: 'loredana',       name: 'Loredana',        role: 'Coafor',                              areas: ['coafor'] },
+    { id: 'camelia-coafor', name: 'Camelia',         role: 'Coafor',                              areas: ['coafor'] },
+    { id: 'dana',           name: 'Dana',            role: 'Coafor',                              areas: ['coafor'] },
+    { id: 'valentina',      name: 'Valentina',       role: 'Manichiură / Pedichiură',             areas: ['nails'] },
+    { id: 'teo',            name: 'Teo',             role: 'Manichiură / Pedichiură',             areas: ['nails'] },
+    { id: 'camelia-nails',  name: 'Camelia',         role: 'Manichiură / Pedichiură',             areas: ['nails'] },
+    { id: 'geo',            name: 'Geo',             role: 'Cosmetică / Epilare definitivă',      areas: ['cosmetica', 'epilare'] },
+    { id: 'mihaela',        name: 'Mihaela',         role: 'Cosmetică / Epilare definitivă',      areas: ['cosmetica', 'epilare'] },
+    { id: 'any',            name: 'Orice specialist disponibil', role: 'Orice serviciu',          areas: ['coafor', 'nails', 'cosmetica', 'epilare'] }
   ];
 
   const timeSlots = [
@@ -110,12 +124,35 @@ const BookingPage = () => {
 
   const { totalDuration, totalPrice } = calculateTotal();
   const selectedServicesList = services.filter(s => formData.selectedServices.includes(s.id));
+
+  // Determine service areas from quick services and from ServicesPage cart
+  const quickAreas = selectedServicesList.map(s => s.area);
+
+  const categoryTitleToAreas = (title = '') => {
+    if (!title) return [];
+    if (title.includes('Coafor')) return ['coafor'];
+    if (title.includes('Manichiură') || title.includes('pedichiură')) return ['nails'];
+    if (title.includes('Epilare definitivă')) return ['epilare'];
+    if (title.includes('Tratamente faciale') || title.includes('masaj') || title.includes('Cosmetică')) return ['cosmetica'];
+    return [];
+  };
+
+  const bookedAreas = bookedServices.flatMap(service => categoryTitleToAreas(service.categoryTitle || ''));
+  const selectedAreas = Array.from(new Set([...quickAreas, ...bookedAreas]));
+
+  const filteredSpecialists =
+    selectedAreas.length === 0
+      ? specialists
+      : specialists.filter(sp => sp.areas.some(a => selectedAreas.includes(a)));
+
+  const selectedWorker = specialists.find(sp => sp.id === formData.workerId);
+
   const combinedTotalPrice = totalPrice + servicesCartTotal;
 
   return (
     <>
       <SEO
-        title="Programare Online - BeautyArena"
+        title="Programare Online - Salon Beauty Arena"
         description="Programează-te online pentru serviciile noastre de frumusețe. Alege serviciile dorite, data și ora care ți se potrivesc."
         keywords="programare online, programare salon, booking frumusețe, programare coafură, programare machiaj"
       />
@@ -221,7 +258,7 @@ const BookingPage = () => {
                       Selectează serviciile dorite
                     </h2>
                     <p className="text-gray-600">
-                      Poți selecta servicii din lista de prețuri sau din opțiunile rapide de mai jos.
+                      Poți selecta servicii din lista de prețuri sau din opțiunile rapide de mai jos, apoi alege specialistul preferat.
                     </p>
 
                     {bookedServices.length > 0 && (
@@ -339,6 +376,46 @@ const BookingPage = () => {
                                   <Check className="w-5 h-5 text-beauty-pink flex-shrink-0" />
                                 )}
                               </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Specialist selection based on selected services */}
+                    <div className="mt-6 space-y-3">
+                      <h3 className="text-sm font-semibold text-gray-900">
+                        Alege specialistul preferat (opțional)
+                      </h3>
+                      <p className="text-xs text-gray-500">
+                        Lista de mai jos se adaptează în funcție de tipurile de servicii selectate (coafor, manichiură, cosmetică, epilare).
+                      </p>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                        {filteredSpecialists.map((specialist) => {
+                          const isSelected = formData.workerId === specialist.id;
+                          return (
+                            <button
+                              key={specialist.id}
+                              type="button"
+                              onClick={() =>
+                                setFormData(prev => ({
+                                  ...prev,
+                                  workerId: prev.workerId === specialist.id ? '' : specialist.id
+                                }))
+                              }
+                              className={`p-3 rounded-lg border text-left text-xs sm:text-sm transition-all ${
+                                isSelected
+                                  ? 'border-beauty-pink bg-beauty-pink/10'
+                                  : 'border-gray-200 hover:border-beauty-pink/60'
+                              }`}
+                            >
+                              <div className="font-semibold text-gray-900">{specialist.name}</div>
+                              <div className="text-[11px] text-gray-600">{specialist.role}</div>
+                              {isSelected && (
+                                <div className="mt-1 text-[11px] text-beauty-pink font-medium">
+                                  Selectat
+                                </div>
+                              )}
                             </button>
                           );
                         })}
@@ -549,6 +626,11 @@ const BookingPage = () => {
                           <p><strong>Nume:</strong> {formData.name}</p>
                           <p><strong>Email:</strong> {formData.email}</p>
                           <p><strong>Telefon:</strong> {formData.phone}</p>
+                          {selectedWorker && (
+                            <p>
+                              <strong>Specialist preferat:</strong> {selectedWorker.name} ({selectedWorker.role})
+                            </p>
+                          )}
                           {formData.message && (
                             <p><strong>Mesaj:</strong> {formData.message}</p>
                           )}

@@ -8,18 +8,18 @@ const PromotionalCarousel = () => {
   const promotionalSlides = [
     {
       id: 1,
-      image: '/imaginisite/beauty-hairstyle-and-people-concept-happy-young-2025-10-09-19-09-23-utc.jpg',
+      image: '/imaginisite/happy-woman-dyeing-her-hair-at-the-hairdresser-2025-10-16-23-42-15-utc.jpg',
       title: 'Frumusețe la nivel profesional',
       subtitle: 'Coafor, cosmetică, manichiură — 17 ani de experiență pentru rezultate impecabile.',
       description: 'Coafor, cosmetică, manichiură — 17 ani de experiență pentru rezultate impecabile.',
       buttonText: 'Descoperă Oferte',
-      buttonLink: '/shop',
+      buttonLink: '/servicii',
       badge: '50% OFF',
       badgeColor: 'bg-red-500'
     },
     {
       id: 2,
-      image: '/imaginisite/2.jpg',
+      image: '/imaginisite/3.jpg',
       title: 'NOU: Epilare definitivă cu laser',
       subtitle: 'Tehnologie avansată pentru o piele fină, fără efort. Programări disponibile acum.',
       description: 'Tehnologie avansată pentru o piele fină, fără efort. Programări disponibile acum.',
@@ -30,7 +30,7 @@ const PromotionalCarousel = () => {
     },
     {
       id: 3,
-      image: '/imaginisite/3.jpg',
+      image: '/imaginisite/two-happy-female-influencers-examining-various-bea-2025-02-22-16-17-16-utc-min.jpg',
       title: 'Produse premium, livrate la tine',
       subtitle: 'Descoperă în shop gama noastră de îngrijire profesională — selectată de experți.',
       description: 'Descoperă în shop gama noastră de îngrijire profesională — selectată de experți.',

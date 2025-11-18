@@ -474,7 +474,7 @@ const ServicesPage = () => {
   return (
     <>
       <SEO
-        title="Servicii Profesionale de Frumusețe - BeautyArena"
+        title="Servicii Profesionale de Frumusețe - Salon Beauty Arena"
         description="Descoperă gama completă de servicii profesionale de frumusețe: coafură, machiaj, îngrijire ten, manichiură, pedichiură și tratamente de relaxare."
         keywords="servicii frumusețe, coafură, machiaj profesional, îngrijire ten, manichiură, pedichiură, salon frumusețe Cluj"
       />
@@ -644,7 +644,14 @@ const ServicesPage = () => {
                     </div>
                     <Link
                       to="/programare"
-                      className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-beauty-pink text-white hover:bg-beauty-pink-dark hover:shadow-md transition-all"
+                      className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold text-white shadow-sm transition-transform transform hover:scale-105 active:scale-95"
+                      style={{ backgroundColor: '#FFAB9D' }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#FF8B7A';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = '#FFAB9D';
+                      }}
                     >
                       <Calendar className="w-4 h-4" />
                       Mergi la programare

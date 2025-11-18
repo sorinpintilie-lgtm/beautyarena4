@@ -10,7 +10,7 @@ const PromotionalBanner = () => {
           {/* Text Content */}
           <div className="text-gray-900 space-y-4 sm:space-y-6">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-elegant font-bold leading-tight text-gray-900">
-              Magazinul online Beauty Arena
+              Magazinul online Salon Beauty Arena
             </h2>
 
             <p className="text-sm sm:text-base text-gray-700 max-w-md">

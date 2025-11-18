@@ -94,7 +94,7 @@ const AboutSection = () => {
             <span className="block text-beauty-pink">succes</span>
           </h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            De peste 15 ani, BeautyArena este sinonimul excelenței în frumusețe. Echipa noastră de experți 
+            De peste 15 ani, Salon Beauty Arena este sinonimul excelenței în frumusețe. Echipa noastră de experți
             pasionați transformă visele de frumusețe în realitate, oferind servicii personalizate și rezultate excepționale.
           </p>
         </div>
@@ -108,8 +108,8 @@ const AboutSection = () => {
                 Misiunea noastră
               </h3>
               <p className="text-gray-600 leading-relaxed mb-6">
-                La BeautyArena, credem că frumusețea vine din interiorul fiecărei persoane. Misiunea noastră este 
-                să scoatem la iveală această frumusețe naturală prin servicii de cea mai înaltă calitate, 
+                La Salon Beauty Arena, credem că frumusețea vine din interiorul fiecărei persoane. Misiunea noastră este
+                să scoatem la iveală această frumusețe naturală prin servicii de cea mai înaltă calitate,
                 produse premium și o abordare personalizată.
               </p>
               <p className="text-gray-600 leading-relaxed mb-6">

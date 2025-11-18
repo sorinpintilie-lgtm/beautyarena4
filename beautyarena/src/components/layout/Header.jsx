@@ -29,14 +29,15 @@ const Header = ({ onCartClick }) => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 shadow-xl"
-            style={{
-              backgroundColor: '#FFB6A3',
-              background: '#FFB6A3',
-              opacity: 1,
-              backdropFilter: 'none',
-              WebkitBackdropFilter: 'none'
-            }}>
+    <header
+      className="fixed top-0 left-0 right-0 z-50 shadow-xl"
+      style={{
+        background: 'linear-gradient(to right, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.25) 30%, #FFB6A3 65%, #FFB6A3 100%)',
+        opacity: 1,
+        backdropFilter: 'none',
+        WebkitBackdropFilter: 'none'
+      }}
+    >
       <div className="pl-6 pr-4 sm:px-6 lg:px-8" style={{backgroundColor: 'transparent'}}>
         <div className="flex items-center justify-between py-1 lg:py-2">
           {/* Logo */}

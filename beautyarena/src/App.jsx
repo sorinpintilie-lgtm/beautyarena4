@@ -48,7 +48,7 @@ function App() {
             <WishlistProvider>
               <ComparisonProvider>
                 <ServiceBookingProvider>
-                  <div className="min-h-screen flex flex-col">
+                  <div className="min-h-screen flex flex-col pt-20 lg:pt-28">
                     <Header onCartClick={() => setIsCartOpen(true)} />
                     <main className="flex-grow">
                       <Suspense fallback={<LoadingSpinner />}>

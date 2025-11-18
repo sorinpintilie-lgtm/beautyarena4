@@ -85,23 +85,19 @@ const ShopAndServicesSection = () => {
       <div className="relative w-full h-[300px] md:h-[400px] lg:h-[500px] overflow-hidden">
         <img
           src="/images/envato-labs-image-edit-34.png"
-          alt="BeautyArena - Experiență completă de frumusețe"
+          alt="Salon Beauty Arena - Experiență completă de frumusețe"
           className="w-full h-full object-cover object-center"
         />
         {/* Dark overlay for text readability */}
         <div className="absolute inset-0 bg-black/50"></div>
         
         {/* Banner Title Content */}
-        <div className="absolute inset-0 flex items-center justify-center z-10">
+        <div className="absolute inset-0 flex items-end justify-center z-10 pb-6 md:pb-10">
           <div className="text-center px-4">
-            <div className="inline-flex items-center px-4 py-2 bg-beauty-pink/20 backdrop-blur-sm rounded-full border border-beauty-pink/30 mb-6">
-              <Star className="w-4 h-4 text-beauty-pink-light mr-2" />
-              <span className="text-sm font-medium text-white">Produse & Servicii</span>
-            </div>
-            <h2 className="text-3xl md:text-4xl lg:text-6xl font-elegant font-bold text-white mb-6">
-              Frumusețea începe la Beauty Arena
+            <h2 className="text-base sm:text-3xl md:text-4xl lg:text-6xl font-elegant font-bold text-white mb-2 sm:mb-4 whitespace-nowrap sm:whitespace-normal">
+              Frumusețea începe la Salon Beauty Arena
             </h2>
-            <p className="text-base md:text-lg lg:text-xl text-white/90 max-w-2xl mx-auto">
+            <p className="hidden sm:block text-base md:text-lg lg:text-xl text-white/90 max-w-3xl mx-auto text-justify">
               Explorează gama noastră de produse premium și serviciile de specialitate pentru o îngrijire desăvârșită.
             </p>
           </div>
@@ -294,7 +290,7 @@ const ShopAndServicesSection = () => {
               <div className="absolute inset-0">
                 <img
                   src="/images/makeup-artist-makes-makeup-to-a-girl-apply-beige-2025-03-13-10-07-09-utc-min.jpg"
-                  alt="BeautyArena"
+                  alt="Salon Beauty Arena"
                   className="w-full h-full object-cover opacity-60"
                 />
               </div>

@@ -9,7 +9,7 @@ const TestimonialsSection = () => {
       service: 'Coafor & manichiură',
       rating: 5,
       review:
-        'Am de fiecare data când merg, o experiență extraordinară la salonul Beauty Arena. Din momentul in care intri, ești întâmpinat cu profesionalism și amabilitate. Atmosfera este plăcută și relaxantă, iar echipa este foarte bine pregătită. Coafeza Loredana și manichiurista Teo, le recomand tuturor celor care doresc servicii de calitate!',
+        'Am de fiecare dată când merg, o experiență extraordinară la Salon Beauty Arena. Din momentul în care intri, ești întâmpinat cu profesionalism și amabilitate. Atmosfera este plăcută și relaxantă, iar echipa este foarte bine pregătită. Coafeza Loredana și manichiurista Teo, le recomand tuturor celor care doresc servicii de calitate!',
       avatar: 'client-1',
     },
     {
@@ -139,7 +139,7 @@ const TestimonialsSection = () => {
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Experiența fiecărui client este importantă pentru noi. Citește ce spun clienții
-            noștri despre serviciile și transformările lor la BeautyArena.
+            noștri despre serviciile și transformările lor la Salon Beauty Arena.
           </p>
         </div>
 

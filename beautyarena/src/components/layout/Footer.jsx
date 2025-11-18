@@ -34,7 +34,7 @@ const Footer = () => {
           {/* Brand Section */}
           <div className="space-y-4">
             <h3 className="text-2xl font-elegant font-bold text-beauty-pink">
-              BeautyArena
+              Salon Beauty Arena
             </h3>
             <p className="text-gray-300 leading-relaxed">
               Destinația ta principală pentru frumusețe și bunăstare. Îmbunătățim frumusețea ta naturală cu serviciile noastre de expert și produsele premium.
@@ -118,7 +118,12 @@ const Footer = () => {
               </div>
               <div className="flex items-center space-x-3">
                 <Phone className="w-5 h-5 text-beauty-pink flex-shrink-0" />
-                <span className="text-gray-300">0722 402 559</span>
+                <a
+                  href="tel:0722402559"
+                  className="text-gray-300 hover:text-beauty-pink transition-colors"
+                >
+                  0722 402 559
+                </a>
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="w-5 h-5 text-beauty-pink flex-shrink-0" />
@@ -158,7 +163,7 @@ const Footer = () => {
         {/* Copyright */}
         <div className="mt-8 pt-6 border-t border-gray-700 text-center">
           <p className="text-gray-400">
-            © {currentYear} BeautyArena. Toate drepturile rezervate. | Politica de confidențialitate | Termeni și condiții
+            © {currentYear} Salon Beauty Arena. Toate drepturile rezervate. | Politica de confidențialitate | Termeni și condiții
           </p>
         </div>
       </div>

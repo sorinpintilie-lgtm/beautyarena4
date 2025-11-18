@@ -47,10 +47,10 @@ const ContactPage = () => {
   ];
 
   const socialLinks = [
-    { icon: Instagram, name: 'Instagram', handle: '@beautyarena.ro', color: 'hover:text-pink-500' },
-    { icon: Facebook, name: 'Facebook', handle: 'BeautyArena.ro', color: 'hover:text-blue-600' },
-    { icon: Twitter, name: 'Twitter', handle: '@BeautyArena', color: 'hover:text-blue-400' },
-    { icon: MessageCircle, name: 'WhatsApp', handle: '0722402559', color: 'hover:text-green-500' }
+    { icon: Instagram, name: 'Instagram', handle: '@beautyarena.ro', color: 'hover:text-pink-500', href: '#' },
+    { icon: Facebook, name: 'Facebook', handle: 'BeautyArena.ro', color: 'hover:text-blue-600', href: '#' },
+    { icon: Twitter, name: 'Twitter', handle: '@BeautyArena', color: 'hover:text-blue-400', href: '#' },
+    { icon: MessageCircle, name: 'WhatsApp', handle: '0722402559', color: 'hover:text-green-500', href: 'tel:0722402559' }
   ];
 
   const handleInputChange = (e) => {
@@ -266,9 +266,24 @@ const ContactPage = () => {
                       </div>
                       <h3 className="font-semibold text-gray-900 mb-2">{info.title}</h3>
                       <div className="space-y-1 mb-3">
-                        {info.details.map((detail, idx) => (
-                          <p key={idx} className="text-gray-600 text-sm">{detail}</p>
-                        ))}
+                        {info.details.map((detail, idx) => {
+                          const isPhone = info.title === 'Telefon';
+                          const href = isPhone ? `tel:${detail.replace(/\s+/g, '')}` : null;
+                          return (
+                            <p key={idx} className="text-gray-600 text-sm">
+                              {isPhone ? (
+                                <a
+                                  href={href}
+                                  className="hover:text-beauty-pink"
+                                >
+                                  {detail}
+                                </a>
+                              ) : (
+                                detail
+                              )}
+                            </p>
+                          );
+                        })}
                       </div>
                       {info.link && (
                         <div className="text-beauty-pink text-sm font-medium hover:text-beauty-pink-dark">
@@ -352,8 +367,18 @@ const ContactPage = () => {
               {[
                 {
                   question: 'Cum pot programa o vizită?',
-                  answer:
-                    'Poți face o programare online din meniul „Programează-te”, telefonic la 0722 402 559 sau direct în salon, în funcție de disponibilitate.'
+                  answer: (
+                    <>
+                      Poți face o programare online din meniul „Programează-te”, telefonic la{' '}
+                      <a
+                        href="tel:0722402559"
+                        className="text-beauty-pink hover:underline"
+                      >
+                        0722 402 559
+                      </a>{' '}
+                      sau direct în salon, în funcție de disponibilitate.
+                    </>
+                  )
                 },
                 {
                   question: 'Ce tipuri de servicii oferiți?',
@@ -377,8 +402,18 @@ const ContactPage = () => {
                 },
                 {
                   question: 'Cum pot afla mai multe despre servicii și prețuri?',
-                  answer:
-                    'Poți consulta pagina Servicii pentru Lista de prețuri și detalii, iar pentru întrebări specifice ne poți scrie din formularul de contact sau suna la 0722 402 559.'
+                  answer: (
+                    <>
+                      Poți consulta pagina Servicii pentru Lista de prețuri și detalii, iar pentru întrebări specifice ne poți scrie din formularul de contact sau suna la{' '}
+                      <a
+                        href="tel:0722402559"
+                        className="text-beauty-pink hover:underline"
+                      >
+                        0722 402 559
+                      </a>
+                      .
+                    </>
+                  )
                 }
               ].map((faq, index) => (
                 <div key={index} className="bg-white border-2 border-gray-100 rounded-2xl p-5 hover:border-beauty-pink transition-colors">

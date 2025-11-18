@@ -41,10 +41,10 @@ const ContactSection = () => {
   ];
 
   const socialLinks = [
-    { icon: Instagram, name: 'Instagram', handle: '@beautyarena.ro', color: 'hover:text-pink-500' },
-    { icon: Facebook, name: 'Facebook', handle: 'BeautyArena.ro', color: 'hover:text-blue-600' },
-    { icon: Twitter, name: 'Twitter', handle: '@BeautyArena', color: 'hover:text-blue-400' },
-    { icon: MessageCircle, name: 'WhatsApp', handle: '+40 753 987 654', color: 'hover:text-green-500' }
+    { icon: Instagram, name: 'Instagram', handle: '@beautyarena.ro', color: 'hover:text-pink-500', href: '#' },
+    { icon: Facebook, name: 'Facebook', handle: 'BeautyArena.ro', color: 'hover:text-blue-600', href: '#' },
+    { icon: Twitter, name: 'Twitter', handle: '@BeautyArena', color: 'hover:text-blue-400', href: '#' },
+    { icon: MessageCircle, name: 'WhatsApp', handle: '+40 753 987 654', color: 'hover:text-green-500', href: 'tel:+40753987654' }
   ];
 
   const handleInputChange = (e) => {
@@ -242,9 +242,24 @@ const ContactSection = () => {
                   </div>
                   <h4 className="font-semibold text-gray-900 mb-2">{info.title}</h4>
                   <div className="space-y-1 mb-4">
-                    {info.details.map((detail, idx) => (
-                      <p key={idx} className="text-gray-600 text-sm">{detail}</p>
-                    ))}
+                    {info.details.map((detail, idx) => {
+                      const isPhone = info.title === 'Telefon';
+                      const href = isPhone ? `tel:${detail.replace(/\s+/g, '')}` : null;
+                      return (
+                        <p key={idx} className="text-gray-600 text-sm">
+                          {isPhone ? (
+                            <a
+                              href={href}
+                              className="hover:text-beauty-pink"
+                            >
+                              {detail}
+                            </a>
+                          ) : (
+                            detail
+                          )}
+                        </p>
+                      );
+                    })}
                   </div>
                   <button className="text-beauty-pink text-sm font-medium hover:underline">
                     {info.action}
@@ -277,7 +292,7 @@ const ContactSection = () => {
                   return (
                     <a
                       key={index}
-                      href="#"
+                      href={social.href || '#'}
                       className={`flex items-center space-x-3 p-3 rounded-lg border border-gray-200 hover:border-beauty-pink transition-all duration-300 group ${social.color}`}
                     >
                       <Icon className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
@@ -332,7 +347,18 @@ const ContactSection = () => {
             {[
               {
                 question: 'Cum pot programa o vizită?',
-                answer: 'Poți programa o vizită online prin formularul nostru, telefonic la +40 264 123 456, sau direct în salon.'
+                answer: (
+                  <>
+                    Poți programa o vizită online prin formularul nostru, telefonic la{' '}
+                    <a
+                      href="tel:+40264123456"
+                      className="text-beauty-pink hover:underline"
+                    >
+                      +40 264 123 456
+                    </a>
+                    , sau direct în salon.
+                  </>
+                )
               },
               {
                 question: 'Care este politica de anulare?',
