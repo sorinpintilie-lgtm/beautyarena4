@@ -55,15 +55,6 @@ const TestimonialsSection = () => {
         'De fiecare data plec mulțumită. Numai doamne drăguțe si "profi"!!! Recomand cu drag acest salon',
       avatar: 'client-1',
     },
-    {
-      id: 7,
-      name: 'George Horia',
-      service: 'Tuns & styling',
-      rating: 5,
-      review:
-        'Am avut o experiență foarte plăcută la acest salon. Doamna Cami dă dovadă de profesionalism, atenție la detalii și o reală pasiune pentru ceea ce face. Tunsul a fost executat impecabil, exact conform cerințelor mele, iar atmosfera din salon este relaxantă și primitoare. Recomand cu încredere tuturor celor care caută servicii de calitate !',
-      avatar: 'client-2',
-    },
   ];
 
   const stats = [
