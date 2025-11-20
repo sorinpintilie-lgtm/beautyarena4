@@ -106,6 +106,23 @@ export const AuthProvider = ({ children }) => {
         createdAt: new Date().toISOString(),
       });
 
+      // Send welcome email
+      try {
+        await fetch('/.netlify/functions/send-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            type: 'welcome',
+            data: { name, email }
+          })
+        });
+      } catch (emailError) {
+        console.warn('Welcome email failed to send:', emailError);
+        // Don't fail registration if email fails
+      }
+
       toast.success('Cont creat cu succes!');
       return { success: true, user: result.user };
     } catch (error) {

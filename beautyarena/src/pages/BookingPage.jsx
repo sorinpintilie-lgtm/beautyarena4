@@ -259,6 +259,38 @@ const BookingPage = () => {
       const successfulBookings = results.filter(result => result.success);
 
       if (successfulBookings.length > 0) {
+        // Send booking confirmation emails to customers and notifications to workers
+        try {
+          for (const booking of successfulBookings) {
+            // Send confirmation to customer
+            await fetch('/.netlify/functions/send-email', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                type: 'booking_confirmation',
+                data: booking
+              })
+            });
+
+            // Send notification to worker
+            await fetch('/.netlify/functions/send-email', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                type: 'worker_notification',
+                data: booking
+              })
+            });
+          }
+        } catch (emailError) {
+          console.warn('Email notifications failed:', emailError);
+          // Don't fail the booking if emails fail
+        }
+
         toast.success(`${successfulBookings.length} programare${successfulBookings.length > 1 ? 'i' : ''} creată${successfulBookings.length > 1 ? 'e' : ''} cu succes!`);
         navigate('/cont');
       } else {

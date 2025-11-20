@@ -3,6 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import { ChevronLeft, CreditCard, Truck, MapPin, Phone, Mail, User, Check } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { createOrder } from '../services/orderService';
+import toast from 'react-hot-toast';
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -64,12 +66,84 @@ const CheckoutPage = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateStep(step)) {
-      // Simulate order placement
-      clearCart();
-      navigate('/confirmare-comanda');
+    if (!validateStep(step)) return;
+
+    // Check if user is authenticated
+    if (!isAuthenticated || !user || !user.uid) {
+      toast.error('Trebuie să te autentifici pentru a plasa o comandă');
+      navigate('/autentificare');
+      return;
+    }
+
+    // Set loading state
+    const submitButton = e.target.querySelector('button[type="submit"]');
+    if (submitButton) submitButton.disabled = true;
+
+    try {
+      // Prepare order data
+      const orderData = {
+        items: cartItems.map(item => ({
+          productId: item.productId,
+          variantId: item.variantId,
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price
+        })),
+        shippingAddress: {
+          fullName: formData.fullName,
+          phone: formData.phone,
+          address: formData.address,
+          city: formData.city,
+          postalCode: formData.postalCode,
+          country: formData.country
+        },
+        shippingMethod: formData.shippingMethod,
+        shippingCost: shippingCost,
+        paymentMethod: formData.paymentMethod,
+        subtotal: cartSubtotal,
+        total: total,
+        customerInfo: {
+          name: formData.fullName,
+          email: formData.email,
+          phone: formData.phone
+        }
+      };
+
+      console.log('Creating order:', orderData);
+      const orderResult = await createOrder(user.uid, orderData);
+
+      if (orderResult.success) {
+        // Send order confirmation email
+        try {
+          await fetch('/.netlify/functions/send-email', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              type: 'order_confirmation',
+              data: orderResult
+            })
+          });
+        } catch (emailError) {
+          console.warn('Order confirmation email failed:', emailError);
+          // Don't fail the order if email fails
+        }
+
+        // Clear cart and navigate
+        clearCart();
+        toast.success('Comandă plasată cu succes!');
+        navigate('/cont');
+      } else {
+        toast.error('Eroare la plasarea comenzii');
+      }
+    } catch (error) {
+      console.error('Error creating order:', error);
+      toast.error('Eroare la plasarea comenzii');
+    } finally {
+      if (submitButton) submitButton.disabled = false;
     }
   };
 

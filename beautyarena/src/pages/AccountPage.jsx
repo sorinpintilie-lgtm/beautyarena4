@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { User, Mail, Calendar, LogOut, ArrowRight, Clock, MapPin, Phone, Edit2, X, CheckCircle, XCircle, Loader } from 'lucide-react';
+import { User, Mail, Calendar, LogOut, ArrowRight, Clock, MapPin, Phone, Edit2, X, CheckCircle, XCircle, Loader, ShoppingBag, Package } from 'lucide-react';
 import SEO from '../components/common/SEO';
 import { useAuth } from '../context/AuthContext';
 import { getUserBookings, cancelBooking } from '../services/bookingService';
+import { getUserOrders } from '../services/orderService';
 import toast from 'react-hot-toast';
 
 const AccountPage = () => {
   const { user, isAuthenticated, logout, updateProfile } = useAuth();
   const navigate = useNavigate();
   const [bookings, setBookings] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [loadingBookings, setLoadingBookings] = useState(true);
+  const [loadingOrders, setLoadingOrders] = useState(true);
   const [cancellingBooking, setCancellingBooking] = useState(null);
   const [editingProfile, setEditingProfile] = useState(false);
   const [profileData, setProfileData] = useState({
@@ -28,6 +31,7 @@ const AccountPage = () => {
   useEffect(() => {
     if (user?.uid) {
       fetchBookings();
+      fetchOrders();
     }
   }, [user?.uid]);
 
@@ -54,6 +58,22 @@ const AccountPage = () => {
       toast.error('Eroare la încărcarea programărilor');
     } finally {
       setLoadingBookings(false);
+    }
+  };
+
+  const fetchOrders = async () => {
+    try {
+      const result = await getUserOrders(user.uid);
+      if (result.success) {
+        setOrders(result.orders);
+      } else {
+        toast.error('Eroare la încărcarea comenzilor');
+      }
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+      toast.error('Eroare la încărcarea comenzilor');
+    } finally {
+      setLoadingOrders(false);
     }
   };
 
@@ -338,6 +358,81 @@ const AccountPage = () => {
                           )}
                           Anulează
                         </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Orders Section */}
+            <div className="border border-gray-200 rounded-xl p-4 bg-gray-50/80">
+              <div className="flex items-center gap-2 mb-4">
+                <ShoppingBag className="w-4 h-4 text-beauty-pink" />
+                <p className="text-sm font-semibold text-gray-700 uppercase">
+                  Comenzile mele
+                </p>
+              </div>
+
+              {loadingOrders ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader className="w-6 h-6 animate-spin text-beauty-pink" />
+                  <span className="ml-2 text-sm text-gray-600">Se încarcă comenzile...</span>
+                </div>
+              ) : orders.length === 0 ? (
+                <div className="text-center py-8">
+                  <ShoppingBag className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                  <p className="text-sm text-gray-600 mb-3">Nu ai nicio comandă încă</p>
+                  <Link
+                    to="/shop"
+                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white rounded-lg transition-transform transform hover:scale-105"
+                    style={{ background: 'linear-gradient(to right, #FFAB9D, #FF8B7A)' }}
+                  >
+                    <ShoppingBag className="w-4 h-4" />
+                    Mergi la magazin
+                  </Link>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {orders.map((order) => (
+                    <div key={order.id} className="bg-white border border-gray-200 rounded-lg p-4">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Package className="w-4 h-4 text-beauty-pink" />
+                            <span className="text-sm font-medium text-gray-900">
+                              Comandă #{order.orderNumber}
+                            </span>
+                            <span className={`text-xs px-2 py-1 rounded-full ${
+                              order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                              order.status === 'confirmed' ? 'bg-blue-100 text-blue-800' :
+                              order.status === 'shipped' ? 'bg-orange-100 text-orange-800' :
+                              'bg-green-100 text-green-800'
+                            }`}>
+                              {order.status === 'pending' ? 'În așteptare' :
+                               order.status === 'confirmed' ? 'Confirmată' :
+                               order.status === 'shipped' ? 'Expediată' : 'Livrată'}
+                            </span>
+                          </div>
+
+                          <div className="space-y-1 mb-3">
+                            {order.items.map((item, index) => (
+                              <p key={index} className="text-sm text-gray-700">
+                                • {item.name} x{item.quantity} - {(item.price * item.quantity).toFixed(2)} lei
+                              </p>
+                            ))}
+                          </div>
+
+                          <div className="flex items-center gap-4 text-xs text-gray-600">
+                            <span className="flex items-center gap-1">
+                              <MapPin className="w-3 h-3" />
+                              {order.shippingAddress.city}
+                            </span>
+                            <span className="text-sm font-semibold text-beauty-pink">
+                              Total: {order.total.toFixed(2)} lei
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   ))}
