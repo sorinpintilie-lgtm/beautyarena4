@@ -81,8 +81,9 @@ export const cancelBooking = async (bookingId) => {
     if (bookingSnap.exists()) {
       const bookingData = bookingSnap.data();
 
-      // Send cancellation email
+      // Send cancellation emails to customer and worker
       try {
+        // Send to customer
         await fetch('/.netlify/functions/send-email', {
           method: 'POST',
           headers: {
@@ -93,9 +94,24 @@ export const cancelBooking = async (bookingId) => {
             data: bookingData
           })
         });
+
+        // Send notification to worker about cancellation
+        await fetch('/.netlify/functions/send-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            type: 'worker_notification',
+            data: {
+              ...bookingData,
+              cancellationNotice: true // Flag to indicate this is a cancellation
+            }
+          })
+        });
       } catch (emailError) {
-        console.warn('Cancellation email failed:', emailError);
-        // Don't fail cancellation if email fails
+        console.warn('Cancellation emails failed:', emailError);
+        // Don't fail cancellation if emails fail
       }
 
       // If there's a calendar event ID, try to remove it from Google Calendar

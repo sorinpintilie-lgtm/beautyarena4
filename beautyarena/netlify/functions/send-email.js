@@ -249,37 +249,41 @@ function generateWorkerNotificationHTML(bookingData) {
     `<li>${service.name} (${service.duration} min)</li>`
   ).join('');
 
+  const isCancellation = bookingData.cancellationNotice;
+
   return `
     <!DOCTYPE html>
     <html>
     <head>
       <meta charset="utf-8">
-      <title>Programare Nouă - Salon Beauty Arena</title>
+      <title>${isCancellation ? 'Programare Anulată' : 'Programare Nouă'} - Salon Beauty Arena</title>
       <style>
         body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background: linear-gradient(135deg, #4CAF50, #45a049); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+        .header { background: linear-gradient(135deg, ${isCancellation ? '#f44336, #d32f2f' : '#4CAF50, #45a049'}); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
         .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
-        .booking-details { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #4CAF50; }
+        .booking-details { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid ${isCancellation ? '#f44336' : '#4CAF50'}; }
         .services { margin: 15px 0; }
         .services ul { list-style: none; padding: 0; }
         .services li { padding: 5px 0; border-bottom: 1px solid #eee; }
-        .customer-info { background: #e8f5e8; padding: 15px; border-radius: 8px; margin: 15px 0; }
+        .customer-info { background: ${isCancellation ? '#ffebee' : '#e8f5e8'}; padding: 15px; border-radius: 8px; margin: 15px 0; }
         .footer { text-align: center; margin-top: 30px; color: #666; font-size: 12px; }
-        .highlight { color: #4CAF50; font-weight: bold; }
+        .highlight { color: ${isCancellation ? '#f44336' : '#4CAF50'}; font-weight: bold; }
       </style>
     </head>
     <body>
       <div class="container">
         <div class="header">
-          <h1>🔔 Programare Nouă!</h1>
+          <h1>${isCancellation ? '❌ Programare Anulată' : '🔔 Programare Nouă'}!</h1>
           <p>Salon Beauty Arena - Notificare pentru specialiști</p>
         </div>
 
         <div class="content">
           <p>Bună ziua, <strong>${bookingData.specialistName}</strong>,</p>
 
-          <p>Aveți o programare nouă în agenda dumneavoastră. Detaliile sunt următoarele:</p>
+          <p>${isCancellation ?
+            'O programare din agenda dumneavoastră a fost anulată. Detaliile sunt următoarele:' :
+            'Aveți o programare nouă în agenda dumneavoastră. Detaliile sunt următoarele:'}</p>
 
           <div class="booking-details">
             <h3>📅 Detalii Programare</h3>
@@ -293,7 +297,7 @@ function generateWorkerNotificationHTML(bookingData) {
             <p><strong>Durată totală:</strong> ${bookingData.duration} minute</p>
 
             <div class="services">
-              <h4>💅 Servicii programate:</h4>
+              <h4>💅 Servicii ${isCancellation ? 'anulate' : 'programate'}:</h4>
               <ul>${servicesList}</ul>
             </div>
           </div>
@@ -306,11 +310,13 @@ function generateWorkerNotificationHTML(bookingData) {
             ${bookingData.customerInfo.notes ? `<p><strong>Note:</strong> ${bookingData.customerInfo.notes}</p>` : ''}
           </div>
 
-          <p><strong>Important:</strong> Vă rugăm să confirmați prezența clientului cu cel puțin 15 minute înainte de ora programată.</p>
+          ${isCancellation ?
+            '<p><strong>Important:</strong> Programarea a fost anulată de către client. Slotul orar este acum liber pentru reprogramări.</p>' :
+            '<p><strong>Important:</strong> Vă rugăm să confirmați prezența clientului cu cel puțin 15 minute înainte de ora programată.</p>'}
 
           <p>Puteți vedea toate programările dumneavoastră în calendarul Google sau în contul de pe site-ul nostru.</p>
 
-          <p>Vă mulțumim pentru profesionalismul dumneavoastră!</p>
+          <p>${isCancellation ? 'Vă mulțumim pentru înțelegere!' : 'Vă mulțumim pentru profesionalismul dumneavoastră!'}</p>
 
           <div class="footer">
             <p>© 2025 Salon Beauty Arena. Toate drepturile rezervate.</p>

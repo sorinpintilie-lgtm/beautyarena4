@@ -292,7 +292,7 @@ const BookingPage = () => {
         }
 
         toast.success(`${successfulBookings.length} programare${successfulBookings.length > 1 ? 'i' : ''} creată${successfulBookings.length > 1 ? 'e' : ''} cu succes!`);
-        navigate('/cont');
+        navigate('/contul-meu');
       } else {
         toast.error('Eroare la crearea programării');
       }
