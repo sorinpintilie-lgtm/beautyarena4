@@ -72,11 +72,33 @@ export const getUserBookings = async (userId) => {
 
 export const cancelBooking = async (bookingId) => {
   try {
+    console.log('Cancelling booking:', bookingId);
+
+    // First get the booking to check if it has a calendar event ID
     const bookingRef = doc(db, 'bookings', bookingId);
-    await updateDoc(bookingRef, {
-      status: 'cancelled',
-      updatedAt: new Date().toISOString(),
-    });
+    const bookingSnap = await getDoc(bookingRef);
+
+    if (bookingSnap.exists()) {
+      const bookingData = bookingSnap.data();
+
+      // If there's a calendar event ID, try to remove it from Google Calendar
+      if (bookingData.calendarEventId) {
+        try {
+          console.log('Removing calendar event:', bookingData.calendarEventId);
+          // Note: This would require a new Netlify function to delete calendar events
+          // For now, we'll just log it - you may need to manually remove from calendar
+          // or implement a delete-calendar-event Netlify function
+          console.warn('Calendar event removal not implemented yet. Event ID:', bookingData.calendarEventId);
+        } catch (calendarError) {
+          console.warn('Error removing calendar event:', calendarError);
+          // Don't fail the cancellation if calendar removal fails
+        }
+      }
+    }
+
+    // Completely delete the booking from Firebase
+    await deleteDoc(bookingRef);
+    console.log('Booking deleted from Firebase:', bookingId);
 
     return { success: true };
   } catch (error) {

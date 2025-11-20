@@ -202,6 +202,7 @@ const BookingPage = () => {
         console.log('Firestore booking result:', firestoreResult);
 
         // Also create Google Calendar event using the original Netlify function
+        let calendarEventId = null;
         try {
           const calendarBookingData = {
             services: workerServices,
@@ -234,12 +235,20 @@ const BookingPage = () => {
           const calendarData = await calendarResponse.json();
           console.log('Google Calendar result:', calendarData);
 
-          if (!calendarResponse.ok) {
+          if (calendarResponse.ok && calendarData.createdEvents && calendarData.createdEvents.length > 0) {
+            calendarEventId = calendarData.createdEvents[0].id; // Store the calendar event ID
+            console.log('Stored calendar event ID:', calendarEventId);
+          } else {
             console.warn('Google Calendar creation failed:', calendarData.error);
           }
         } catch (calendarError) {
           console.warn('Error creating Google Calendar event:', calendarError);
           // Don't fail the whole booking if calendar fails
+        }
+
+        // Add calendar event ID to booking data if available
+        if (calendarEventId) {
+          bookingData.calendarEventId = calendarEventId;
         }
 
         return firestoreResult;

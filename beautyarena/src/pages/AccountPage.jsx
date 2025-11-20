@@ -319,32 +319,25 @@ const AccountPage = () => {
                               <User className="w-3 h-3" />
                               {booking.specialistName}
                             </span>
-                            <span className={`flex items-center gap-1 ${
-                              booking.status === 'confirmed' ? 'text-green-600' :
-                              booking.status === 'cancelled' ? 'text-red-600' : 'text-gray-600'
-                            }`}>
-                              {booking.status === 'confirmed' ? <CheckCircle className="w-3 h-3" /> :
-                               booking.status === 'cancelled' ? <XCircle className="w-3 h-3" /> : null}
-                              {booking.status === 'confirmed' ? 'Confirmată' :
-                               booking.status === 'cancelled' ? 'Anulată' : booking.status}
+                            <span className="flex items-center gap-1 text-green-600">
+                              <CheckCircle className="w-3 h-3" />
+                              Confirmată
                             </span>
                           </div>
                         </div>
 
-                        {booking.status === 'confirmed' && (
-                          <button
-                            onClick={() => handleCancelBooking(booking.id)}
-                            disabled={cancellingBooking === booking.id}
-                            className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-red-600 border border-red-200 rounded-full hover:bg-red-50 transition-colors disabled:opacity-50"
-                          >
-                            {cancellingBooking === booking.id ? (
-                              <Loader className="w-3 h-3 animate-spin" />
-                            ) : (
-                              <X className="w-3 h-3" />
-                            )}
-                            Anulează
-                          </button>
-                        )}
+                        <button
+                          onClick={() => handleCancelBooking(booking.id)}
+                          disabled={cancellingBooking === booking.id}
+                          className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-red-600 border border-red-200 rounded-full hover:bg-red-50 transition-colors disabled:opacity-50"
+                        >
+                          {cancellingBooking === booking.id ? (
+                            <Loader className="w-3 h-3 animate-spin" />
+                          ) : (
+                            <X className="w-3 h-3" />
+                          )}
+                          Anulează
+                        </button>
                       </div>
                     </div>
                   ))}
