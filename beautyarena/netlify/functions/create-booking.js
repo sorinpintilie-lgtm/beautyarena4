@@ -68,9 +68,6 @@ ${notes ? `Observații: ${notes}` : ''}`,
         dateTime: endTime.toISOString(),
         timeZone: 'Europe/Bucharest',
       },
-      attendees: [
-        { email: email, displayName: name }
-      ],
       reminders: {
         useDefault: true,
       },
