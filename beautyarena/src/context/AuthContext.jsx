@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { auth, db } from '../firebase';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from 'firebase/auth';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile, setPersistence, browserLocalPersistence } from 'firebase/auth';
 import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 import toast from 'react-hot-toast';
 
@@ -20,40 +20,67 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        // Get additional user data from Firestore
-        const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
-        const userData = userDoc.exists() ? userDoc.data() : {};
+    console.log('Setting up auth state listener...');
 
-        const userInfo = {
-          uid: firebaseUser.uid,
-          email: firebaseUser.email,
-          name: firebaseUser.displayName || userData.name || firebaseUser.email.split('@')[0],
-          phone: userData.phone || '',
-          address: userData.address || '',
-          createdAt: firebaseUser.metadata.creationTime,
-        };
+    // Ensure persistence is set before setting up the listener
+    const setupAuthListener = async () => {
+      try {
+        await setPersistence(auth, browserLocalPersistence);
+        console.log('Auth persistence confirmed');
 
-        setUser(userInfo);
-        setIsAuthenticated(true);
-      } else {
-        setUser(null);
-        setIsAuthenticated(false);
+        const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+          console.log('Auth state changed:', firebaseUser ? 'User logged in' : 'User logged out', firebaseUser?.email);
+          if (firebaseUser) {
+            // Get additional user data from Firestore
+            const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+            const userData = userDoc.exists() ? userDoc.data() : {};
+
+            const userInfo = {
+              uid: firebaseUser.uid,
+              email: firebaseUser.email,
+              name: firebaseUser.displayName || userData.name || firebaseUser.email.split('@')[0],
+              phone: userData.phone || '',
+              address: userData.address || '',
+              createdAt: firebaseUser.metadata.creationTime,
+            };
+
+            console.log('Setting user info:', userInfo);
+            setUser(userInfo);
+            setIsAuthenticated(true);
+          } else {
+            console.log('Clearing user state');
+            setUser(null);
+            setIsAuthenticated(false);
+          }
+          setLoading(false);
+        });
+
+        return unsubscribe;
+      } catch (error) {
+        console.error('Error setting up auth listener:', error);
+        setLoading(false);
       }
-      setLoading(false);
-    });
+    };
 
-    return unsubscribe;
+    const unsubscribePromise = setupAuthListener();
+
+    return () => {
+      unsubscribePromise.then(unsubscribe => {
+        if (unsubscribe) unsubscribe();
+      });
+    };
   }, []);
 
   // Login function
   const login = async (email, password) => {
     try {
+      console.log('Attempting login for:', email);
       const result = await signInWithEmailAndPassword(auth, email, password);
+      console.log('Login successful:', result.user.email);
       toast.success('Autentificare reușită!');
       return { success: true, user: result.user };
     } catch (error) {
+      console.error('Login error:', error.code, error.message);
       let errorMessage = 'Eroare la autentificare';
       switch (error.code) {
         case 'auth/user-not-found':
@@ -64,6 +91,9 @@ export const AuthProvider = ({ children }) => {
           break;
         case 'auth/invalid-email':
           errorMessage = 'Email invalid';
+          break;
+        case 'auth/invalid-credential':
+          errorMessage = 'Email sau parolă incorectă';
           break;
         default:
           errorMessage = error.message;
