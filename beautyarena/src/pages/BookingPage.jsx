@@ -10,7 +10,7 @@ const BookingPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     selectedServices: [],
-    workerId: '',
+    workerAssignments: {}, // { area: workerId } - e.g., { 'coafor': 'loredana', 'nails': 'valentina' }
     date: '',
     time: '',
     name: '',
@@ -77,6 +77,15 @@ const BookingPage = () => {
     return { totalDuration, totalPrice };
   };
 
+  const calculateEndTime = (startTime, durationMinutes) => {
+    if (!startTime || !durationMinutes) return '';
+    const [hours, minutes] = startTime.split(':').map(Number);
+    const totalMinutes = hours * 60 + minutes + durationMinutes;
+    const endHours = Math.floor(totalMinutes / 60);
+    const endMinutes = totalMinutes % 60;
+    return `${String(endHours).padStart(2, '0')}:${String(endMinutes).padStart(2, '0')}`;
+  };
+
   const validateStep = (step) => {
     const newErrors = {};
     
@@ -117,37 +126,83 @@ const BookingPage = () => {
     try {
       // Prepare booking data
       const selectedServicesList = services.filter(s => formData.selectedServices.includes(s.id));
-      const selectedWorker = specialists.find(sp => sp.id === formData.workerId);
       
-      // Combine quick services and booked services
-      const allServices = [
-        ...selectedServicesList.map(s => ({ name: s.name, duration: `${s.duration} min` })),
-        ...bookedServices.map(s => ({ name: s.name, duration: '60 min' })) // Default duration
-      ];
+      // Group services by area and assigned worker
+      const servicesByWorker = {};
+      
+      // Process quick services
+      selectedServicesList.forEach(service => {
+        const workerId = formData.workerAssignments[service.area] || 'disponibil';
+        if (!servicesByWorker[workerId]) {
+          servicesByWorker[workerId] = {
+            services: [],
+            areas: new Set()
+          };
+        }
+        servicesByWorker[workerId].services.push({
+          name: service.name,
+          duration: service.duration
+        });
+        servicesByWorker[workerId].areas.add(service.area);
+      });
 
-      const bookingData = {
-        service: allServices.length > 0 ? allServices[0] : { name: 'Servicii multiple', duration: '60 min' },
-        specialist: selectedWorker || { id: 'disponibil', name: 'Orice specialist disponibil' },
-        date: formData.date,
-        time: formData.time,
-        name: formData.name,
-        phone: formData.phone,
-        email: formData.email,
-        notes: formData.message + (allServices.length > 1 ? `\n\nServicii: ${allServices.map(s => s.name).join(', ')}` : '')
+      // Process booked services from ServicesPage
+      bookedServices.forEach(service => {
+        const serviceAreas = categoryTitleToAreas(service.categoryTitle || '');
+        const area = serviceAreas[0] || 'cosmetica';
+        const workerId = formData.workerAssignments[area] || 'disponibil';
+        
+        if (!servicesByWorker[workerId]) {
+          servicesByWorker[workerId] = {
+            services: [],
+            areas: new Set()
+          };
+        }
+        servicesByWorker[workerId].services.push({
+          name: service.name,
+          duration: service.duration || 60
+        });
+        servicesByWorker[workerId].areas.add(area);
+      });
+
+      // Create bookings array for each worker
+      const bookings = Object.entries(servicesByWorker).map(([workerId, data]) => {
+        const specialist = specialists.find(sp => sp.id === workerId);
+        const totalDuration = data.services.reduce((sum, s) => sum + (typeof s.duration === 'number' ? s.duration : parseInt(s.duration)), 0);
+        
+        return {
+          services: data.services,
+          specialistId: workerId,
+          specialistName: specialist?.name || 'Specialist disponibil',
+          date: formData.date,
+          startTime: formData.time,
+          duration: totalDuration
+        };
+      });
+
+      const requestData = {
+        bookings,
+        customerInfo: {
+          name: formData.name,
+          phone: formData.phone,
+          email: formData.email,
+          notes: formData.message
+        }
       };
 
-      const response = await fetch('/.netlify/functions/create-booking', {
+      const response = await fetch('/.netlify/functions/create-multiple-bookings', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(bookingData),
+        body: JSON.stringify(requestData),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        toast.success('Programarea a fost creată cu succes în calendar!');
+        const eventCount = data.createdEvents?.length || 0;
+        toast.success(`${eventCount} programare${eventCount > 1 ? 'i' : ''} creată${eventCount > 1 ? 'e' : ''} cu succes!`);
         navigate('/');
       } else {
         toast.error(data.error || 'Eroare la crearea programării');
@@ -168,43 +223,54 @@ const BookingPage = () => {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
 
-    // Check availability when date changes and worker is selected
-    if (name === 'date' && newData.workerId) {
-      checkAvailability(value, newData.workerId);
+    // Check availability when date changes and workers are assigned
+    if (name === 'date' && Object.keys(newData.workerAssignments).length > 0) {
+      checkMultiWorkerAvailability(value, newData.workerAssignments);
     }
   };
 
-  const handleWorkerChange = (workerId) => {
-    const newData = { ...formData, workerId };
-    setFormData(newData);
-
-    // Check availability when worker changes and date is selected
-    if (newData.date) {
-      checkAvailability(newData.date, workerId);
-    }
-  };
-
-  // Check availability from Google Calendar
-  const checkAvailability = async (date, specialistId) => {
-    if (!specialistId) return;
+  // Check availability for all assigned workers
+  const checkMultiWorkerAvailability = async (date, workerAssignments) => {
+    if (!date || Object.keys(workerAssignments).length === 0) return;
 
     setLoadingAvailability(true);
     try {
-      const response = await fetch(`/.netlify/functions/availability-check?date=${date}&specialistId=${specialistId}`);
+      // Calculate duration per area
+      const selectedServicesList = services.filter(s => formData.selectedServices.includes(s.id));
+      const serviceDurations = {};
+      
+      selectedServicesList.forEach(service => {
+        if (!serviceDurations[service.area]) {
+          serviceDurations[service.area] = 0;
+        }
+        serviceDurations[service.area] += service.duration;
+      });
+
+      bookedServices.forEach(service => {
+        const serviceAreas = categoryTitleToAreas(service.categoryTitle || '');
+        const area = serviceAreas[0] || 'cosmetica';
+        if (!serviceDurations[area]) {
+          serviceDurations[area] = 0;
+        }
+        serviceDurations[area] += (service.duration || 60);
+      });
+
+      const response = await fetch('/.netlify/functions/check-multi-worker-availability', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          date,
+          workerAssignments,
+          serviceDurations
+        }),
+      });
+
       const data = await response.json();
 
       if (response.ok) {
-        // Filter available time slots based on booked slots
-        const availableSlots = timeSlots.filter(slot => {
-          const slotTime = new Date(`${date}T${slot}:00+02:00`);
-          return !data.bookedSlots.some(booked => {
-            const bookedStart = new Date(booked.start);
-            const bookedEnd = new Date(booked.end);
-            return slotTime >= bookedStart && slotTime < bookedEnd;
-          });
-        });
-
-        setAvailability(prev => ({ ...prev, [`${date}-${specialistId}`]: availableSlots }));
+        setAvailability(prev => ({ ...prev, [`${date}-multi`]: data.availableSlots }));
       } else {
         console.error('Error checking availability:', data.error);
         toast.error('Eroare la verificarea disponibilității');
@@ -477,42 +543,71 @@ const BookingPage = () => {
                       </div>
                     </div>
 
-                    {/* Specialist selection based on selected services */}
-                    <div className="mt-6 space-y-3">
-                      <h3 className="text-sm font-semibold text-gray-900">
-                        Alege specialistul preferat (opțional)
-                      </h3>
-                      <p className="text-xs text-gray-500">
-                        Lista de mai jos se adaptează în funcție de tipurile de servicii selectate (coafor, manichiură, cosmetică, epilare).
-                      </p>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                        {filteredSpecialists.map((specialist) => {
-                          const isSelected = formData.workerId === specialist.id;
+                    {/* Per-category specialist selection */}
+                    {selectedAreas.length > 0 && (
+                      <div className="mt-6 space-y-6">
+                        <h3 className="text-sm font-semibold text-gray-900">
+                          Alege specialiștii pentru fiecare categorie
+                        </h3>
+                        <p className="text-xs text-gray-500">
+                          Selectează un specialist pentru fiecare tip de serviciu ales.
+                        </p>
+                        
+                        {selectedAreas.map((area) => {
+                          const areaSpecialists = specialists.filter(sp => sp.areas.includes(area));
+                          const areaLabel = area === 'coafor' ? 'Coafură' :
+                                          area === 'nails' ? 'Manichiură/Pedichiură' :
+                                          area === 'cosmetica' ? 'Cosmetică' : 'Epilare';
+                          
                           return (
-                            <button
-                              key={specialist.id}
-                              type="button"
-                              onClick={() =>
-                                handleWorkerChange(formData.workerId === specialist.id ? '' : specialist.id)
-                              }
-                              className={`p-3 rounded-lg border text-left text-xs sm:text-sm transition-all ${
-                                isSelected
-                                  ? 'border-beauty-pink bg-beauty-pink/10'
-                                  : 'border-gray-200 hover:border-beauty-pink/60'
-                              }`}
-                            >
-                              <div className="font-semibold text-gray-900">{specialist.name}</div>
-                              <div className="text-[11px] text-gray-600">{specialist.role}</div>
-                              {isSelected && (
-                                <div className="mt-1 text-[11px] text-beauty-pink font-medium">
-                                  Selectat
-                                </div>
-                              )}
-                            </button>
+                            <div key={area} className="bg-gray-50 rounded-lg p-4">
+                              <h4 className="text-sm font-medium text-gray-900 mb-3">
+                                {areaLabel}
+                              </h4>
+                              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                {areaSpecialists.map((specialist) => {
+                                  const isSelected = formData.workerAssignments[area] === specialist.id;
+                                  return (
+                                    <button
+                                      key={specialist.id}
+                                      type="button"
+                                      onClick={() => {
+                                        const newAssignments = {
+                                          ...formData.workerAssignments,
+                                          [area]: isSelected ? '' : specialist.id
+                                        };
+                                        setFormData(prev => ({
+                                          ...prev,
+                                          workerAssignments: newAssignments
+                                        }));
+                                        
+                                        // Check availability when worker assignment changes
+                                        if (formData.date && Object.keys(newAssignments).length > 0) {
+                                          checkMultiWorkerAvailability(formData.date, newAssignments);
+                                        }
+                                      }}
+                                      className={`p-3 rounded-lg border text-left text-xs sm:text-sm transition-all ${
+                                        isSelected
+                                          ? 'border-beauty-pink bg-beauty-pink/10'
+                                          : 'border-gray-200 hover:border-beauty-pink/60'
+                                      }`}
+                                    >
+                                      <div className="font-semibold text-gray-900">{specialist.name}</div>
+                                      <div className="text-[11px] text-gray-600">{specialist.role}</div>
+                                      {isSelected && (
+                                        <div className="mt-1 text-[11px] text-beauty-pink font-medium">
+                                          Selectat
+                                        </div>
+                                      )}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
                           );
                         })}
                       </div>
-                    </div>
+                    )}
                     
                     {errors.services && (
                       <p className="text-red-500 text-sm mt-2">{errors.services}</p>
@@ -546,12 +641,17 @@ const BookingPage = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Ora programării *
+                        Ora de început * {totalDuration > 0 && (
+                          <span className="text-beauty-pink text-xs">
+                            (Durata totală: {totalDuration} min, până la {formData.time && calculateEndTime(formData.time, totalDuration)})
+                          </span>
+                        )}
                       </label>
                       <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
                         {timeSlots.map((time) => {
-                          const isAvailable = availability[`${formData.date}-${formData.workerId}`]?.includes(time);
-                          const isBooked = availability[`${formData.date}-${formData.workerId}`] && !isAvailable;
+                          const isAvailable = availability[`${formData.date}-multi`]?.includes(time);
+                          const hasAvailabilityData = availability[`${formData.date}-multi`] !== undefined;
+                          const isBooked = hasAvailabilityData && !isAvailable;
                           const isLoading = loadingAvailability;
 
                           return (
@@ -725,16 +825,28 @@ const BookingPage = () => {
                       </div>
 
                       <div className="border-t border-gray-200 pt-4">
+                        <h3 className="font-semibold text-gray-900 mb-2">Specialiști asignați:</h3>
+                        <div className="space-y-1 text-gray-700">
+                          {Object.entries(formData.workerAssignments).map(([area, workerId]) => {
+                            const specialist = specialists.find(sp => sp.id === workerId);
+                            const areaLabel = area === 'coafor' ? 'Coafură' :
+                                            area === 'nails' ? 'Manichiură/Pedichiură' :
+                                            area === 'cosmetica' ? 'Cosmetică' : 'Epilare';
+                            return specialist ? (
+                              <p key={area}>
+                                <strong>{areaLabel}:</strong> {specialist.name}
+                              </p>
+                            ) : null;
+                          })}
+                        </div>
+                      </div>
+
+                      <div className="border-t border-gray-200 pt-4">
                         <h3 className="font-semibold text-gray-900 mb-2">Informații contact:</h3>
                         <div className="space-y-1 text-gray-700">
                           <p><strong>Nume:</strong> {formData.name}</p>
                           <p><strong>Email:</strong> {formData.email}</p>
                           <p><strong>Telefon:</strong> {formData.phone}</p>
-                          {selectedWorker && (
-                            <p>
-                              <strong>Specialist preferat:</strong> {selectedWorker.name} ({selectedWorker.role})
-                            </p>
-                          )}
                           {formData.message && (
                             <p><strong>Mesaj:</strong> {formData.message}</p>
                           )}
