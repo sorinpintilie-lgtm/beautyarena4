@@ -381,9 +381,24 @@ exports.handler = async (event, context) => {
 
       case 'worker_notification':
         subject = `Programare Nouă - ${data.specialistName}`;
-        // For now, send to a generic worker email - you can expand this to send to specific worker emails
+
+        // Map specialist IDs to their email addresses
+        const workerEmails = {
+          'loredana': process.env.CALENDAR_LOREDANA || 'loredanasalonbeautyarena@gmail.com',
+          'camelia1': process.env.CALENDAR_CAMELIA1 || 'cameliasalonbeautyarena@gmail.com',
+          'dana': process.env.CALENDAR_DANA || 'danasalonbeautyarena@gmail.com',
+          'valentina': process.env.CALENDAR_VALENTINA || 'valentinasalonbeautyarena@gmail.com',
+          'teo': process.env.CALENDAR_TEO || 'teosalonbeautyarena@gmail.com',
+          'camelia2': process.env.CALENDAR_CAMELIA2 || 'camelia2salonbeautyarena@gmail.com',
+          'geo': process.env.CALENDAR_GEO || 'geosalonbeautyarena@gmail.com',
+          'mihaela': process.env.CALENDAR_MIHAELA || 'mihaelasalonbeautyarena@gmail.com',
+          'disponibil': process.env.CALENDAR_GENERAL || 'general@beautyarena.com'
+        };
+
+        const workerEmail = workerEmails[data.specialistId] || 'workers@salonbeautyarena.ro';
+
         emailContent = {
-          to: 'workers@salonbeautyarena.ro', // You can change this to specific worker emails
+          to: workerEmail,
           from: { email: FROM_EMAIL, name: FROM_NAME },
           subject: subject,
           html: generateWorkerNotificationHTML(data)
