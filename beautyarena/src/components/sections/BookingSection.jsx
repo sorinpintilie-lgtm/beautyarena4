@@ -77,14 +77,20 @@ const BookingSection = () => {
   };
 
   const handleInputChange = (field, value) => {
+    console.log('handleInputChange called:', field, value);
     const newData = { ...bookingData, [field]: value };
+    console.log('New booking data:', newData);
     setBookingData(newData);
 
     // Check availability when specialist or date changes
     if (field === 'specialist' && newData.date) {
+      console.log('Checking availability for specialist + existing date');
       checkAvailability(newData.date, value.id);
     } else if (field === 'date' && newData.specialist) {
+      console.log('Checking availability for date + existing specialist');
       checkAvailability(value, newData.specialist.id);
+    } else {
+      console.log('Not checking availability - missing data');
     }
   };
 
