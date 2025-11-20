@@ -175,7 +175,7 @@ const BookingPage = () => {
         servicesByWorker[workerId].push(service);
       });
 
-      // Create bookings for each worker
+      // Create bookings for each worker - both in Firestore and Google Calendar
       console.log('Creating bookings for user:', user.uid);
       const bookingPromises = Object.entries(servicesByWorker).map(async ([workerId, workerServices]) => {
         const specialist = specialists.find(sp => sp.id === workerId);
@@ -196,10 +196,53 @@ const BookingPage = () => {
           }
         };
 
-        console.log('Creating booking for worker:', workerId, bookingData);
-        const result = await createBooking(user.uid, bookingData);
-        console.log('Booking result:', result);
-        return result;
+        // Create booking in Firestore
+        console.log('Creating booking in Firestore for worker:', workerId, bookingData);
+        const firestoreResult = await createBooking(user.uid, bookingData);
+        console.log('Firestore booking result:', firestoreResult);
+
+        // Also create Google Calendar event using the original Netlify function
+        try {
+          const calendarBookingData = {
+            services: workerServices,
+            specialistId: workerId,
+            specialistName: specialist?.name || 'Specialist disponibil',
+            date: formData.date,
+            startTime: formData.time,
+            duration: totalDuration
+          };
+
+          const requestData = {
+            bookings: [calendarBookingData], // Single booking for this worker
+            customerInfo: {
+              name: formData.name,
+              phone: formData.phone,
+              email: formData.email,
+              notes: formData.message
+            }
+          };
+
+          console.log('Creating Google Calendar event:', requestData);
+          const calendarResponse = await fetch('/.netlify/functions/create-multiple-bookings', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
+          });
+
+          const calendarData = await calendarResponse.json();
+          console.log('Google Calendar result:', calendarData);
+
+          if (!calendarResponse.ok) {
+            console.warn('Google Calendar creation failed:', calendarData.error);
+          }
+        } catch (calendarError) {
+          console.warn('Error creating Google Calendar event:', calendarError);
+          // Don't fail the whole booking if calendar fails
+        }
+
+        return firestoreResult;
       });
 
       const results = await Promise.all(bookingPromises);

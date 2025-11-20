@@ -23,22 +23,49 @@ export const createBooking = async (userId, bookingData) => {
 
 export const getUserBookings = async (userId) => {
   try {
-    const q = query(
-      collection(db, 'bookings'),
-      where('userId', '==', userId),
-      orderBy('createdAt', 'desc')
-    );
+    console.log('Getting bookings for user:', userId);
 
-    const querySnapshot = await getDocs(q);
-    const bookings = [];
+    // First try with the ordered query
+    try {
+      const q = query(
+        collection(db, 'bookings'),
+        where('userId', '==', userId),
+        orderBy('createdAt', 'desc')
+      );
 
-    querySnapshot.forEach((doc) => {
-      bookings.push({ id: doc.id, ...doc.data() });
-    });
+      const querySnapshot = await getDocs(q);
+      const bookings = [];
 
-    return { success: true, bookings };
+      querySnapshot.forEach((doc) => {
+        bookings.push({ id: doc.id, ...doc.data() });
+      });
+
+      console.log('Found bookings with ordered query:', bookings.length);
+      return { success: true, bookings };
+    } catch (orderedError) {
+      console.warn('Ordered query failed, trying simple query:', orderedError.message);
+
+      // Fallback to simple query without ordering
+      const q = query(
+        collection(db, 'bookings'),
+        where('userId', '==', userId)
+      );
+
+      const querySnapshot = await getDocs(q);
+      const bookings = [];
+
+      querySnapshot.forEach((doc) => {
+        bookings.push({ id: doc.id, ...doc.data() });
+      });
+
+      // Sort manually since we can't use orderBy
+      bookings.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+      console.log('Found bookings with simple query:', bookings.length);
+      return { success: true, bookings };
+    }
   } catch (error) {
-    console.error('Error getting bookings:', error);
+    console.error('Error getting bookings:', error.code, error.message);
     return { success: false, error: error.message };
   }
 };
