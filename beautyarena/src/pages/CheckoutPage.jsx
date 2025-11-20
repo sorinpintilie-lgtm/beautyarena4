@@ -115,8 +115,9 @@ const CheckoutPage = () => {
       const orderResult = await createOrder(user.uid, orderData);
 
       if (orderResult.success) {
-        // Send order confirmation email
+        // Send order confirmation emails
         try {
+          // Send confirmation to customer
           await fetch('/.netlify/functions/send-email', {
             method: 'POST',
             headers: {
@@ -127,15 +128,27 @@ const CheckoutPage = () => {
               data: orderResult
             })
           });
+
+          // Send notification to store contact
+          await fetch('/.netlify/functions/send-email', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              type: 'store_order_notification',
+              data: orderResult
+            })
+          });
         } catch (emailError) {
-          console.warn('Order confirmation email failed:', emailError);
-          // Don't fail the order if email fails
+          console.warn('Order emails failed:', emailError);
+          // Don't fail the order if emails fail
         }
 
         // Clear cart and navigate
         clearCart();
         toast.success('Comandă plasată cu succes!');
-        navigate('/cont');
+        navigate('/contul-meu');
       } else {
         toast.error('Eroare la plasarea comenzii');
       }

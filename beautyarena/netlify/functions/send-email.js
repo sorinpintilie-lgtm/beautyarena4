@@ -187,6 +187,91 @@ function generateOrderConfirmationHTML(orderData) {
   `;
 }
 
+function generateStoreOrderNotificationHTML(orderData) {
+  const itemsList = orderData.items.map(item =>
+    `<li>${item.name} x${item.quantity} - ${item.price * item.quantity} lei</li>`
+  ).join('');
+
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <title>Comandă Nouă Primită - Salon Beauty Arena</title>
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #FF6B35, #F7931E); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+        .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+        .order-details { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #FF6B35; }
+        .shipping-info { background: #fff3cd; padding: 15px; border-radius: 8px; margin: 15px 0; }
+        .items { margin: 15px 0; }
+        .items ul { list-style: none; padding: 0; }
+        .items li { padding: 5px 0; border-bottom: 1px solid #eee; }
+        .total { font-size: 18px; font-weight: bold; color: #FF6B35; text-align: right; margin-top: 15px; }
+        .footer { text-align: center; margin-top: 30px; color: #666; font-size: 12px; }
+        .urgent { color: #dc3545; font-weight: bold; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1>🆕 Comandă Nouă Primită!</h1>
+          <p>Comanda #${orderData.orderNumber} - Procesare necesară</p>
+        </div>
+
+        <div class="content">
+          <p><span class="urgent">URGENT:</span> Ați primit o comandă nouă care necesită procesare imediată.</p>
+
+          <div class="order-details">
+            <h3>📦 Detalii Comandă</h3>
+            <p><strong>Număr comandă:</strong> ${orderData.orderNumber}</p>
+            <p><strong>Data primirii:</strong> ${new Date(orderData.createdAt).toLocaleDateString('ro-RO')}</p>
+            <p><strong>Metodă de plată:</strong> ${orderData.paymentMethod === 'card' ? 'Card bancar' : 'Ramburs'}</p>
+            <p><strong>Metodă de livrare:</strong> ${orderData.shippingMethod === 'standard' ? 'Curier standard' : 'Curier express'}</p>
+
+            <div class="items">
+              <h4>Produse comandate:</h4>
+              <ul>${itemsList}</ul>
+            </div>
+
+            <div class="total">
+              Total: ${orderData.total} lei
+            </div>
+          </div>
+
+          <div class="shipping-info">
+            <h4>🚚 Informații de livrare:</h4>
+            <p><strong>Nume:</strong> ${orderData.shippingAddress.fullName}</p>
+            <p><strong>Adresă:</strong> ${orderData.shippingAddress.address}</p>
+            <p><strong>Oraș:</strong> ${orderData.shippingAddress.city}</p>
+            <p><strong>Cod poștal:</strong> ${orderData.shippingAddress.postalCode}</p>
+            <p><strong>Țară:</strong> ${orderData.shippingAddress.country}</p>
+            <p><strong>Telefon:</strong> ${orderData.shippingAddress.phone}</p>
+            <p><strong>Email:</strong> ${orderData.customerInfo.email}</p>
+          </div>
+
+          <p><strong>Acțiuni necesare:</strong></p>
+          <ul>
+            <li>Verificați stocul pentru toate produsele comandate</li>
+            <li>Pregătiți coletul pentru expediere</li>
+            <li>Contactați clientul dacă sunt probleme cu stocul</li>
+            <li>Actualizați statusul comenzii în sistem</li>
+          </ul>
+
+          <p>Pentru orice întrebări sau probleme, verificați email-ul clientului: <strong>${orderData.customerInfo.email}</strong></p>
+
+          <div class="footer">
+            <p>© 2025 Salon Beauty Arena. Sistem automat de notificări</p>
+            <p>Procesați comenzile cât mai repede posibil pentru satisfacția clienților!</p>
+          </div>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+}
+
 function generateWelcomeEmailHTML(userData) {
   return `
     <!DOCTYPE html>
@@ -372,6 +457,16 @@ exports.handler = async (event, context) => {
           from: { email: FROM_EMAIL, name: FROM_NAME },
           subject: subject,
           html: generateOrderConfirmationHTML(data)
+        };
+        break;
+
+      case 'store_order_notification':
+        subject = `Comandă Nouă #${data.orderNumber} - Salon Beauty Arena`;
+        emailContent = {
+          to: 'contact@salonbeautyarena.ro',
+          from: { email: FROM_EMAIL, name: FROM_NAME },
+          subject: subject,
+          html: generateStoreOrderNotificationHTML(data)
         };
         break;
 

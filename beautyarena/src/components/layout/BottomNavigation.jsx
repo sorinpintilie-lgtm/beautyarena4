@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Sparkles, ShoppingBag, Calendar } from 'lucide-react';
+import { Sparkles, ShoppingBag, Calendar, ShoppingCart } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 
 const BottomNavigation = ({ onMenuClick, onCartClick }) => {
@@ -23,6 +23,13 @@ const BottomNavigation = ({ onMenuClick, onCartClick }) => {
       icon: ShoppingBag,
       path: '/shop',
       isActive: location.pathname.startsWith('/shop'),
+    },
+    {
+      id: 'cart',
+      label: 'Coș',
+      icon: ShoppingCart,
+      path: '/checkout',
+      isActive: location.pathname === '/checkout',
     },
     {
       id: 'booking',
@@ -94,8 +101,8 @@ const BottomNavigation = ({ onMenuClick, onCartClick }) => {
                     }`}
                   />
                   
-                  {/* Cart badge - only show on shop */}
-                  {item.id === 'shop' && cartCount > 0 && (
+                  {/* Cart badge - show on cart button */}
+                  {item.id === 'cart' && cartCount > 0 && (
                     <span className="absolute -top-2 -right-2 bg-beauty-pink-dark text-white text-[9px] font-bold rounded-full min-w-[18px] h-4.5 px-1.5 flex items-center justify-center shadow-md border border-white/20">
                       {cartCount > 9 ? '9+' : cartCount}
                     </span>
