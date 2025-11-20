@@ -99,13 +99,28 @@ export const cancelBooking = async (bookingId) => {
       }
 
       // If there's a calendar event ID, try to remove it from Google Calendar
-      if (bookingData.calendarEventId) {
+      if (bookingData.calendarEventId && bookingData.specialistId) {
         try {
-          console.log('Removing calendar event:', bookingData.calendarEventId);
-          // Note: This would require a new Netlify function to delete calendar events
-          // For now, we'll just log it - you may need to manually remove from calendar
-          // or implement a delete-calendar-event Netlify function
-          console.warn('Calendar event removal not implemented yet. Event ID:', bookingData.calendarEventId);
+          console.log('Removing calendar event:', bookingData.calendarEventId, 'for specialist:', bookingData.specialistId);
+
+          const response = await fetch('/.netlify/functions/delete-calendar-event', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              eventId: bookingData.calendarEventId,
+              specialistId: bookingData.specialistId
+            })
+          });
+
+          const result = await response.json();
+
+          if (response.ok && result.success) {
+            console.log('Calendar event deleted successfully');
+          } else {
+            console.warn('Failed to delete calendar event:', result.error);
+          }
         } catch (calendarError) {
           console.warn('Error removing calendar event:', calendarError);
           // Don't fail the cancellation if calendar removal fails
