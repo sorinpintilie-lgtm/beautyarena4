@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Calendar, Clock, User, Mail, Phone, MessageSquare, Check, ChevronLeft, ChevronRight, Scissors, Sparkles, Star, Palette, Heart, Zap, Loader } from 'lucide-react';
 import SEO from '../components/common/SEO';
 import { useServiceBooking } from '../context/ServiceBookingContext';
+import { useAuth } from '../context/AuthContext';
+import { createBooking } from '../services/bookingService';
 import toast from 'react-hot-toast';
 
 const BookingPage = () => {
   const navigate = useNavigate();
+  const { user, isAuthenticated } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     selectedServices: [],
@@ -27,6 +30,18 @@ const BookingPage = () => {
     totalPrice: servicesCartTotal,
     removeService,
   } = useServiceBooking();
+
+  // Autofill user information when user is authenticated
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      setFormData(prev => ({
+        ...prev,
+        name: user.name || prev.name,
+        email: user.email || prev.email,
+        phone: user.phone || prev.phone,
+      }));
+    }
+  }, [isAuthenticated, user]);
 
   const services = [
     // Real, popular services derived from the actual Services page price list
@@ -122,90 +137,74 @@ const BookingPage = () => {
   const handleSubmit = async () => {
     if (!validateStep(currentStep)) return;
 
+    // Check if user is authenticated
+    if (!isAuthenticated) {
+      toast.error('Trebuie să te autentifici pentru a crea o programare');
+      navigate('/login');
+      return;
+    }
+
     setSubmitting(true);
     try {
       // Prepare booking data
       const selectedServicesList = services.filter(s => formData.selectedServices.includes(s.id));
-      
-      // Group services by area and assigned worker
+
+      // Combine all services
+      const allServices = [
+        ...selectedServicesList.map(service => ({
+          name: service.name,
+          duration: service.duration,
+          area: service.area
+        })),
+        ...bookedServices.map(service => ({
+          name: service.name,
+          duration: service.duration || 60,
+          area: categoryTitleToAreas(service.categoryTitle || '')[0] || 'cosmetica'
+        }))
+      ];
+
+      // Group services by assigned worker
       const servicesByWorker = {};
-      
-      // Process quick services
-      selectedServicesList.forEach(service => {
+
+      allServices.forEach(service => {
         const workerId = formData.workerAssignments[service.area] || 'disponibil';
         if (!servicesByWorker[workerId]) {
-          servicesByWorker[workerId] = {
-            services: [],
-            areas: new Set()
-          };
+          servicesByWorker[workerId] = [];
         }
-        servicesByWorker[workerId].services.push({
-          name: service.name,
-          duration: service.duration
-        });
-        servicesByWorker[workerId].areas.add(service.area);
+        servicesByWorker[workerId].push(service);
       });
 
-      // Process booked services from ServicesPage
-      bookedServices.forEach(service => {
-        const serviceAreas = categoryTitleToAreas(service.categoryTitle || '');
-        const area = serviceAreas[0] || 'cosmetica';
-        const workerId = formData.workerAssignments[area] || 'disponibil';
-        
-        if (!servicesByWorker[workerId]) {
-          servicesByWorker[workerId] = {
-            services: [],
-            areas: new Set()
-          };
-        }
-        servicesByWorker[workerId].services.push({
-          name: service.name,
-          duration: service.duration || 60
-        });
-        servicesByWorker[workerId].areas.add(area);
-      });
-
-      // Create bookings array for each worker
-      const bookings = Object.entries(servicesByWorker).map(([workerId, data]) => {
+      // Create bookings for each worker
+      const bookingPromises = Object.entries(servicesByWorker).map(async ([workerId, workerServices]) => {
         const specialist = specialists.find(sp => sp.id === workerId);
-        const totalDuration = data.services.reduce((sum, s) => sum + (typeof s.duration === 'number' ? s.duration : parseInt(s.duration)), 0);
-        
-        return {
-          services: data.services,
+        const totalDuration = workerServices.reduce((sum, s) => sum + s.duration, 0);
+
+        const bookingData = {
+          services: workerServices,
           specialistId: workerId,
           specialistName: specialist?.name || 'Specialist disponibil',
           date: formData.date,
           startTime: formData.time,
-          duration: totalDuration
+          duration: totalDuration,
+          customerInfo: {
+            name: formData.name,
+            phone: formData.phone,
+            email: formData.email,
+            notes: formData.message
+          }
         };
+
+        return await createBooking(user.uid, bookingData);
       });
 
-      const requestData = {
-        bookings,
-        customerInfo: {
-          name: formData.name,
-          phone: formData.phone,
-          email: formData.email,
-          notes: formData.message
-        }
-      };
+      const results = await Promise.all(bookingPromises);
+      const successfulBookings = results.filter(result => result.success);
 
-      const response = await fetch('/.netlify/functions/create-multiple-bookings', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestData),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        const eventCount = data.createdEvents?.length || 0;
-        toast.success(`${eventCount} programare${eventCount > 1 ? 'i' : ''} creată${eventCount > 1 ? 'e' : ''} cu succes!`);
-        navigate('/');
+      if (successfulBookings.length > 0) {
+        toast.success(`${successfulBookings.length} programare${successfulBookings.length > 1 ? 'i' : ''} creată${successfulBookings.length > 1 ? 'e' : ''} cu succes!`);
+        navigate('/cont');
       } else {
-        toast.error(data.error || 'Eroare la crearea programării');
+        toast.error('Eroare la crearea programării');
       }
     } catch (error) {
       console.error('Error creating booking:', error);

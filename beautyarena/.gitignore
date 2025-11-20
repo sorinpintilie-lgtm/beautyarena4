@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+# Secrets and keys
+calendar-key.json
+*.key.json
+.env
+.env.local
+.env.production
+.env.development
