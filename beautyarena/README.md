@@ -145,7 +145,56 @@ Toate textele sunt în română și pot fi modificate în:
 - Email: info@beautyarena.ro
 - Program: Luni-Vineri 9:00-20:00, Sâmbătă-Duminică 10:00-18:00
 
-## 📄 Licență
+## 🔗 Integrare Google Calendar API
+
+Sistemul de programări este integrat cu Google Calendar pentru verificare disponibilitate și creare evenimente automate.
+
+### Configurare Google Cloud Console
+
+1. **Creează 8 conturi Gmail pentru specialiști**:
+   - Creează conturi Gmail separate pentru fiecare specialist (worker1@beautyarena.com, worker2@beautyarena.com, etc.)
+
+2. **Creează un proiect Google Cloud**:
+   - Mergi la [Google Cloud Console](https://console.cloud.google.com/)
+   - Creează un nou proiect sau selectează unul existent
+
+3. **Activează Google Calendar API**:
+   - Caută "Google Calendar API" în API Library
+   - Activează API-ul
+
+4. **Creează Service Account**:
+   - Mergi la "APIs & Services" → "Credentials"
+   - Creează "Service Account"
+   - Descarcă fișierul JSON cu cheia privată
+
+5. **Configurează Calendar Access**:
+   - Pentru fiecare cont Gmail al specialiștilor:
+     - Conectează-te la contul Gmail
+     - Deschide Google Calendar
+     - Settings → Share with specific people
+     - Adaugă email-ul Service Account cu permisiuni "Make changes to events"
+
+### Configurare Netlify Environment Variables
+
+În dashboard-ul Netlify (Site Settings → Environment Variables), adaugă:
+
+```bash
+GOOGLE_CLIENT_EMAIL=your-service-account@your-project.iam.gserviceaccount.com
+GOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nYOUR_PRIVATE_KEY_HERE\n-----END PRIVATE KEY-----\n"
+CALENDAR_ELENA=primary  # sau ID-ul calendarului specific
+CALENDAR_MARIA=primary
+CALENDAR_ANA=primary
+CALENDAR_GENERAL=primary
+```
+
+### Funcționalități Calendar
+
+- **Verificare Disponibilitate**: Sistemul folosește Google Calendar Freebusy API pentru verificare eficientă a disponibilității
+- **8 Specialiști Reali**: Loredana, Camelia (2), Dana, Valentina, Teo, Geo, Mihaela - fiecare cu propriul calendar Gmail
+- **Creare Evenimente**: La confirmarea programării, se creează automat eveniment în calendarul specialistului selectat
+- **Sincronizare Bidirecțională**: Modificările din calendar se reflectă în timp real în sistem
+
+##  Licență
 
 Acest proiect este dezvoltat pentru BeautyArena și toate drepturile sunt rezervate.
 

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Calendar, Clock, User, Phone, Mail, CheckCircle, ArrowLeft } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Calendar, Clock, User, Phone, Mail, CheckCircle, ArrowLeft, Loader } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const BookingSection = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -13,6 +14,9 @@ const BookingSection = () => {
     email: '',
     notes: ''
   });
+  const [availability, setAvailability] = useState({});
+  const [loadingAvailability, setLoadingAvailability] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const services = [
     { id: 'coafura', name: 'Coafură profesională', duration: '90 min', price: '120 lei', icon: 'hair' },
@@ -24,9 +28,14 @@ const BookingSection = () => {
   ];
 
   const specialists = [
-    { id: 'elena', name: 'Elena Popescu', specialty: 'Coafură & Machiaj', experience: '15+ ani' },
-    { id: 'maria', name: 'Maria Ionescu', specialty: 'Tratamente faciale', experience: '10+ ani' },
-    { id: 'ana', name: 'Ana Marinescu', specialty: 'Manichiură & Nail art', experience: '8+ ani' },
+    { id: 'loredana', name: 'Loredana', specialty: 'Servicii coafor', experience: '15+ ani' },
+    { id: 'camelia1', name: 'Camelia', specialty: 'Servicii coafor', experience: '12+ ani' },
+    { id: 'dana', name: 'Dana', specialty: 'Servicii coafor', experience: '10+ ani' },
+    { id: 'valentina', name: 'Valentina', specialty: 'Servicii manichiură / pedichiură', experience: '8+ ani' },
+    { id: 'teo', name: 'Teo', specialty: 'Servicii manichiură / pedichiură', experience: '9+ ani' },
+    { id: 'camelia2', name: 'Camelia', specialty: 'Servicii manichiură / pedichiură', experience: '7+ ani' },
+    { id: 'geo', name: 'Geo', specialty: 'Servicii cosmetică / epilare definitivă', experience: '11+ ani' },
+    { id: 'mihaela', name: 'Mihaela', specialty: 'Servicii cosmetică / epilare definitivă', experience: '14+ ani' },
     { id: 'disponibil', name: 'Orice specialist disponibil', specialty: 'În funcție de serviciu', experience: '' }
   ];
 
@@ -68,10 +77,48 @@ const BookingSection = () => {
   };
 
   const handleInputChange = (field, value) => {
-    setBookingData(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    const newData = { ...bookingData, [field]: value };
+    setBookingData(newData);
+
+    // Check availability when specialist or date changes
+    if (field === 'specialist' && newData.date) {
+      checkAvailability(newData.date, value.id);
+    } else if (field === 'date' && newData.specialist) {
+      checkAvailability(value, newData.specialist.id);
+    }
+  };
+
+  // Check availability from Google Calendar
+  const checkAvailability = async (date, specialistId) => {
+    if (!specialistId) return;
+
+    setLoadingAvailability(true);
+    try {
+      const response = await fetch(`/.netlify/functions/availability-check?date=${date}&specialistId=${specialistId}`);
+      const data = await response.json();
+
+      if (response.ok) {
+        // Filter available time slots based on booked slots
+        const availableSlots = timeSlots.filter(slot => {
+          const slotTime = new Date(`${date}T${slot}:00+02:00`);
+          return !data.bookedSlots.some(booked => {
+            const bookedStart = new Date(booked.start);
+            const bookedEnd = new Date(booked.end);
+            return slotTime >= bookedStart && slotTime < bookedEnd;
+          });
+        });
+
+        setAvailability(prev => ({ ...prev, [`${date}-${specialistId}`]: availableSlots }));
+      } else {
+        console.error('Error checking availability:', data.error);
+        toast.error('Eroare la verificarea disponibilității');
+      }
+    } catch (error) {
+      console.error('Error checking availability:', error);
+      toast.error('Eroare la verificarea disponibilității');
+    } finally {
+      setLoadingAvailability(false);
+    }
   };
 
   const nextStep = () => {
@@ -154,7 +201,7 @@ const BookingSection = () => {
               <p className="text-gray-600">Selectează specialistul preferat</p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-96 overflow-y-auto">
               {specialists.map((specialist) => (
                 <div
                   key={specialist.id}
@@ -218,19 +265,34 @@ const BookingSection = () => {
                   Ora
                 </h4>
                 <div className="grid grid-cols-3 gap-2 max-h-64 overflow-y-auto">
-                  {timeSlots.map((time) => (
-                    <button
-                      key={time}
-                      onClick={() => handleInputChange('time', time)}
-                      className={`p-2 rounded-lg border text-sm transition-all duration-300 ${
-                        bookingData.time === time
-                          ? 'border-beauty-pink bg-beauty-pink text-white'
-                          : 'border-gray-200 hover:border-beauty-pink/50'
-                      }`}
-                    >
-                      {time}
-                    </button>
-                  ))}
+                  {timeSlots.map((time) => {
+                    const isAvailable = availability[`${bookingData.date}-${bookingData.specialist?.id}`]?.includes(time);
+                    const isBooked = availability[`${bookingData.date}-${bookingData.specialist?.id}`] && !isAvailable;
+                    const isLoading = loadingAvailability;
+
+                    return (
+                      <button
+                        key={time}
+                        onClick={() => !isBooked && !isLoading && handleInputChange('time', time)}
+                        disabled={isBooked || isLoading}
+                        className={`p-2 rounded-lg border text-sm transition-all duration-300 ${
+                          bookingData.time === time
+                            ? 'border-beauty-pink bg-beauty-pink text-white'
+                            : isBooked
+                            ? 'border-red-300 bg-red-50 text-red-400 cursor-not-allowed'
+                            : isLoading
+                            ? 'border-gray-200 bg-gray-50 text-gray-400 cursor-wait'
+                            : 'border-gray-200 hover:border-beauty-pink/50'
+                        }`}
+                      >
+                        {isLoading ? (
+                          <Loader className="w-4 h-4 animate-spin mx-auto" />
+                        ) : (
+                          time
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -350,22 +412,43 @@ const BookingSection = () => {
     }
   };
 
-  const handleSubmit = () => {
-    // Here you would typically send the booking data to your backend
-    console.log('Booking submitted:', bookingData);
-    alert('Programarea ta a fost trimisă cu succes! Vei primi o confirmare pe email.');
-    // Reset form
-    setCurrentStep(1);
-    setBookingData({
-      service: '',
-      specialist: '',
-      date: '',
-      time: '',
-      name: '',
-      phone: '',
-      email: '',
-      notes: ''
-    });
+  const handleSubmit = async () => {
+    setSubmitting(true);
+    try {
+      const response = await fetch('/.netlify/functions/create-booking', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bookingData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success('Programarea a fost creată cu succes în calendar!');
+        // Reset form
+        setCurrentStep(1);
+        setBookingData({
+          service: '',
+          specialist: '',
+          date: '',
+          time: '',
+          name: '',
+          phone: '',
+          email: '',
+          notes: ''
+        });
+        setAvailability({});
+      } else {
+        toast.error(data.error || 'Eroare la crearea programării');
+      }
+    } catch (error) {
+      console.error('Error creating booking:', error);
+      toast.error('Eroare la crearea programării');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -440,15 +523,19 @@ const BookingSection = () => {
             ) : (
               <button
                 onClick={handleSubmit}
-                disabled={!isStepValid()}
+                disabled={!isStepValid() || submitting}
                 className={`flex items-center px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
-                  isStepValid()
+                  isStepValid() && !submitting
                     ? 'btn-primary'
                     : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                 }`}
               >
-                <CheckCircle className="w-4 h-4 mr-2" />
-                Confirmă programarea
+                {submitting ? (
+                  <Loader className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <CheckCircle className="w-4 h-4 mr-2" />
+                )}
+                {submitting ? 'Se creează programarea...' : 'Confirmă programarea'}
               </button>
             )}
           </div>
