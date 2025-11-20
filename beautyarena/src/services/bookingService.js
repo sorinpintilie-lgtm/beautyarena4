@@ -3,6 +3,7 @@ import { collection, addDoc, query, where, getDocs, doc, updateDoc, deleteDoc, o
 
 export const createBooking = async (userId, bookingData) => {
   try {
+    console.log('Creating booking for user:', userId, 'with data:', bookingData);
     const booking = {
       userId,
       ...bookingData,
@@ -12,9 +13,10 @@ export const createBooking = async (userId, bookingData) => {
     };
 
     const docRef = await addDoc(collection(db, 'bookings'), booking);
+    console.log('Booking created successfully with ID:', docRef.id);
     return { success: true, id: docRef.id, ...booking };
   } catch (error) {
-    console.error('Error creating booking:', error);
+    console.error('Error creating booking:', error.code, error.message);
     return { success: false, error: error.message };
   }
 };

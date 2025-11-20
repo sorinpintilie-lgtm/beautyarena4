@@ -138,9 +138,10 @@ const BookingPage = () => {
     if (!validateStep(currentStep)) return;
 
     // Check if user is authenticated
-    if (!isAuthenticated) {
+    if (!isAuthenticated || !user || !user.uid) {
+      console.log('User not authenticated:', { isAuthenticated, user });
       toast.error('Trebuie să te autentifici pentru a crea o programare');
-      navigate('/login');
+      navigate('/autentificare');
       return;
     }
 
@@ -175,6 +176,7 @@ const BookingPage = () => {
       });
 
       // Create bookings for each worker
+      console.log('Creating bookings for user:', user.uid);
       const bookingPromises = Object.entries(servicesByWorker).map(async ([workerId, workerServices]) => {
         const specialist = specialists.find(sp => sp.id === workerId);
         const totalDuration = workerServices.reduce((sum, s) => sum + s.duration, 0);
@@ -194,10 +196,14 @@ const BookingPage = () => {
           }
         };
 
-        return await createBooking(user.uid, bookingData);
+        console.log('Creating booking for worker:', workerId, bookingData);
+        const result = await createBooking(user.uid, bookingData);
+        console.log('Booking result:', result);
+        return result;
       });
 
       const results = await Promise.all(bookingPromises);
+      console.log('All booking results:', results);
       const successfulBookings = results.filter(result => result.success);
 
       if (successfulBookings.length > 0) {

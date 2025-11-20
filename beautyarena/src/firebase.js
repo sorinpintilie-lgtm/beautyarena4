@@ -25,6 +25,11 @@ const analytics = getAnalytics(app);
 // Initialize Firebase Authentication and get a reference to the service
 export const auth = getAuth(app);
 
+// Set auth persistence to local (survives browser refreshes)
+setPersistence(auth, browserLocalPersistence).catch((error) => {
+  console.error('Error setting auth persistence:', error);
+});
+
 // Initialize Cloud Firestore and get a reference to the service
 export const db = getFirestore(app);
 

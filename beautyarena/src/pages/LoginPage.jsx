@@ -26,7 +26,9 @@ const LoginPage = () => {
     const result = await login(email, password);
     setLoading(false);
     if (result.success) {
-      navigate('/contul-meu');
+      // Clear form on success - navigation will happen via useEffect when isAuthenticated changes
+      setEmail('');
+      setPassword('');
     }
   };
 

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { auth, db } from '../firebase';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile, setPersistence, browserLocalPersistence } from 'firebase/auth';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from 'firebase/auth';
 import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 import toast from 'react-hot-toast';
 
@@ -22,53 +22,40 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     console.log('Setting up auth state listener...');
 
-    // Ensure persistence is set before setting up the listener
-    const setupAuthListener = async () => {
-      try {
-        await setPersistence(auth, browserLocalPersistence);
-        console.log('Auth persistence confirmed');
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      console.log('Auth state changed:', firebaseUser ? 'User logged in' : 'User logged out', firebaseUser?.email);
+      if (firebaseUser) {
+        // Get additional user data from Firestore (optional)
+        let userData = {};
+        try {
+          const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+          userData = userDoc.exists() ? userDoc.data() : {};
+        } catch (error) {
+          console.warn('Could not fetch user data from Firestore:', error.message);
+          // Continue without Firestore data - user can still use basic features
+        }
 
-        const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-          console.log('Auth state changed:', firebaseUser ? 'User logged in' : 'User logged out', firebaseUser?.email);
-          if (firebaseUser) {
-            // Get additional user data from Firestore
-            const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
-            const userData = userDoc.exists() ? userDoc.data() : {};
+        const userInfo = {
+          uid: firebaseUser.uid,
+          email: firebaseUser.email,
+          name: firebaseUser.displayName || userData.name || firebaseUser.email.split('@')[0],
+          phone: userData.phone || '',
+          address: userData.address || '',
+          createdAt: firebaseUser.metadata.creationTime,
+        };
 
-            const userInfo = {
-              uid: firebaseUser.uid,
-              email: firebaseUser.email,
-              name: firebaseUser.displayName || userData.name || firebaseUser.email.split('@')[0],
-              phone: userData.phone || '',
-              address: userData.address || '',
-              createdAt: firebaseUser.metadata.creationTime,
-            };
-
-            console.log('Setting user info:', userInfo);
-            setUser(userInfo);
-            setIsAuthenticated(true);
-          } else {
-            console.log('Clearing user state');
-            setUser(null);
-            setIsAuthenticated(false);
-          }
-          setLoading(false);
-        });
-
-        return unsubscribe;
-      } catch (error) {
-        console.error('Error setting up auth listener:', error);
-        setLoading(false);
+        console.log('Setting user info:', userInfo);
+        setUser(userInfo);
+        setIsAuthenticated(true);
+      } else {
+        console.log('Clearing user state');
+        setUser(null);
+        setIsAuthenticated(false);
       }
-    };
+      setLoading(false);
+    });
 
-    const unsubscribePromise = setupAuthListener();
-
-    return () => {
-      unsubscribePromise.then(unsubscribe => {
-        if (unsubscribe) unsubscribe();
-      });
-    };
+    return unsubscribe;
   }, []);
 
   // Login function
@@ -76,7 +63,8 @@ export const AuthProvider = ({ children }) => {
     try {
       console.log('Attempting login for:', email);
       const result = await signInWithEmailAndPassword(auth, email, password);
-      console.log('Login successful:', result.user.email);
+      console.log('Login successful:', result.user.email, result.user.uid);
+
       toast.success('Autentificare reușită!');
       return { success: true, user: result.user };
     } catch (error) {

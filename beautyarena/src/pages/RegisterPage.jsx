@@ -42,7 +42,14 @@ const RegisterPage = () => {
     const result = await register(formData.name, formData.email, formData.password);
     setLoading(false);
     if (result.success) {
-      navigate('/contul-meu');
+      // Clear form on success - navigation will happen via useEffect when isAuthenticated changes
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        password: '',
+        confirmPassword: ''
+      });
     }
   };
 
