@@ -86,10 +86,6 @@ const LoginPage = () => {
                 </div>
               </div>
 
-              <p className="text-xs text-gray-500 bg-gray-50 border border-gray-100 rounded-lg p-3">
-                Pentru moment, autentificarea este locală: poți folosi orice combinație de email și
-                parolă. Ulterior, vom conecta acest formular la Firebase.
-              </p>
 
               <button
                 type="submit"
@@ -110,8 +106,13 @@ const LoginPage = () => {
 
             <div className="mt-6 text-center text-xs text-gray-500">
               <p>
-                Nu ai încă un cont dedicat? Creează-l acum și vom păstra datele local până la
-                integrarea completă.
+                Nu ai încă un cont?{' '}
+                <Link
+                  to="/inregistrare"
+                  className="font-medium text-beauty-pink hover:text-beauty-pink-dark"
+                >
+                  Creează-ți cont acum
+                </Link>
               </p>
             </div>
 

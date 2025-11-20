@@ -28,6 +28,7 @@ const AboutPage = lazy(() => import('./pages/AboutPage'));
 const OrderConfirmationPage = lazy(() => import('./pages/OrderConfirmationPage'));
 const CarouselTest = lazy(() => import('./components/common/CarouselTest'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
+const RegisterPage = lazy(() => import('./pages/RegisterPage'));
 const AccountPage = lazy(() => import('./pages/AccountPage'));
 
 // Loading component
@@ -68,6 +69,7 @@ function App() {
                           <Route path="/programare" element={<BookingPage />} />
                           <Route path="/contact" element={<ContactPage />} />
                           <Route path="/autentificare" element={<LoginPage />} />
+                          <Route path="/inregistrare" element={<RegisterPage />} />
                           <Route path="/contul-meu" element={<AccountPage />} />
                           <Route path="/confirmare-comanda" element={<OrderConfirmationPage />} />
                           <Route path="/carousel-test" element={<CarouselTest />} />
