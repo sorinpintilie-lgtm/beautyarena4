@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Calendar, Clock, User, Mail, Phone, MessageSquare, Check, ChevronLeft, ChevronRight, Scissors, Sparkles, Star, Palette, Heart, Zap } from 'lucide-react';
+import { Calendar, Clock, User, Mail, Phone, MessageSquare, Check, ChevronLeft, ChevronRight, Scissors, Sparkles, Star, Palette, Heart, Zap, Loader } from 'lucide-react';
 import SEO from '../components/common/SEO';
 import { useServiceBooking } from '../context/ServiceBookingContext';
+import toast from 'react-hot-toast';
 
 const BookingPage = () => {
   const navigate = useNavigate();
@@ -18,6 +19,9 @@ const BookingPage = () => {
     message: ''
   });
   const [errors, setErrors] = useState({});
+  const [availability, setAvailability] = useState({});
+  const [loadingAvailability, setLoadingAvailability] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const {
     selectedServices: bookedServices,
     totalPrice: servicesCartTotal,
@@ -106,19 +110,110 @@ const BookingPage = () => {
     setCurrentStep(prev => Math.max(prev - 1, 1));
   };
 
-  const handleSubmit = () => {
-    if (validateStep(currentStep)) {
-      // In a real app, this would send data to backend
-      alert('Programarea ta a fost confirmată! Vei primi un email de confirmare în curând.');
-      navigate('/');
+  const handleSubmit = async () => {
+    if (!validateStep(currentStep)) return;
+
+    setSubmitting(true);
+    try {
+      // Prepare booking data
+      const selectedServicesList = services.filter(s => formData.selectedServices.includes(s.id));
+      const selectedWorker = specialists.find(sp => sp.id === formData.workerId);
+      
+      // Combine quick services and booked services
+      const allServices = [
+        ...selectedServicesList.map(s => ({ name: s.name, duration: `${s.duration} min` })),
+        ...bookedServices.map(s => ({ name: s.name, duration: '60 min' })) // Default duration
+      ];
+
+      const bookingData = {
+        service: allServices.length > 0 ? allServices[0] : { name: 'Servicii multiple', duration: '60 min' },
+        specialist: selectedWorker || { id: 'disponibil', name: 'Orice specialist disponibil' },
+        date: formData.date,
+        time: formData.time,
+        name: formData.name,
+        phone: formData.phone,
+        email: formData.email,
+        notes: formData.message + (allServices.length > 1 ? `\n\nServicii: ${allServices.map(s => s.name).join(', ')}` : '')
+      };
+
+      const response = await fetch('/.netlify/functions/create-booking', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bookingData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success('Programarea a fost creată cu succes în calendar!');
+        navigate('/');
+      } else {
+        toast.error(data.error || 'Eroare la crearea programării');
+      }
+    } catch (error) {
+      console.error('Error creating booking:', error);
+      toast.error('Eroare la crearea programării');
+    } finally {
+      setSubmitting(false);
     }
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    const newData = { ...formData, [name]: value };
+    setFormData(newData);
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
+    }
+
+    // Check availability when date changes and worker is selected
+    if (name === 'date' && newData.workerId) {
+      checkAvailability(value, newData.workerId);
+    }
+  };
+
+  const handleWorkerChange = (workerId) => {
+    const newData = { ...formData, workerId };
+    setFormData(newData);
+
+    // Check availability when worker changes and date is selected
+    if (newData.date) {
+      checkAvailability(newData.date, workerId);
+    }
+  };
+
+  // Check availability from Google Calendar
+  const checkAvailability = async (date, specialistId) => {
+    if (!specialistId) return;
+
+    setLoadingAvailability(true);
+    try {
+      const response = await fetch(`/.netlify/functions/availability-check?date=${date}&specialistId=${specialistId}`);
+      const data = await response.json();
+
+      if (response.ok) {
+        // Filter available time slots based on booked slots
+        const availableSlots = timeSlots.filter(slot => {
+          const slotTime = new Date(`${date}T${slot}:00+02:00`);
+          return !data.bookedSlots.some(booked => {
+            const bookedStart = new Date(booked.start);
+            const bookedEnd = new Date(booked.end);
+            return slotTime >= bookedStart && slotTime < bookedEnd;
+          });
+        });
+
+        setAvailability(prev => ({ ...prev, [`${date}-${specialistId}`]: availableSlots }));
+      } else {
+        console.error('Error checking availability:', data.error);
+        toast.error('Eroare la verificarea disponibilității');
+      }
+    } catch (error) {
+      console.error('Error checking availability:', error);
+      toast.error('Eroare la verificarea disponibilității');
+    } finally {
+      setLoadingAvailability(false);
     }
   };
 
@@ -398,10 +493,7 @@ const BookingPage = () => {
                               key={specialist.id}
                               type="button"
                               onClick={() =>
-                                setFormData(prev => ({
-                                  ...prev,
-                                  workerId: prev.workerId === specialist.id ? '' : specialist.id
-                                }))
+                                handleWorkerChange(formData.workerId === specialist.id ? '' : specialist.id)
                               }
                               className={`p-3 rounded-lg border text-left text-xs sm:text-sm transition-all ${
                                 isSelected
@@ -457,31 +549,43 @@ const BookingPage = () => {
                         Ora programării *
                       </label>
                       <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
-                        {timeSlots.map((time) => (
-                          <button
-                            key={time}
-                            type="button"
-                            onClick={() => setFormData(prev => ({ ...prev, time }))}
-                            className="px-4 py-3 rounded-lg border-2 font-medium transition-all"
-                            style={{
-                              borderColor: formData.time === time ? '#FFAB9D' : '#E5E7EB',
-                              backgroundColor: formData.time === time ? '#FFAB9D' : 'transparent',
-                              color: formData.time === time ? 'white' : '#374151'
-                            }}
-                            onMouseEnter={(e) => {
-                              if (formData.time !== time) {
-                                e.currentTarget.style.borderColor = '#FFAB9D';
-                              }
-                            }}
-                            onMouseLeave={(e) => {
-                              if (formData.time !== time) {
-                                e.currentTarget.style.borderColor = '#E5E7EB';
-                              }
-                            }}
-                          >
-                            {time}
-                          </button>
-                        ))}
+                        {timeSlots.map((time) => {
+                          const isAvailable = availability[`${formData.date}-${formData.workerId}`]?.includes(time);
+                          const isBooked = availability[`${formData.date}-${formData.workerId}`] && !isAvailable;
+                          const isLoading = loadingAvailability;
+
+                          return (
+                            <button
+                              key={time}
+                              type="button"
+                              onClick={() => !isBooked && !isLoading && setFormData(prev => ({ ...prev, time }))}
+                              disabled={isBooked || isLoading}
+                              className="px-4 py-3 rounded-lg border-2 font-medium transition-all"
+                              style={{
+                                borderColor: formData.time === time ? '#FFAB9D' : isBooked ? '#FCA5A5' : '#E5E7EB',
+                                backgroundColor: formData.time === time ? '#FFAB9D' : isBooked ? '#FEE2E2' : 'transparent',
+                                color: formData.time === time ? 'white' : isBooked ? '#DC2626' : '#374151',
+                                cursor: isBooked || isLoading ? 'not-allowed' : 'pointer'
+                              }}
+                              onMouseEnter={(e) => {
+                                if (formData.time !== time && !isBooked && !isLoading) {
+                                  e.currentTarget.style.borderColor = '#FFAB9D';
+                                }
+                              }}
+                              onMouseLeave={(e) => {
+                                if (formData.time !== time && !isBooked) {
+                                  e.currentTarget.style.borderColor = '#E5E7EB';
+                                }
+                              }}
+                            >
+                              {isLoading ? (
+                                <Loader className="w-4 h-4 animate-spin mx-auto" />
+                              ) : (
+                                time
+                              )}
+                            </button>
+                          );
+                        })}
                       </div>
                       {errors.time && <p className="text-red-500 text-sm mt-1">{errors.time}</p>}
                     </div>
@@ -672,14 +776,25 @@ const BookingPage = () => {
                   ) : (
                     <button
                       onClick={handleSubmit}
+                      disabled={submitting}
                       style={{
-                        background: 'linear-gradient(to right, #FFAB9D, #FF8B7A)',
-                        color: 'white'
+                        background: submitting ? '#D1D5DB' : 'linear-gradient(to right, #FFAB9D, #FF8B7A)',
+                        color: 'white',
+                        cursor: submitting ? 'not-allowed' : 'pointer'
                       }}
                       className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium hover:shadow-lg hover:scale-105 transition-all duration-300"
                     >
-                      <Check className="w-5 h-5" />
-                      Confirmă programarea
+                      {submitting ? (
+                        <>
+                          <Loader className="w-5 h-5 animate-spin" />
+                          Se creează programarea...
+                        </>
+                      ) : (
+                        <>
+                          <Check className="w-5 h-5" />
+                          Confirmă programarea
+                        </>
+                      )}
                     </button>
                   )}
                 </div>
