@@ -371,7 +371,8 @@ const CheckoutPage = () => {
                   <button
                     type="button"
                     onClick={handleNext}
-                    className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-beauty-pink to-beauty-pink-dark text-white rounded-lg font-medium hover:shadow-lg transition-all duration-300"
+                    className="w-full flex items-center justify-center gap-2 px-6 py-3 text-white rounded-lg font-medium hover:shadow-lg transition-all duration-300"
+                    style={{ backgroundColor: '#FFAB9D' }}
                   >
                     Continuă la metodă de livrare
                   </button>
@@ -427,7 +428,8 @@ const CheckoutPage = () => {
                     <button
                       type="button"
                       onClick={handleNext}
-                      className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-beauty-pink to-beauty-pink-dark text-white rounded-lg font-medium hover:shadow-lg transition-all duration-300"
+                      className="flex-1 flex items-center justify-center gap-2 px-6 py-3 text-white rounded-lg font-medium hover:shadow-lg transition-all duration-300"
+                      style={{ backgroundColor: '#FFAB9D' }}
                     >
                       Continuă la plată
                     </button>
@@ -485,7 +487,8 @@ const CheckoutPage = () => {
                     </button>
                     <button
                       type="submit"
-                      className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-beauty-pink to-beauty-pink-dark text-white rounded-lg font-medium hover:shadow-lg transition-all duration-300"
+                      className="flex-1 flex items-center justify-center gap-2 px-6 py-3 text-white rounded-lg font-medium hover:shadow-lg transition-all duration-300"
+                      style={{ backgroundColor: '#FFAB9D' }}
                     >
                       Plasează comanda
                     </button>
