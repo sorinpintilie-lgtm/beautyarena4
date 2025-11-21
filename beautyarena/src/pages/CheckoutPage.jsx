@@ -40,8 +40,10 @@ const CheckoutPage = () => {
   ];
 
   const selectedShipping = shippingMethods.find(m => m.id === formData.shippingMethod);
-  const shippingCost = selectedShipping?.price || 0;
+  const baseShippingCost = selectedShipping?.price || 0;
+  const shippingCost = cartSubtotal >= 300 ? 0 : baseShippingCost; // Free shipping over 300 RON
   const total = cartSubtotal + shippingCost;
+  const qualifiesForFreeShipping = cartSubtotal >= 300;
 
   const validateStep = (currentStep) => {
     const newErrors = {};
@@ -410,11 +412,32 @@ const CheckoutPage = () => {
                             <p className="text-sm text-gray-600">{method.duration}</p>
                           </div>
                         </div>
-                        <span className="font-semibold text-beauty-pink">
-                          {method.price} lei
+                        <span className={`font-semibold ${qualifiesForFreeShipping ? 'text-green-600' : 'text-beauty-pink'}`}>
+                          {qualifiesForFreeShipping ? 'GRATUIT' : `${method.price} lei`}
                         </span>
                       </label>
                     ))}
+                  </div>
+
+                  {/* Free Shipping Notice */}
+                  <div className={`rounded-lg p-4 text-sm ${
+                    qualifiesForFreeShipping
+                      ? 'bg-green-50 border border-green-200'
+                      : 'bg-blue-50 border border-blue-200'
+                  }`}>
+                    {qualifiesForFreeShipping ? (
+                      <div className="flex items-center gap-2 text-green-700">
+                        <Check className="w-4 h-4" />
+                        <span className="font-medium">Felicitări! Livrarea este gratuită pentru comenzi peste 300 lei.</span>
+                      </div>
+                    ) : (
+                      <div className="text-blue-700">
+                        <p className="font-medium">Livrare gratuită pentru comenzi peste 300 lei</p>
+                        <p className="text-xs mt-1">
+                          Mai adaugă {(300 - cartSubtotal).toFixed(2)} lei pentru livrare gratuită
+                        </p>
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex gap-4">
@@ -536,8 +559,12 @@ const CheckoutPage = () => {
                 
                 {step >= 2 && (
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Livrare</span>
-                    <span className="font-medium text-gray-900">{shippingCost.toFixed(2)} lei</span>
+                    <span className="text-gray-600">
+                      Livrare {qualifiesForFreeShipping && <span className="text-green-600 font-medium">(gratuită)</span>}
+                    </span>
+                    <span className={`font-medium ${qualifiesForFreeShipping ? 'text-green-600' : 'text-gray-900'}`}>
+                      {qualifiesForFreeShipping ? 'GRATUIT' : `${shippingCost.toFixed(2)} lei`}
+                    </span>
                   </div>
                 )}
 
