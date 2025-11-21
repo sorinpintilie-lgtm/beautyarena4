@@ -114,10 +114,18 @@ export const cancelBooking = async (bookingId) => {
         // Don't fail cancellation if emails fail
       }
 
+      // Debug: Log all booking data to see what fields are available
+      console.log('Full booking data for cancellation:', bookingData);
+      console.log('Available fields:', Object.keys(bookingData));
+
       // If there's a calendar event ID, try to remove it from Google Calendar
-      if (bookingData.calendarEventId && bookingData.specialistId) {
+      // Check for different possible field names
+      const eventId = bookingData.calendarEventId || bookingData.eventId || bookingData.googleEventId;
+      const specialistId = bookingData.specialistId || bookingData.workerId;
+
+      if (eventId && specialistId) {
         try {
-          console.log('Removing calendar event:', bookingData.calendarEventId, 'for specialist:', bookingData.specialistId);
+          console.log('Removing calendar event:', eventId, 'for specialist:', specialistId);
 
           const response = await fetch('/.netlify/functions/delete-calendar-event', {
             method: 'POST',
@@ -125,8 +133,8 @@ export const cancelBooking = async (bookingId) => {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              eventId: bookingData.calendarEventId,
-              specialistId: bookingData.specialistId
+              eventId: eventId,
+              specialistId: specialistId
             })
           });
 
