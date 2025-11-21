@@ -60,7 +60,7 @@ const BookingPage = () => {
     { id: 'valentina',      name: 'Valentina',       role: 'Manichiură / Pedichiură',             areas: ['nails'] },
     { id: 'teo',            name: 'Teo',             role: 'Manichiură / Pedichiură',             areas: ['nails'] },
     { id: 'camelia2',       name: 'Camelia',         role: 'Manichiură / Pedichiură',             areas: ['nails'] },
-    { id: 'geo',            name: 'Geo',             role: 'Cosmetică / Epilare definitivă',      areas: ['cosmetica', 'epilare'] },
+    { id: 'geo',            name: 'Geo',             role: 'Epilare definitivă',                   areas: ['epilare'] },
     { id: 'mihaela',        name: 'Mihaela',         role: 'Cosmetică / Epilare definitivă',      areas: ['cosmetica', 'epilare'] },
     { id: 'disponibil',     name: 'Orice specialist disponibil', role: 'Orice serviciu',          areas: ['coafor', 'nails', 'cosmetica', 'epilare'] }
   ];
