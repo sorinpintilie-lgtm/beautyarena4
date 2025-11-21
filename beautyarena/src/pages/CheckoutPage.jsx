@@ -30,8 +30,8 @@ const CheckoutPage = () => {
   const [errors, setErrors] = useState({});
 
   const shippingMethods = [
-    { id: 'standard', name: 'Curier standard', duration: '3-5 zile lucrătoare', price: 15 },
-    { id: 'express', name: 'Curier express', duration: '1-2 zile lucrătoare', price: 30 },
+    { id: 'standard', name: 'Curier standard', duration: '3-5 zile lucrătoare', price: 20 },
+    { id: 'express', name: 'Curier express', duration: '1-2 zile lucrătoare', price: 20 },
   ];
 
   const paymentMethods = [
