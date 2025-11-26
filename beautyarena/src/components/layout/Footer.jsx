@@ -167,7 +167,7 @@ const Footer = () => {
             © {currentYear} Salon Beauty Arena. Toate drepturile rezervate. | Politica de confidențialitate | Termeni și condiții
           </p>
           <p className="text-gray-400 mt-2 flex items-center justify-center">
-            Powered by <img src="/images/visualMarketing_logo.png" alt="Visualmarketing" className="h-6 ml-2" />
+            Powered by <img src="/visualMarketing_logo.png" alt="Visualmarketing" className="h-6 ml-2" />
           </p>
         </div>
       </div>
