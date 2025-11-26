@@ -24,7 +24,7 @@ const CheckoutPage = () => {
     // Shipping method
     shippingMethod: 'standard',
     // Payment
-    paymentMethod: 'card',
+    paymentMethod: 'cash',
   });
 
   const [errors, setErrors] = useState({});
@@ -35,7 +35,6 @@ const CheckoutPage = () => {
   ];
 
   const paymentMethods = [
-    { id: 'card', name: 'Card bancar', icon: CreditCard },
     { id: 'cash', name: 'Ramburs', icon: Truck },
   ];
 

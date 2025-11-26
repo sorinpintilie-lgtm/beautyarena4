@@ -1,4 +1,4 @@
-import { db } from '../firebase';
+simport { db } from '../firebase';
 import { collection, addDoc, query, where, getDocs, doc, updateDoc, deleteDoc, orderBy, getDoc } from 'firebase/firestore';
 
 export const createBooking = async (userId, bookingData) => {
