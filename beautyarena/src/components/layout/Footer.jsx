@@ -162,13 +162,75 @@ const Footer = () => {
         </div>
 
         {/* Copyright */}
-        <div className="mt-8 pt-6 border-t border-gray-700 text-center">
-          <p className="text-gray-400">
-            © {currentYear} Salon Beauty Arena. Toate drepturile rezervate. | Politica de confidențialitate | Termeni și condiții
-          </p>
-          <p className="text-gray-400 mt-2 flex items-center justify-center">
-            Powered by <img src="/visualMarketing_logo.png" alt="Visualmarketing" className="h-6 ml-2" />
-          </p>
+        <div className="mt-8 pt-6 border-t border-gray-700">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="text-center md:text-left text-gray-400 text-sm">
+              <p>
+                © {currentYear} Salon Beauty Arena. Toate drepturile rezervate.
+              </p>
+              <p className="mt-1 space-x-2">
+                <Link
+                  to="/politica-de-livrare"
+                  className="hover:text-beauty-pink transition-colors"
+                >
+                  Politica de livrare
+                </Link>
+                <span className="text-gray-600">|</span>
+                <Link
+                  to="/politica-de-confidentialitate"
+                  className="hover:text-beauty-pink transition-colors"
+                >
+                  Politica de confidențialitate
+                </Link>
+                <span className="text-gray-600">|</span>
+                <Link
+                  to="/termeni-si-conditii"
+                  className="hover:text-beauty-pink transition-colors"
+                >
+                  Termeni și condiții
+                </Link>
+              </p>
+            </div>
+
+            <div className="flex flex-col items-center md:items-end gap-2">
+              <p className="text-gray-400 flex items-center justify-center md:justify-end">
+                Powered by{' '}
+                <img
+                  src="/visualMarketing_logo.png"
+                  alt="Visualmarketing"
+                  className="h-6 ml-2"
+                />
+              </p>
+              <div className="flex items-center justify-center md:justify-end gap-3">
+                <a
+                  href="https://reclamatiisal.anpc.ro"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex"
+                  aria-label="SOL ANPC"
+                >
+                  <img
+                    src="/sol-400x100fill.avif"
+                    alt="SOL ANPC"
+                    className="h-8 w-auto object-contain"
+                  />
+                </a>
+                <a
+                  href="https://anpc.ro/?ref=footer_3_6"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex"
+                  aria-label="ANPC"
+                >
+                  <img
+                    src="/anpc-400x100fill.avif"
+                    alt="ANPC"
+                    className="h-8 w-auto object-contain"
+                  />
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </footer>

@@ -13,7 +13,7 @@ import CartDrawer from './components/cart/CartDrawer';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import ScrollToTop from './components/common/ScrollToTop';
 
-// Lazy load pages for better performance
+ // Lazy load pages for better performance
 const HomePage = lazy(() => import('./pages/HomePage'));
 const ShopPage = lazy(() => import('./pages/ShopPage'));
 const ProductDetailPage = lazy(() => import('./pages/ProductDetailPageReal'));
@@ -30,6 +30,9 @@ const CarouselTest = lazy(() => import('./components/common/CarouselTest'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage'));
 const AccountPage = lazy(() => import('./pages/AccountPage'));
+const DeliveryPolicyPage = lazy(() => import('./pages/DeliveryPolicyPage'));
+const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
+const TermsAndConditionsPage = lazy(() => import('./pages/TermsAndConditionsPage'));
 
 // Loading component
 const LoadingSpinner = () => (
@@ -72,6 +75,9 @@ function App() {
                           <Route path="/inregistrare" element={<RegisterPage />} />
                           <Route path="/contul-meu" element={<AccountPage />} />
                           <Route path="/confirmare-comanda" element={<OrderConfirmationPage />} />
+                          <Route path="/politica-de-livrare" element={<DeliveryPolicyPage />} />
+                          <Route path="/politica-de-confidentialitate" element={<PrivacyPolicyPage />} />
+                          <Route path="/termeni-si-conditii" element={<TermsAndConditionsPage />} />
                           <Route path="/carousel-test" element={<CarouselTest />} />
                         </Routes>
                       </Suspense>
