@@ -195,11 +195,19 @@ const Footer = () => {
             <div className="flex flex-col items-center md:items-end gap-2">
               <p className="text-gray-400 flex items-center justify-center md:justify-end">
                 Powered by{' '}
-                <img
-                  src="/visualMarketing_logo.png"
-                  alt="Visualmarketing"
-                  className="h-6 ml-2"
-                />
+                <a
+                  href="https://visualmarketing.ro"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center"
+                  aria-label="Visualmarketing website"
+                >
+                  <img
+                    src="/visualMarketing_logo.png"
+                    alt="Visualmarketing"
+                    className="h-6 ml-2"
+                  />
+                </a>
               </p>
               <div className="flex items-center justify-center md:justify-end gap-3">
                 <a
