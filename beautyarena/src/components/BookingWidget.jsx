@@ -4,98 +4,6 @@ function BookingWidget() {
     const widgetContainerRef = useRef(null);
 
     useEffect(() => {
-        // List of URLs to block from redirecting to
-        const blockedUrls = [
-            'https://beautyarena.simplybook.it/v2/#invoice/pay/6/return/1',
-            'https://beautyarena.simplybook.it/v2/#invoice/',
-            'https://beautyarena.simplybook.it/v2/#payment/',
-            'https://beautyarena.simplybook.it/v2/#success/',
-            'https://beautyarena.simplybook.it/v2/#confirmation/'
-        ];
-
-        // Check if a URL should be blocked
-        const isBlockedUrl = (url) => {
-            return blockedUrls.some(blocked => url.includes(blocked));
-        };
-
-        // Prevent automatic redirects from the iframe
-        const handleBeforeUnload = (e) => {
-            // Allow user-initiated navigation but prevent automatic redirects
-            if (e.target === window && !window.__userNavigation) {
-                e.preventDefault();
-                e.returnValue = '';
-                return '';
-            }
-        };
-
-        const handlePopState = (e) => {
-            // Prevent automatic history changes from iframe
-            if (!window.__userNavigation) {
-                window.history.pushState(null, '', window.location.href);
-            }
-        };
-
-        const originalPushState = history.pushState;
-        const originalReplaceState = history.replaceState;
-
-        history.pushState = function(...args) {
-            const url = args[2];
-            if (url && isBlockedUrl(url) && !window.__userNavigation) {
-                // Block this redirect
-                console.log('Blocked redirect to:', url);
-                return;
-            }
-            if (!window.__userNavigation) {
-                // If this is not user-initiated, don't actually change the URL
-                return;
-            }
-            return originalPushState.apply(history, args);
-        };
-
-        history.replaceState = function(...args) {
-            const url = args[2];
-            if (url && isBlockedUrl(url) && !window.__userNavigation) {
-                // Block this redirect
-                console.log('Blocked redirect to:', url);
-                return;
-            }
-            if (!window.__userNavigation) {
-                // If this is not user-initiated, don't actually change the URL
-                return;
-            }
-            return originalReplaceState.apply(history, args);
-        };
-
-        // Monitor location changes and block specific URLs
-        const originalLocation = window.location;
-        const observeLocation = () => {
-            const checkLocation = () => {
-                if (isBlockedUrl(window.location.href) && !window.__userNavigation) {
-                    console.log('Blocked automatic navigation to:', window.location.href);
-                    window.history.back();
-                }
-            };
-            setInterval(checkLocation, 100);
-        };
-
-        // Listen for navigation attempts
-        window.addEventListener('beforeunload', handleBeforeUnload);
-        window.addEventListener('popstate', handlePopState);
-
-        // Allow navigation when user explicitly clicks links or buttons
-        const handleUserNavigation = () => {
-            window.__userNavigation = true;
-            setTimeout(() => {
-                window.__userNavigation = false;
-            }, 100);
-        };
-
-        // Add click listeners to capture user navigation
-        document.addEventListener('click', handleUserNavigation, true);
-
-        // Start monitoring location changes
-        observeLocation();
-
         const script = document.createElement('script');
         script.async = true;
         script.src = "//widget.simplybook.it/v2/widget/widget.js";
@@ -106,11 +14,6 @@ function BookingWidget() {
 
         return () => {
             document.head.removeChild(script);
-            window.removeEventListener('beforeunload', handleBeforeUnload);
-            window.removeEventListener('popstate', handlePopState);
-            document.removeEventListener('click', handleUserNavigation, true);
-            history.pushState = originalPushState;
-            history.replaceState = originalReplaceState;
         };
     }, []);
 
