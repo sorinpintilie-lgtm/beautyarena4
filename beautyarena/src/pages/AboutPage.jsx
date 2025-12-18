@@ -29,43 +29,31 @@ const AboutPage = () => {
   const teamMembers = [
     {
       name: 'Loredana',
-      role: 'Servicii coafor',
-      image: '/workers/attractive-girl-portrait-in-a-white-shirt-2024-10-19-10-54-55-utc-min.jpg'
+      role: 'Servicii coafor'
     },
     {
       name: 'Camelia',
-      role: 'Servicii coafor',
-      image: '/workers/blond-female-in-a-white-t-shirt-2025-01-26-15-44-10-utc-min.jpg'
+      role: 'Servicii coafor și manichiură / pedichiură'
     },
     {
       name: 'Dana',
-      role: 'Servicii coafor',
-      image: '/workers/portrait-of-young-woman-2025-01-08-23-09-54-utc-min.jpg'
+      role: 'Servicii coafor'
     },
     {
       name: 'Valentina',
-      role: 'Servicii manichiură / pedichiură',
-      image: '/workers/redhead-girl-at-green-grass-at-village-outdoor-2024-09-26-02-13-33-utc-min.jpg'
+      role: 'Servicii manichiură / pedichiură'
     },
     {
       name: 'Teo',
-      role: 'Servicii manichiură / pedichiură',
-      image: '/workers/portrait-of-a-blonde-girl-2024-12-02-22-39-43-utc-min.jpg'
-    },
-    {
-      name: 'Camelia',
-      role: 'Servicii manichiură / pedichiură',
-      image: '/workers/portrait-of-a-young-teenager-girl-in-the-park-spr-2025-03-10-12-31-17-utc-min.jpg'
+      role: 'Servicii manichiură / pedichiură'
     },
     {
       name: 'Geo',
-      role: 'Servicii cosmetică / epilare definitivă',
-      image: '/workers/caucasian-woman-2025-03-24-09-04-54-utc-min.jpg'
+      role: 'Servicii cosmetică / epilare definitivă'
     },
     {
       name: 'Mihaela',
-      role: 'Servicii cosmetică / epilare definitivă',
-      image: '/workers/happy-woman-emotional-face-woman-portrait-beautif-2025-02-10-13-14-15-utc-min.jpg'
+      role: 'Servicii cosmetică / epilare definitivă'
     }
   ];
 
