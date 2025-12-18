@@ -4,6 +4,57 @@ function BookingWidget() {
     const widgetContainerRef = useRef(null);
 
     useEffect(() => {
+        // Prevent automatic redirects from the iframe
+        const handleBeforeUnload = (e) => {
+            // Allow user-initiated navigation but prevent automatic redirects
+            if (e.target === window && !window.__userNavigation) {
+                e.preventDefault();
+                e.returnValue = '';
+                return '';
+            }
+        };
+
+        const handlePopState = (e) => {
+            // Prevent automatic history changes from iframe
+            if (!window.__userNavigation) {
+                window.history.pushState(null, '', window.location.href);
+            }
+        };
+
+        const originalPushState = history.pushState;
+        const originalReplaceState = history.replaceState;
+
+        history.pushState = function(...args) {
+            if (!window.__userNavigation) {
+                // If this is not user-initiated, don't actually change the URL
+                return;
+            }
+            return originalPushState.apply(history, args);
+        };
+
+        history.replaceState = function(...args) {
+            if (!window.__userNavigation) {
+                // If this is not user-initiated, don't actually change the URL
+                return;
+            }
+            return originalReplaceState.apply(history, args);
+        };
+
+        // Listen for navigation attempts
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        window.addEventListener('popstate', handlePopState);
+
+        // Allow navigation when user explicitly clicks links or buttons
+        const handleUserNavigation = () => {
+            window.__userNavigation = true;
+            setTimeout(() => {
+                window.__userNavigation = false;
+            }, 100);
+        };
+
+        // Add click listeners to capture user navigation
+        document.addEventListener('click', handleUserNavigation, true);
+
         const script = document.createElement('script');
         script.async = true;
         script.src = "//widget.simplybook.it/v2/widget/widget.js";
@@ -14,6 +65,11 @@ function BookingWidget() {
 
         return () => {
             document.head.removeChild(script);
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+            window.removeEventListener('popstate', handlePopState);
+            document.removeEventListener('click', handleUserNavigation, true);
+            history.pushState = originalPushState;
+            history.replaceState = originalReplaceState;
         };
     }, []);
 
