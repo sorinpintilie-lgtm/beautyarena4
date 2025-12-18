@@ -19,7 +19,7 @@ const BookingPage = () => {
               Programare online
             </h1>
             <p className="text-lg text-gray-600">
-              Completează formularul pentru a-ți rezerva programarea
+              Completează formularul pentru a face o programare
             </p>
           </div>
 
