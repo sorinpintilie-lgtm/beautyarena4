@@ -4,6 +4,20 @@ function BookingWidget() {
     const widgetContainerRef = useRef(null);
 
     useEffect(() => {
+        // List of URLs to block from redirecting to
+        const blockedUrls = [
+            'https://beautyarena.simplybook.it/v2/#invoice/pay/6/return/1',
+            'https://beautyarena.simplybook.it/v2/#invoice/',
+            'https://beautyarena.simplybook.it/v2/#payment/',
+            'https://beautyarena.simplybook.it/v2/#success/',
+            'https://beautyarena.simplybook.it/v2/#confirmation/'
+        ];
+
+        // Check if a URL should be blocked
+        const isBlockedUrl = (url) => {
+            return blockedUrls.some(blocked => url.includes(blocked));
+        };
+
         // Prevent automatic redirects from the iframe
         const handleBeforeUnload = (e) => {
             // Allow user-initiated navigation but prevent automatic redirects
@@ -25,6 +39,12 @@ function BookingWidget() {
         const originalReplaceState = history.replaceState;
 
         history.pushState = function(...args) {
+            const url = args[2];
+            if (url && isBlockedUrl(url) && !window.__userNavigation) {
+                // Block this redirect
+                console.log('Blocked redirect to:', url);
+                return;
+            }
             if (!window.__userNavigation) {
                 // If this is not user-initiated, don't actually change the URL
                 return;
@@ -33,11 +53,29 @@ function BookingWidget() {
         };
 
         history.replaceState = function(...args) {
+            const url = args[2];
+            if (url && isBlockedUrl(url) && !window.__userNavigation) {
+                // Block this redirect
+                console.log('Blocked redirect to:', url);
+                return;
+            }
             if (!window.__userNavigation) {
                 // If this is not user-initiated, don't actually change the URL
                 return;
             }
             return originalReplaceState.apply(history, args);
+        };
+
+        // Monitor location changes and block specific URLs
+        const originalLocation = window.location;
+        const observeLocation = () => {
+            const checkLocation = () => {
+                if (isBlockedUrl(window.location.href) && !window.__userNavigation) {
+                    console.log('Blocked automatic navigation to:', window.location.href);
+                    window.history.back();
+                }
+            };
+            setInterval(checkLocation, 100);
         };
 
         // Listen for navigation attempts
@@ -54,6 +92,9 @@ function BookingWidget() {
 
         // Add click listeners to capture user navigation
         document.addEventListener('click', handleUserNavigation, true);
+
+        // Start monitoring location changes
+        observeLocation();
 
         const script = document.createElement('script');
         script.async = true;
