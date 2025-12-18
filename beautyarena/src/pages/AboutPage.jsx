@@ -207,35 +207,35 @@ const AboutPage = () => {
                 </div>
                 
                 {/* Second row: 3 team members - centered */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-5">
-                  <div className="hidden sm:block"></div>
-                  {teamMembers.slice(4).map((member, index) => (
-                    <div
-                      key={`second-${member.name}-${index}`}
-                      className="bg-white border border-gray-100 rounded-2xl p-4 flex flex-col items-center text-center shadow-sm hover:shadow-md transition-shadow"
-                    >
-                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden mb-3 bg-gradient-to-br from-beauty-pink to-beauty-pink-dark flex items-center justify-center">
-                        {member.image ? (
-                          <img
-                            src={member.image}
-                            alt={`${member.name} - ${member.role} la Salon Beauty Arena`}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <span className="text-white text-xl sm:text-2xl font-bold">
-                            {member.name.charAt(0)}
-                          </span>
-                        )}
+                <div className="flex justify-center">
+                  <div className="grid grid-cols-3 gap-5">
+                    {teamMembers.slice(4).map((member, index) => (
+                      <div
+                        key={`second-${member.name}-${index}`}
+                        className="bg-white border border-gray-100 rounded-2xl p-4 flex flex-col items-center text-center shadow-sm hover:shadow-md transition-shadow"
+                      >
+                        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden mb-3 bg-gradient-to-br from-beauty-pink to-beauty-pink-dark flex items-center justify-center">
+                          {member.image ? (
+                            <img
+                              src={member.image}
+                              alt={`${member.name} - ${member.role} la Salon Beauty Arena`}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <span className="text-white text-xl sm:text-2xl font-bold">
+                              {member.name.charAt(0)}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-sm sm:text-base font-semibold text-gray-900">
+                          {member.name}
+                        </p>
+                        <p className="mt-1 text-xs sm:text-sm text-gray-600 leading-snug">
+                          {member.role}
+                        </p>
                       </div>
-                      <p className="text-sm sm:text-base font-semibold text-gray-900">
-                        {member.name}
-                      </p>
-                      <p className="mt-1 text-xs sm:text-sm text-gray-600 leading-snug">
-                        {member.role}
-                      </p>
-                    </div>
-                  ))}
-                  <div className="hidden sm:block"></div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
