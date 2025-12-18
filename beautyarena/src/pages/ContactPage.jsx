@@ -35,7 +35,7 @@ const ContactPage = () => {
     {
       icon: <Mail className="w-6 h-6" />,
       title: 'Email',
-      details: ['info@beautyarena.ro'],
+      details: ['contact@salonbeautyarena.ro'],
       action: 'Trimite email'
     },
     {
