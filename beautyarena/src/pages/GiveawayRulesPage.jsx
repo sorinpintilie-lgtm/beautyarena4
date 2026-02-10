@@ -2,7 +2,7 @@ import React from 'react';
 import SEO from '../components/common/SEO';
 
 const GiveawayRulesPage = () => {
-  const pdfPath = "/Regulament%20Giveaway%20Valentine%27s%20Day.pdf";
+  const pdfPath = '/giveaway-regulament.pdf';
 
   return (
     <>
