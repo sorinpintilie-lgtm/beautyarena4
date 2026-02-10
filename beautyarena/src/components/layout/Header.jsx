@@ -6,7 +6,7 @@ import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
 import Logo from '../../../BeautyArena_logo_white.png';
 
-const Header = ({ onCartClick }) => {
+const Header = ({ onCartClick, className = '' }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobileMenuAnimating, setIsMobileMenuAnimating] = useState(false);
   const location = useLocation();
@@ -30,7 +30,7 @@ const Header = ({ onCartClick }) => {
 
   return (
     <header
-      className="fixed top-0 left-0 right-0 z-50 shadow-xl"
+      className={`sticky top-0 left-0 right-0 z-50 shadow-xl ${className}`}
       style={{
         background: 'linear-gradient(to right, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.25) 30%, #FFB6A3 65%, #FFB6A3 100%)',
         opacity: 1,

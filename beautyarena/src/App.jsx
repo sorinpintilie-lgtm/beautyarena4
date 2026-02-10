@@ -12,6 +12,7 @@ import BottomNavigation from './components/layout/BottomNavigation';
 import CartDrawer from './components/cart/CartDrawer';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import ScrollToTop from './components/common/ScrollToTop';
+import DiscountBanner from './components/sections/DiscountBanner';
 
  // Lazy load pages for better performance
 const HomePage = lazy(() => import('./pages/HomePage'));
@@ -33,6 +34,7 @@ const AccountPage = lazy(() => import('./pages/AccountPage'));
 const DeliveryPolicyPage = lazy(() => import('./pages/DeliveryPolicyPage'));
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
 const TermsAndConditionsPage = lazy(() => import('./pages/TermsAndConditionsPage'));
+const GiveawayRulesPage = lazy(() => import('./pages/GiveawayRulesPage'));
 
 // Loading component
 const LoadingSpinner = () => (
@@ -49,12 +51,13 @@ function App() {
     <ErrorBoundary>
       <Router>
         <ScrollToTop />
+        <DiscountBanner />
         <AuthProvider>
           <CartProvider>
             <WishlistProvider>
               <ComparisonProvider>
                 <ServiceBookingProvider>
-                  <div className="min-h-screen flex flex-col pt-[4.3rem] lg:pt-28">
+                  <div className="min-h-screen flex flex-col relative">
                     <Header onCartClick={() => setIsCartOpen(true)} />
                     <main className="flex-grow">
                       <Suspense fallback={<LoadingSpinner />}>
@@ -78,6 +81,7 @@ function App() {
                           <Route path="/politica-de-livrare" element={<DeliveryPolicyPage />} />
                           <Route path="/politica-de-confidentialitate" element={<PrivacyPolicyPage />} />
                           <Route path="/termeni-si-conditii" element={<TermsAndConditionsPage />} />
+                          <Route path="/regulament-giveaway-valentines-day" element={<GiveawayRulesPage />} />
                           <Route path="/carousel-test" element={<CarouselTest />} />
                         </Routes>
                       </Suspense>
