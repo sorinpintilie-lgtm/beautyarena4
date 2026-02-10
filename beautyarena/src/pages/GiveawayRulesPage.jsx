@@ -26,7 +26,7 @@ const GiveawayRulesPage = () => {
               href={pdfPath}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center rounded-lg bg-beauty-pink px-4 py-2 text-white font-medium hover:bg-beauty-pink-dark transition-colors"
+              className="inline-flex items-center rounded-lg bg-beauty-pink px-4 py-2 text-black font-medium hover:bg-beauty-pink-dark transition-colors"
             >
               Deschide regulamentul în tab nou
             </a>
