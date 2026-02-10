@@ -29,6 +29,12 @@
   pretty_urls = true
 
 [[headers]]
+  for = "/giveaway-regulament.pdf"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    Content-Type = "application/pdf"
+
+[[headers]]
   for = "/*"
   [headers.values]
     X-Frame-Options = "DENY"
