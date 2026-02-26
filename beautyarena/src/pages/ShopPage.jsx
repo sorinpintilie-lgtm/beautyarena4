@@ -13,6 +13,8 @@ import Pagination from '../components/shop/Pagination';
 import SEO from '../components/common/SEO';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
+const SITE_URL = 'https://beautyarena.ro';
+
 const ShopPage = () => {
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
@@ -93,6 +95,31 @@ const ShopPage = () => {
     
     return findCategory(categoryTree, activeCategory);
   }, [activeCategory, categoryTree]);
+
+  const categoryNameForSeo = activeCategoryFilter?.name || null;
+  const seoTitle = categoryNameForSeo
+    ? `${categoryNameForSeo} | Magazin produse BeautyArena`
+    : 'Magazin produse premium | BeautyArena';
+  const seoDescription = categoryNameForSeo
+    ? `Cumpără ${categoryNameForSeo} din magazinul BeautyArena. Produse premium, prețuri competitive și livrare rapidă.`
+    : 'Descoperă produse premium de frumusețe în magazinul BeautyArena. Filtrează după categorie, preț și rating.';
+  const seoKeywords = categoryNameForSeo
+    ? `magazin beauty, ${categoryNameForSeo}, produse ${categoryNameForSeo}, beautyarena, cosmetice online`
+    : 'magazin beauty online, produse cosmetice premium, makeup, skincare, haircare, beautyarena';
+  const seoCanonical = activeCategory ? `/shop?category=${activeCategory}` : '/shop';
+  const seoItemList = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: categoryNameForSeo
+      ? `Produse ${categoryNameForSeo} - BeautyArena`
+      : 'Magazin produse BeautyArena',
+    itemListElement: paginatedProducts.slice(0, 24).map((product, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      url: `${SITE_URL}/product/${product.slug}`,
+      name: product.name,
+    })),
+  };
 
   // Filter and sort products
   const filteredProducts = useMemo(() => {
@@ -231,9 +258,11 @@ const ShopPage = () => {
   return (
     <>
       <SEO
-        title="Shop - Premium Beauty Products | BeautyArena"
-        description="Browse our collection of 173+ premium beauty products. Filter by category, price, and rating. Free shipping on orders over 200 lei."
-        keywords="shop beauty products, buy cosmetics online, makeup shop, skincare products, haircare products, beauty products"
+        title={seoTitle}
+        description={seoDescription}
+        keywords={seoKeywords}
+        canonical={seoCanonical}
+        jsonLd={seoItemList}
       />
       <div className="min-h-screen bg-gray-50 pt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

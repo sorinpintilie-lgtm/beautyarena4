@@ -4,7 +4,40 @@ import { ChevronLeft, CreditCard, Truck, MapPin, Phone, Mail, User, Check } from
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { createOrder } from '../services/orderService';
+import SEO from '../components/common/SEO';
 import toast from 'react-hot-toast';
+
+const PROMO_CODES = {
+  BEAUTY10: {
+    type: 'percent',
+    value: 10,
+    label: '10% reducere la toată comanda',
+  },
+  WELCOME25: {
+    type: 'fixed',
+    value: 25,
+    minSubtotal: 150,
+    label: '25 lei reducere la comenzi de minimum 150 lei',
+  },
+};
+
+const calculatePromoDiscount = (promo, subtotal) => {
+  if (!promo) return 0;
+
+  if (promo.minSubtotal && subtotal < promo.minSubtotal) {
+    return 0;
+  }
+
+  if (promo.type === 'percent') {
+    return Number(((subtotal * promo.value) / 100).toFixed(2));
+  }
+
+  if (promo.type === 'fixed') {
+    return Math.min(promo.value, subtotal);
+  }
+
+  return 0;
+};
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -28,6 +61,9 @@ const CheckoutPage = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [promoInput, setPromoInput] = useState('');
+  const [appliedPromo, setAppliedPromo] = useState(null);
+  const [promoError, setPromoError] = useState('');
 
   const shippingMethods = [
     { id: 'standard', name: 'FAN Courier standard', duration: '3-5 zile lucrătoare', price: 20 },
@@ -41,8 +77,44 @@ const CheckoutPage = () => {
   const selectedShipping = shippingMethods.find(m => m.id === formData.shippingMethod);
   const baseShippingCost = selectedShipping?.price || 0;
   const shippingCost = cartSubtotal >= 300 ? 0 : baseShippingCost; // Free shipping over 300 RON
-  const total = cartSubtotal + shippingCost;
   const qualifiesForFreeShipping = cartSubtotal >= 300;
+  const promoDiscount = calculatePromoDiscount(appliedPromo, cartSubtotal);
+  const totalBeforeDiscount = cartSubtotal + shippingCost;
+  const total = Math.max(totalBeforeDiscount - promoDiscount, 0);
+
+  const handleApplyPromoCode = () => {
+    const normalizedCode = promoInput.trim().toUpperCase();
+
+    if (!normalizedCode) {
+      setPromoError('Introdu un cod promoțional.');
+      return;
+    }
+
+    const promo = PROMO_CODES[normalizedCode];
+
+    if (!promo) {
+      setPromoError('Cod promoțional invalid.');
+      return;
+    }
+
+    if (promo.minSubtotal && cartSubtotal < promo.minSubtotal) {
+      setPromoError(`Acest cod este disponibil pentru comenzi de minimum ${promo.minSubtotal} lei.`);
+      return;
+    }
+
+    setAppliedPromo({ code: normalizedCode, ...promo });
+    setPromoError('');
+    setPromoInput('');
+    toast.success(`Codul ${normalizedCode} a fost aplicat.`);
+  };
+
+  const handleRemovePromoCode = () => {
+    if (appliedPromo) {
+      toast.success(`Codul ${appliedPromo.code} a fost eliminat.`);
+    }
+    setAppliedPromo(null);
+    setPromoError('');
+  };
 
   const validateStep = (currentStep) => {
     const newErrors = {};
@@ -103,7 +175,10 @@ const CheckoutPage = () => {
         shippingMethod: formData.shippingMethod,
         shippingCost: shippingCost,
         paymentMethod: formData.paymentMethod,
+        promoCode: appliedPromo?.code || null,
+        discount: promoDiscount,
         subtotal: cartSubtotal,
+        totalBeforeDiscount,
         total: total,
         customerInfo: {
           name: formData.fullName,
@@ -172,21 +247,34 @@ const CheckoutPage = () => {
 
   if (cartItems.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 pt-16 flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Coșul tău este gol</h2>
-          <p className="text-gray-600 mb-6">Adaugă produse pentru a continua</p>
-          <Link to="/shop" className="btn-primary">
-            Mergi la magazin
-          </Link>
+      <>
+        <SEO
+          title="Finalizare comandă | BeautyArena"
+          description="Finalizează comanda în siguranță pe BeautyArena."
+          noindex={true}
+        />
+        <div className="min-h-screen bg-gray-50 pt-16 flex items-center justify-center">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Coșul tău este gol</h2>
+            <p className="text-gray-600 mb-6">Adaugă produse pentru a continua</p>
+            <Link to="/shop" className="btn-primary">
+              Mergi la magazin
+            </Link>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <>
+      <SEO
+        title="Finalizare comandă | BeautyArena"
+        description="Completează datele de livrare și finalizează comanda pe BeautyArena."
+        noindex={true}
+      />
+      <div className="min-h-screen bg-gray-50 pt-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Back Button */}
         <button
           onClick={() => navigate(-1)}
@@ -527,6 +615,51 @@ const CheckoutPage = () => {
                 Sumar comandă
               </h3>
 
+              {/* Promo Code */}
+              <div className="mb-6 rounded-lg border border-gray-200 p-4 bg-gray-50">
+                <p className="text-sm font-medium text-gray-800 mb-2">Cod promoțional</p>
+
+                {!appliedPromo ? (
+                  <div className="space-y-2">
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={promoInput}
+                        onChange={(e) => {
+                          setPromoInput(e.target.value);
+                          if (promoError) setPromoError('');
+                        }}
+                        placeholder="Ex: BEAUTY10"
+                        className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm uppercase focus:outline-none focus:border-beauty-pink transition-colors"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleApplyPromoCode}
+                        className="px-4 py-2 text-sm font-medium text-white rounded-lg transition-all duration-300 hover:shadow-md"
+                        style={{ backgroundColor: '#FFAB9D' }}
+                      >
+                        Aplică
+                      </button>
+                    </div>
+                    {promoError && <p className="text-xs text-red-500">{promoError}</p>}
+                  </div>
+                ) : (
+                  <div className="flex items-start justify-between gap-3 p-3 rounded-lg bg-green-50 border border-green-200">
+                    <div>
+                      <p className="text-sm font-semibold text-green-700">Cod activ: {appliedPromo.code}</p>
+                      <p className="text-xs text-green-700/80">{appliedPromo.label}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleRemovePromoCode}
+                      className="text-xs font-semibold text-green-700 hover:text-green-900 transition-colors"
+                    >
+                      Elimină
+                    </button>
+                  </div>
+                )}
+              </div>
+
               {/* Cart Items */}
               <div className="space-y-3 mb-6 max-h-64 overflow-y-auto">
                 {cartItems.map(item => (
@@ -555,6 +688,13 @@ const CheckoutPage = () => {
                   <span className="text-gray-600">Subtotal</span>
                   <span className="font-medium text-gray-900">{cartSubtotal.toFixed(2)} lei</span>
                 </div>
+
+                {promoDiscount > 0 && (
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Reducere ({appliedPromo?.code})</span>
+                    <span className="font-medium text-green-600">-{promoDiscount.toFixed(2)} lei</span>
+                  </div>
+                )}
                 
                 {step >= 2 && (
                   <div className="flex justify-between text-sm">
@@ -583,8 +723,9 @@ const CheckoutPage = () => {
             </div>
           </div>
         </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

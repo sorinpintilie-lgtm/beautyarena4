@@ -6,6 +6,7 @@ import { useWishlist } from '../context/WishlistContext';
 import { useRecentlyViewed } from '../hooks/useRecentlyViewed';
 import { useProductBySlug } from '../hooks/useRealProducts';
 import { DescriptionModifier } from '../utils/descriptionModifier';
+import SEO from '../components/common/SEO';
 import ProductReviews from '../components/product/ProductReviews';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import SkeletonCard from '../components/common/SkeletonCard';
@@ -38,37 +39,51 @@ const ProductDetailPage = () => {
   // Handle loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-white pt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            <SkeletonCard className="aspect-square" />
-            <div className="space-y-4">
-              <SkeletonCard height="h-4" />
-              <SkeletonCard height="h-8" />
-              <SkeletonCard height="h-4" />
-              <SkeletonCard height="h-6" />
-              <SkeletonCard height="h-16" />
+      <>
+        <SEO
+          title="Se încarcă produsul | BeautyArena"
+          description="Se încarcă pagina produsului din magazinul BeautyArena."
+          noindex={true}
+        />
+        <div className="min-h-screen bg-white pt-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+              <SkeletonCard className="aspect-square" />
+              <div className="space-y-4">
+                <SkeletonCard height="h-4" />
+                <SkeletonCard height="h-8" />
+                <SkeletonCard height="h-4" />
+                <SkeletonCard height="h-6" />
+                <SkeletonCard height="h-16" />
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </>
     );
   }
 
   // Handle error state
   if (error || !product) {
     return (
-      <div className="min-h-screen bg-gray-50 pt-16 flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Produs negăsit</h2>
-          <p className="text-gray-600 mb-4">
-            {error || 'Produsul căutat nu există sau nu este disponibil momentan.'}
-          </p>
-          <Link to="/shop" className="btn-primary">
-            Înapoi la magazin
-          </Link>
+      <>
+        <SEO
+          title="Produs negăsit | BeautyArena"
+          description="Produsul căutat nu există sau nu mai este disponibil pe BeautyArena."
+          noindex={true}
+        />
+        <div className="min-h-screen bg-gray-50 pt-16 flex items-center justify-center">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Produs negăsit</h2>
+            <p className="text-gray-600 mb-4">
+              {error || 'Produsul căutat nu există sau nu este disponibil momentan.'}
+            </p>
+            <Link to="/shop" className="btn-primary">
+              Înapoi la magazin
+            </Link>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
@@ -83,9 +98,65 @@ const ProductDetailPage = () => {
     ? product.images
     : [];
 
+  const productTitle = `${product.name} | ${product.brand?.name || 'BeautyArena'} | BeautyArena`;
+  const productDescription = (product.shortDescription || product.description || 'Produs premium disponibil în magazinul BeautyArena.')
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 160);
+  const productKeywords = [
+    product.name,
+    product.brand?.name,
+    product.category,
+    product.subcategory,
+    ...(product.tags || []),
+    'beautyarena',
+  ]
+    .filter(Boolean)
+    .join(', ');
+  const productImage = allImages[0] || '/visualMarketing_logo.png';
+  const productPath = `/product/${product.slug}`;
+  const productJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    image: allImages.length > 0 ? allImages.slice(0, 6) : [productImage],
+    description: productDescription,
+    sku: product.sku || product.id,
+    brand: {
+      '@type': 'Brand',
+      name: product.brand?.name || 'BeautyArena',
+    },
+    offers: {
+      '@type': 'Offer',
+      url: `https://beautyarena.ro${productPath}`,
+      priceCurrency: 'RON',
+      price: Number(product.price || 0).toFixed(2),
+      availability: product.inStock
+        ? 'https://schema.org/InStock'
+        : 'https://schema.org/OutOfStock',
+      itemCondition: 'https://schema.org/NewCondition',
+    },
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: Number(product.rating || 4.5).toFixed(1),
+      reviewCount: Number(product.reviewCount || 1),
+    },
+  };
+
   return (
-    <div className="min-h-screen bg-white pt-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <>
+      <SEO
+        title={productTitle}
+        description={productDescription}
+        keywords={productKeywords}
+        image={productImage}
+        canonical={productPath}
+        type="product"
+        jsonLd={productJsonLd}
+      />
+      <div className="min-h-screen bg-white pt-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-gray-600 mb-8">
           <Link to="/" className="hover:text-beauty-pink transition-colors">Acasă</Link>
@@ -384,38 +455,39 @@ const ProductDetailPage = () => {
         </div>
       </div>
 
-      {/* Image Modal */}
-      {showImageModal && allImages.length > 0 && (
-        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
-          <div className="relative max-w-4xl max-h-full">
-            <button
-              onClick={() => setShowImageModal(false)}
-              className="absolute top-4 right-4 text-white hover:text-gray-300 z-10"
-            >
-              ✕
-            </button>
-            <img
-              src={allImages[activeImageIndex]}
-              alt={product.name}
-              className="max-w-full max-h-full object-contain"
-            />
-            {allImages.length > 1 && (
-              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
-                {allImages.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setActiveImageIndex(index)}
-                    className={`w-3 h-3 rounded-full ${
-                      index === activeImageIndex ? 'bg-white' : 'bg-white/50'
-                    }`}
-                  />
-                ))}
-              </div>
-            )}
+        {/* Image Modal */}
+        {showImageModal && allImages.length > 0 && (
+          <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+            <div className="relative max-w-4xl max-h-full">
+              <button
+                onClick={() => setShowImageModal(false)}
+                className="absolute top-4 right-4 text-white hover:text-gray-300 z-10"
+              >
+                ✕
+              </button>
+              <img
+                src={allImages[activeImageIndex]}
+                alt={product.name}
+                className="max-w-full max-h-full object-contain"
+              />
+              {allImages.length > 1 && (
+                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
+                  {allImages.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setActiveImageIndex(index)}
+                      className={`w-3 h-3 rounded-full ${
+                        index === activeImageIndex ? 'bg-white' : 'bg-white/50'
+                      }`}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </>
   );
 };
 

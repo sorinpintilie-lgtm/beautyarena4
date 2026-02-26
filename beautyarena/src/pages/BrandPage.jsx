@@ -1,10 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ChevronLeft, Star, ShoppingCart, Heart } from 'lucide-react';
-import brands, { getBrandBySlug } from '../data/brands';
-import products, { getProductsByBrand } from '../data/products';
+import { getBrandBySlug } from '../data/brands';
+import { getProductsByBrand } from '../data/products';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
+import SEO from '../components/common/SEO';
+
+const SITE_URL = 'https://beautyarena.ro';
 
 const BrandPage = () => {
   const { slug } = useParams();
@@ -14,22 +17,10 @@ const BrandPage = () => {
   
   const [sortBy, setSortBy] = useState('name');
 
-  if (!brand) {
-    return (
-      <div className="min-h-screen bg-gray-50 pt-16 flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Brand negăsit</h2>
-          <Link to="/shop" className="btn-primary">
-            Înapoi la magazin
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
   const brandProducts = useMemo(() => {
-    let filtered = getProductsByBrand(brand.id);
-    
+    if (!brand) return [];
+
+    const filtered = getProductsByBrand(brand.id);
     filtered.sort((a, b) => {
       switch (sortBy) {
         case 'price-low':
@@ -45,7 +36,27 @@ const BrandPage = () => {
     });
 
     return filtered;
-  }, [brand.id, sortBy]);
+  }, [brand, sortBy]);
+
+  if (!brand) {
+    return (
+      <>
+        <SEO
+          title="Brand negăsit | BeautyArena"
+          description="Brandul căutat nu există în magazinul BeautyArena."
+          noindex={true}
+        />
+        <div className="min-h-screen bg-gray-50 pt-16 flex items-center justify-center">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Brand negăsit</h2>
+            <Link to="/shop" className="btn-primary">
+              Înapoi la magazin
+            </Link>
+          </div>
+        </div>
+      </>
+    );
+  }
 
   const handleAddToCart = (e, product) => {
     e.preventDefault();
@@ -59,9 +70,29 @@ const BrandPage = () => {
     toggleWishlist(product);
   };
 
+  const brandItemList = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: `Produse ${brand.name}`,
+    itemListElement: brandProducts.slice(0, 24).map((product, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      url: `${SITE_URL}/product/${product.slug}`,
+      name: product.name,
+    })),
+  };
+
   return (
-    <div className="min-h-screen bg-white pt-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <>
+      <SEO
+        title={`${brand.name} | Magazin BeautyArena`}
+        description={`Cumpără produse ${brand.name} din magazinul BeautyArena. ${brand.description}`}
+        keywords={`${brand.name}, produse ${brand.name}, magazin cosmetice, beautyarena`}
+        canonical={`/brand/${brand.slug}`}
+        jsonLd={brandItemList}
+      />
+      <div className="min-h-screen bg-white pt-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Back Button */}
         <Link
           to="/shop"
@@ -184,8 +215,9 @@ const BrandPage = () => {
             </Link>
           ))}
         </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

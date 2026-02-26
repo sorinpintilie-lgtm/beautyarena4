@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Sparkles, ShoppingBag, Calendar, ShoppingCart } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 
-const BottomNavigation = ({ onMenuClick, onCartClick }) => {
+const BottomNavigation = ({ onCartClick }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { cartCount } = useCart();
   const [isHidden, setIsHidden] = useState(false);
   const lastScrollY = useRef(0);
@@ -59,10 +60,6 @@ const BottomNavigation = ({ onMenuClick, onCartClick }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleItemClick = (item) => {
-    // Future item click handlers can be added here
-  };
-
   return (
     <nav
       className={`fixed bottom-0 left-0 right-0 z-50 lg:hidden transition-transform duration-300 ${
@@ -81,16 +78,58 @@ const BottomNavigation = ({ onMenuClick, onCartClick }) => {
           {navItems.map((item) => {
             const IconComponent = item.icon;
             const isActive = item.isActive;
-             
+            const commonClasses = `flex flex-col items-center justify-center p-2 min-w-[70px] flex-1 rounded-xl transition-all duration-300 transform hover:scale-105 active:scale-95 ${
+              isActive
+                ? 'bg-white/30 shadow-md'
+                : 'hover:bg-white/20 active:bg-white/10'
+            }`;
+              
+            if (item.id === 'cart') {
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => {
+                    if (onCartClick) {
+                      onCartClick();
+                    } else {
+                      navigate('/checkout');
+                    }
+                  }}
+                  className={commonClasses}
+                >
+                  <div className="relative mb-1.5">
+                    <IconComponent
+                      className={`w-6 h-6 transition-all duration-300 ${
+                        isActive
+                          ? 'text-white drop-shadow-sm transform scale-110'
+                          : 'text-white/90 hover:text-white drop-shadow-sm'
+                      }`}
+                    />
+
+                    {/* Cart badge - show on cart button */}
+                    {cartCount > 0 && (
+                      <span className="absolute -top-2 -right-2 bg-beauty-pink-dark text-white text-[9px] font-bold rounded-full min-w-[18px] h-4.5 px-1.5 flex items-center justify-center shadow-md border border-white/20">
+                        {cartCount > 9 ? '9+' : cartCount}
+                      </span>
+                    )}
+                  </div>
+                  <span className={`text-[11px] font-semibold transition-all duration-300 text-center leading-tight drop-shadow-sm ${
+                    isActive
+                      ? 'text-white'
+                      : 'text-white/90'
+                  }`}>
+                    {item.label}
+                  </span>
+                </button>
+              );
+            }
+
             return (
               <Link
                 key={item.id}
                 to={item.path}
-                className={`flex flex-col items-center justify-center p-2 min-w-[70px] flex-1 rounded-xl transition-all duration-300 transform hover:scale-105 active:scale-95 ${
-                  isActive
-                    ? 'bg-white/30 shadow-md'
-                    : 'hover:bg-white/20 active:bg-white/10'
-                }`}
+                className={commonClasses}
               >
                 <div className="relative mb-1.5">
                   <IconComponent
@@ -101,12 +140,6 @@ const BottomNavigation = ({ onMenuClick, onCartClick }) => {
                     }`}
                   />
                   
-                  {/* Cart badge - show on cart button */}
-                  {item.id === 'cart' && cartCount > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-beauty-pink-dark text-white text-[9px] font-bold rounded-full min-w-[18px] h-4.5 px-1.5 flex items-center justify-center shadow-md border border-white/20">
-                      {cartCount > 9 ? '9+' : cartCount}
-                    </span>
-                  )}
                 </div>
                 <span className={`text-[11px] font-semibold transition-all duration-300 text-center leading-tight drop-shadow-sm ${
                   isActive

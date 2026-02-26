@@ -63,6 +63,7 @@ const RegisterPage = () => {
       <SEO
         title="Înregistrare - Salon Beauty Arena"
         description="Creează-ți un cont la Salon Beauty Arena pentru a salva preferințe și programări."
+        noindex={true}
       />
       <div className="min-h-screen bg-gradient-to-b from-white via-beauty-pink-light/20 to-white pt-16 flex items-center justify-center px-4">
         <div className="w-full max-w-md">

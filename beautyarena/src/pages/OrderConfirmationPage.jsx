@@ -1,10 +1,9 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { CheckCircle, Package, Truck, Mail, Phone, ArrowRight } from 'lucide-react';
+import SEO from '../components/common/SEO';
 
 const OrderConfirmationPage = () => {
-  const navigate = useNavigate();
-  
   // In a real app, this would come from state/props
   const orderNumber = `BA${Date.now().toString().slice(-8)}`;
   const orderDate = new Date().toLocaleDateString('ro-RO', {
@@ -14,8 +13,14 @@ const OrderConfirmationPage = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-16">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <>
+      <SEO
+        title="Confirmare comandă | BeautyArena"
+        description="Comanda a fost plasată cu succes pe BeautyArena."
+        noindex={true}
+      />
+      <div className="min-h-screen bg-gray-50 pt-16">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Success Message */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-6">
@@ -135,8 +140,9 @@ const OrderConfirmationPage = () => {
             Înapoi la pagina principală
           </Link>
         </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
