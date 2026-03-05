@@ -26,6 +26,7 @@ const ProductDetailPage = () => {
   const [activeTab, setActiveTab] = useState('description');
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [showImageModal, setShowImageModal] = useState(false);
+  const productPath = `/product/${product?.slug || slug || ''}`;
 
   // Modify descriptions to avoid copyright - must be called before any early returns
   const modifiedDescription = useMemo(() => {
@@ -38,6 +39,25 @@ const ProductDetailPage = () => {
       addToRecentlyViewed(product);
     }
   }, [product?.id]);
+
+  const schemaPayload = useMemo(() => {
+    if (!product) return null;
+
+    return {
+      ...product,
+      url: `${SITE_URL}${productPath}`,
+    };
+  }, [product, productPath]);
+
+  useEffect(() => {
+    if (!schemaPayload) return undefined;
+
+    injectProductSchema(schemaPayload, SITE_URL);
+
+    return () => {
+      clearInjectedProductSchema();
+    };
+  }, [schemaPayload]);
 
   // Handle loading state
   if (loading) {
@@ -118,23 +138,6 @@ const ProductDetailPage = () => {
     .filter(Boolean)
     .join(', ');
   const productImage = allImages[0] || '/visualMarketing_logo.png';
-  const productPath = `/product/${product.slug}`;
-
-  useEffect(() => {
-    if (!product) return undefined;
-
-    injectProductSchema(
-      {
-        ...product,
-        url: `${SITE_URL}${productPath}`,
-      },
-      SITE_URL
-    );
-
-    return () => {
-      clearInjectedProductSchema();
-    };
-  }, [product, productPath]);
 
   return (
     <>

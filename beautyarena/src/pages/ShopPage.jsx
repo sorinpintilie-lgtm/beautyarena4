@@ -97,29 +97,6 @@ const ShopPage = () => {
   }, [activeCategory, categoryTree]);
 
   const categoryNameForSeo = activeCategoryFilter?.name || null;
-  const seoTitle = categoryNameForSeo
-    ? `${categoryNameForSeo} | Magazin produse BeautyArena`
-    : 'Magazin produse premium | BeautyArena';
-  const seoDescription = categoryNameForSeo
-    ? `Cumpără ${categoryNameForSeo} din magazinul BeautyArena. Produse premium, prețuri competitive și livrare rapidă.`
-    : 'Descoperă produse premium de frumusețe în magazinul BeautyArena. Filtrează după categorie, preț și rating.';
-  const seoKeywords = categoryNameForSeo
-    ? `magazin beauty, ${categoryNameForSeo}, produse ${categoryNameForSeo}, beautyarena, cosmetice online`
-    : 'magazin beauty online, produse cosmetice premium, makeup, skincare, haircare, beautyarena';
-  const seoCanonical = activeCategory ? `/shop?category=${activeCategory}` : '/shop';
-  const seoItemList = {
-    '@context': 'https://schema.org',
-    '@type': 'ItemList',
-    name: categoryNameForSeo
-      ? `Produse ${categoryNameForSeo} - BeautyArena`
-      : 'Magazin produse BeautyArena',
-    itemListElement: paginatedProducts.slice(0, 24).map((product, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      url: `${SITE_URL}/product/${product.slug}`,
-      name: product.name,
-    })),
-  };
 
   // Filter and sort products
   const filteredProducts = useMemo(() => {
@@ -187,6 +164,30 @@ const ShopPage = () => {
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedProducts = filteredProducts.slice(startIndex, startIndex + itemsPerPage);
+
+  const seoTitle = categoryNameForSeo
+    ? `${categoryNameForSeo} | Magazin produse BeautyArena`
+    : 'Magazin produse premium | BeautyArena';
+  const seoDescription = categoryNameForSeo
+    ? `Cumpără ${categoryNameForSeo} din magazinul BeautyArena. Produse premium, prețuri competitive și livrare rapidă.`
+    : 'Descoperă produse premium de frumusețe în magazinul BeautyArena. Filtrează după categorie, preț și rating.';
+  const seoKeywords = categoryNameForSeo
+    ? `magazin beauty, ${categoryNameForSeo}, produse ${categoryNameForSeo}, beautyarena, cosmetice online`
+    : 'magazin beauty online, produse cosmetice premium, makeup, skincare, haircare, beautyarena';
+  const seoCanonical = activeCategory ? `/shop?category=${activeCategory}` : '/shop';
+  const seoItemList = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: categoryNameForSeo
+      ? `Produse ${categoryNameForSeo} - BeautyArena`
+      : 'Magazin produse BeautyArena',
+    itemListElement: paginatedProducts.slice(0, 24).map((product, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      url: `${SITE_URL}/product/${product.slug}`,
+      name: product.name,
+    })),
+  };
 
   // Reset to page 1 when filters change
   useMemo(() => {
