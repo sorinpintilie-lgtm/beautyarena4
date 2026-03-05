@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-const SITE_URL = 'https://beautyarena.ro';
+const SITE_URL = 'https://salonbeautyarena.ro';
 const projectRoot = path.resolve(process.cwd());
 const productsPath = path.join(projectRoot, 'public', 'data', 'products.json');
 const sitemapPath = path.join(projectRoot, 'public', 'sitemap.xml');
