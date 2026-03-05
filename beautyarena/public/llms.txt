@@ -1,0 +1,12 @@
+# BeautyArena
+
+> Official site: https://salonbeautyarena.ro
+
+Sitemap: https://salonbeautyarena.ro/sitemap.xml
+Robots: https://salonbeautyarena.ro/robots.txt
+
+Main pages:
+- https://salonbeautyarena.ro/
+- https://salonbeautyarena.ro/shop
+- https://salonbeautyarena.ro/servicii
+- https://salonbeautyarena.ro/contact
