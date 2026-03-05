@@ -8,7 +8,7 @@ import SEO from '../components/common/SEO';
 import toast from 'react-hot-toast';
 
 const PROMO_CODES = {
-  BEAUTY10: {
+  ARENA10: {
     type: 'percent',
     value: 10,
     label: '10% reducere la toată comanda',
@@ -629,7 +629,7 @@ const CheckoutPage = () => {
                           setPromoInput(e.target.value);
                           if (promoError) setPromoError('');
                         }}
-                        placeholder="Ex: BEAUTY10"
+                        placeholder="Ex: ARENA10"
                         className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm uppercase focus:outline-none focus:border-beauty-pink transition-colors"
                       />
                       <button
