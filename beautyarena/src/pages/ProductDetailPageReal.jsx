@@ -6,10 +6,13 @@ import { useWishlist } from '../context/WishlistContext';
 import { useRecentlyViewed } from '../hooks/useRecentlyViewed';
 import { useProductBySlug } from '../hooks/useRealProducts';
 import { DescriptionModifier } from '../utils/descriptionModifier';
+import { injectProductSchema, clearInjectedProductSchema } from '../utils/productSchema';
 import SEO from '../components/common/SEO';
 import ProductReviews from '../components/product/ProductReviews';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import SkeletonCard from '../components/common/SkeletonCard';
+
+const SITE_URL = 'https://salonbeautyarena.ro';
 
 const ProductDetailPage = () => {
   const { slug } = useParams();
@@ -116,33 +119,22 @@ const ProductDetailPage = () => {
     .join(', ');
   const productImage = allImages[0] || '/visualMarketing_logo.png';
   const productPath = `/product/${product.slug}`;
-  const productJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Product',
-    name: product.name,
-    image: allImages.length > 0 ? allImages.slice(0, 6) : [productImage],
-    description: productDescription,
-    sku: product.sku || product.id,
-    brand: {
-      '@type': 'Brand',
-      name: product.brand?.name || 'BeautyArena',
-    },
-    offers: {
-      '@type': 'Offer',
-      url: `https://beautyarena.ro${productPath}`,
-      priceCurrency: 'RON',
-      price: Number(product.price || 0).toFixed(2),
-      availability: product.inStock
-        ? 'https://schema.org/InStock'
-        : 'https://schema.org/OutOfStock',
-      itemCondition: 'https://schema.org/NewCondition',
-    },
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: Number(product.rating || 4.5).toFixed(1),
-      reviewCount: Number(product.reviewCount || 1),
-    },
-  };
+
+  useEffect(() => {
+    if (!product) return undefined;
+
+    injectProductSchema(
+      {
+        ...product,
+        url: `${SITE_URL}${productPath}`,
+      },
+      SITE_URL
+    );
+
+    return () => {
+      clearInjectedProductSchema();
+    };
+  }, [product, productPath]);
 
   return (
     <>
@@ -153,7 +145,6 @@ const ProductDetailPage = () => {
         image={productImage}
         canonical={productPath}
         type="product"
-        jsonLd={productJsonLd}
       />
       <div className="min-h-screen bg-white pt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

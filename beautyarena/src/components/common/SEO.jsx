@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
-const SITE_URL = 'https://beautyarena.ro';
+const SITE_URL = 'https://salonbeautyarena.ro';
 
 const toAbsoluteUrl = (value = '/') => {
   if (/^https?:\/\//i.test(value)) return value;

@@ -9,6 +9,10 @@
 [functions]
   directory = "netlify/functions"
 
+[[edge_functions]]
+  path = "/product/*"
+  function = "product-schema"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"

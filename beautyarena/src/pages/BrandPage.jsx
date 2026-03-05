@@ -7,7 +7,7 @@ import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import SEO from '../components/common/SEO';
 
-const SITE_URL = 'https://beautyarena.ro';
+const SITE_URL = 'https://salonbeautyarena.ro';
 
 const BrandPage = () => {
   const { slug } = useParams();

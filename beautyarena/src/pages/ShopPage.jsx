@@ -13,7 +13,7 @@ import Pagination from '../components/shop/Pagination';
 import SEO from '../components/common/SEO';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
-const SITE_URL = 'https://beautyarena.ro';
+const SITE_URL = 'https://salonbeautyarena.ro';
 
 const ShopPage = () => {
   const { addToCart } = useCart();
