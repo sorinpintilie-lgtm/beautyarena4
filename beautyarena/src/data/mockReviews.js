@@ -211,8 +211,105 @@ fourStarComments.push(...extraReviewTypes.fourStar);
 threeStarComments.push(...extraReviewTypes.threeStar);
 lowStarComments.push(...extraReviewTypes.lowStar);
 
-const shortTitles = ['bun', 'super', 'ok', 'multumita', 'Recomand', 'Perfect', 'merge'];
-const mediumTitles = ['Bun produs', 'Destul de ok', 'Merita', 'Nu e rau', 'Foarte ok'];
+const extraTitleVariants = buildCombinedVariants(
+  ['Rezultat', 'Par', 'Produs', 'Experienta', 'Review', 'Verdict', 'Efect', 'Calitate', 'Achizitie', 'Feedback'],
+  ['foarte bun', 'ok', 'peste asteptari', 'decent', 'multumitor', 'real', 'onest', 'la obiect', 'util', 'de zi cu zi'],
+  100,
+);
+
+const shortTitles = [
+  'bun', 'super', 'ok', 'multumita', 'Recomand', 'Perfect', 'merge',
+  ...extraTitleVariants.slice(0, 35),
+];
+
+const mediumTitles = [
+  'Bun produs', 'Destul de ok', 'Merita', 'Nu e rau', 'Foarte ok',
+  ...extraTitleVariants.slice(35, 70),
+];
+
+const threeStarTitles = [
+  'E ok', 'Mediu', 'Asa si asa', 'Nimic wow',
+  ...extraTitleVariants.slice(70, 85),
+];
+
+const lowTitles = [
+  'Nu prea a mers', 'Slabut', 'Sub asteptari', 'Nu recomand', 'M-a dezamagit',
+  ...extraTitleVariants.slice(85, 100),
+];
+
+const extraReviewBodies = {
+  fiveStarLong: buildCombinedVariants(
+    [
+      'Dupa cateva folosiri',
+      'Pe parul meu',
+      'In rutina zilnica',
+      'Folosit constant',
+      'Dupa recomandarea stilistei',
+      'La prima aplicare',
+      'In combinatie cu samponul',
+      'Pe scalp sensibil',
+      'Cu par vopsit',
+      'Pe termen de o luna',
+    ],
+    [
+      'se vede diferenta clar.',
+      'rezultatul e foarte bun.',
+      'parul arata mai ingrijit.',
+      'nu incarca deloc.',
+      'merita fiecare leu.',
+      'ramane produsul meu preferat.',
+      'efectul e constant si placut.',
+      'textura e usoara si eficienta.',
+      'am ramas placut surprinsa.',
+      'il recomand fara emotii.',
+    ],
+    30,
+  ),
+  fourStar: buildCombinedVariants(
+    ['Produs bun', 'Per total ok', 'Rezultat decent', 'Imi place', 'Bunicel', 'Calitate ok', 'Merge'],
+    [
+      'dar pretul e cam sus.',
+      'insa depinde de tipul de par.',
+      'dar as fi vrut efect mai rapid.',
+      'si probabil mai comand.',
+      'insa nu e chiar wow.',
+      'dar ambalajul putea fi mai practic.',
+      'si face treaba in mare parte.',
+    ],
+    25,
+  ),
+  threeStar: buildCombinedVariants(
+    ['E ok', 'Mediu', 'La mine', 'Acceptabil', 'Nimic special', 'Merge cat de cat', 'Asa si asa'],
+    [
+      'dar nu m-a convins.',
+      'fara mare diferenta.',
+      'probabil nu e pentru mine.',
+      'si ma asteptam la mai mult.',
+      'nu cred ca recumpar.',
+      'rezultatul e modest.',
+      'doar partial eficient.',
+    ],
+    20,
+  ),
+  lowStar: buildCombinedVariants(
+    ['Sincer', 'Din pacate', 'Nu recomand', 'La mine', 'Pe parul meu', 'Experienta slaba', 'Dezamagitor'],
+    [
+      'nu a functionat deloc.',
+      'nu am vazut niciun rezultat.',
+      'a fost sub asteptari.',
+      'nu merita pretul.',
+      'nu as mai cumpara.',
+      'a incarcat parul prea tare.',
+      'nu s-a potrivit deloc.',
+    ],
+    25,
+  ),
+};
+
+fiveStarLong.push(...extraReviewBodies.fiveStarLong);
+fourStarComments.push(...extraReviewBodies.fourStar);
+threeStarComments.push(...extraReviewBodies.threeStar);
+lowStarComments.push(...extraReviewBodies.lowStar);
 
 const hashString = (value = '') => {
   let hash = 0;
@@ -233,6 +330,25 @@ const createSeededRandom = (seed) => {
 };
 
 const pick = (array, random) => array[Math.floor(random() * array.length)];
+
+const normalizeReviewBody = (text = '') => String(text)
+  .toLowerCase()
+  .replace(/\s+/g, ' ')
+  .trim()
+  .replace(/[.!?,;:]+$/g, '');
+
+const isSingleWordBody = (text = '') => normalizeReviewBody(text).split(' ').filter(Boolean).length <= 1;
+
+const createShuffledNamePool = (random) => {
+  const pool = [...romanianUserNames];
+
+  for (let i = pool.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+
+  return pool;
+};
 
 const generateRating = (random) => {
   const roll = random();
@@ -269,13 +385,13 @@ const createReviewText = (rating, random) => {
 
   if (rating === 3) {
     return {
-      title: 'E ok',
+      title: pick(threeStarTitles, random),
       comment: pick(threeStarComments, random),
     };
   }
 
   return {
-    title: 'nu prea',
+    title: pick(lowTitles, random),
     comment: pick(lowStarComments, random),
   };
 };
@@ -320,20 +436,65 @@ const topHelpfulReviewComments = [
   'L-am folosit constant in ultima perioada si rezultatul este vizibil: mai putine fire rebele, aspect mai curat si par mai placut la atingere. Nu spun ca face minuni, dar clar isi face treaba foarte bine.',
 ];
 
-const createTopHelpfulReviews = (productId, random, maxCount, now) => {
+const topHelpfulProductTemplates = [
+  (label) => `La ${label}, dupa aproximativ 2 saptamani am vazut ca parul meu e mai usor de aranjat si mult mai neted la varfuri. Nu mi-a incarcat scalpul si efectul s-a pastrat si intre spalari.`,
+  (label) => `Am testat ${label} in rutina mea zilnica si diferenta se vede: mai putin frizz, aspect mai curat si parul pare mai hidratat. Nu e magie peste noapte, dar constant chiar functioneaza.`,
+  (label) => `${label} a mers surprinzator de bine la mine, mai ales pe lungimi uscate. Dupa uscare parul nu mai arata tern si are un aspect mai sanatos. Pentru mine e unul din produsele bune din gama asta.`,
+  (label) => `Pe ${label} am fost sceptica la inceput, dar dupa cateva folosiri am observat ca firele rebele s-au redus si parul sta mai disciplinat. Aplicare usoara, nu trebuie cantitate mare.`,
+  (label) => `La ${label}, ce mi-a placut cel mai mult a fost ca nu lasa parul greu si nici lipicios. Arata mai bine dupa coafare si se simte mai moale la atingere. L-am recomandat deja in jurul meu.`,
+  (label) => `${label} chiar a functionat pe parul meu vopsit. Nu a iritat scalpul, iar varfurile arata mai bine dupa cateva utilizari. E un produs pe care il voi recumpara.`,
+  (label) => `Am folosit ${label} cam o luna si rezultatul e clar: mai putine fire electrizate, mai mult control la coafare si un aspect mai ingrijit per total.`,
+  (label) => `Pentru ${label}, pot spune ca raportul calitate-pret e bun. Se aplica simplu, miroase ok si chiar ajuta la textura parului dupa uscare.`,
+];
+
+const formatProductLabel = (productId = '') => {
+  const cleaned = String(productId)
+    .replace(/[-_]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (!cleaned) return 'produsul asta';
+
+  return cleaned
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 4)
+    .join(' ');
+};
+
+const createTopHelpfulReviews = (productId, random, maxCount, now, namePool, usedBodies) => {
   const desiredCount = Math.min(maxCount, random() < 0.5 ? 2 : 3);
   const list = [];
+  const productLabel = formatProductLabel(productId);
 
   for (let index = 0; index < desiredCount; index += 1) {
+    let selectedComment = pick(topHelpfulProductTemplates, random)(productLabel);
+    let normalizedComment = normalizeReviewBody(selectedComment);
+
+    for (let attempt = 0; attempt < (topHelpfulReviewComments.length + topHelpfulProductTemplates.length) * 2; attempt += 1) {
+      if (!usedBodies.has(normalizedComment)) break;
+      selectedComment = pick(topHelpfulProductTemplates, random)(productLabel);
+      normalizedComment = normalizeReviewBody(selectedComment);
+    }
+
+    if (usedBodies.has(normalizedComment)) {
+      selectedComment = pick(topHelpfulReviewComments, random);
+      normalizedComment = normalizeReviewBody(selectedComment);
+    }
+
+    if (!isSingleWordBody(normalizedComment)) {
+      usedBodies.add(normalizedComment);
+    }
+
     list.push({
       id: `top-${productId}-${index}`,
       userId: `tu-${hashString(`${productId}-top-${index}`)}`,
-      userName: pick(romanianUserNames, random),
+      userName: namePool[index] || `client_${index + 1}`,
       rating: random() < 0.78 ? 5 : 4,
       title: withOccasionalTypos(pick(topHelpfulReviewTitles, random), random),
-      comment: withOccasionalTypos(pick(topHelpfulReviewComments, random), random),
+      comment: withOccasionalTypos(selectedComment, random),
       verified: true,
-      helpful: 120 + Math.floor(random() * 180),
+      helpful: 160 + Math.floor(random() * 240),
       createdAt: new Date(now - index * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
     });
   }
@@ -347,13 +508,28 @@ const generateSyntheticReviews = (productId, requestedCount = 0) => {
 
   const random = createSeededRandom(hashString(productId || 'prod'));
   const now = Date.now();
-  const topHelpful = createTopHelpfulReviews(productId, random, targetCount, now);
+  const usedBodies = new Set();
+  const namePool = createShuffledNamePool(random);
+  const topHelpful = createTopHelpfulReviews(productId, random, targetCount, now, namePool, usedBodies);
   const generated = [...topHelpful];
 
   for (let index = generated.length; index < targetCount; index += 1) {
-    const rating = generateRating(random);
-    const baseText = createReviewText(rating, random);
-    const userName = pick(romanianUserNames, random);
+    let rating = generateRating(random);
+    let baseText = createReviewText(rating, random);
+    let normalizedBody = normalizeReviewBody(baseText.comment);
+
+    for (let attempt = 0; attempt < 240; attempt += 1) {
+      if (isSingleWordBody(normalizedBody) || !usedBodies.has(normalizedBody)) break;
+      rating = generateRating(random);
+      baseText = createReviewText(rating, random);
+      normalizedBody = normalizeReviewBody(baseText.comment);
+    }
+
+    if (!isSingleWordBody(normalizedBody)) {
+      usedBodies.add(normalizedBody);
+    }
+
+    const userName = namePool[index] || `client_${index + 1}`;
     const daysAgo = Math.floor(random() * 540) + index % 9;
     const createdAt = new Date(now - daysAgo * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
     const helpfulBase = rating >= 4 ? 2 : 0;
