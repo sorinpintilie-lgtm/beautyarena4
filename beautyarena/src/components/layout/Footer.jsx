@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Phone, Mail, Clock, Instagram, Facebook, Twitter } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Instagram, Facebook, Music2 } from 'lucide-react';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -22,9 +22,9 @@ const Footer = () => {
   ];
 
   const socialLinks = [
-    { icon: Instagram, href: '#', label: 'Instagram' },
-    { icon: Facebook, href: '#', label: 'Facebook' },
-    { icon: Twitter, href: '#', label: 'Twitter' },
+    { icon: Instagram, href: 'https://www.instagram.com/salonbeautyarena.ro', label: 'Instagram' },
+    { icon: Facebook, href: 'https://www.facebook.com/SalonBeautyArena.ro', label: 'Facebook' },
+    { icon: Music2, href: 'https://www.tiktok.com/@salonbeautyarena', label: 'TikTok' },
   ];
 
   return (
@@ -46,6 +46,8 @@ const Footer = () => {
                   <a
                     key={social.label}
                     href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     aria-label={social.label}
                     className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-beauty-pink transition-all duration-300 transform hover:scale-110"
                   >

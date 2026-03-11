@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, Phone, Mail, Clock, Send, MessageCircle, Instagram, Facebook, Twitter } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Send, MessageCircle, Instagram, Facebook, Music2 } from 'lucide-react';
 import SEO from '../components/common/SEO';
 
 const ContactPage = () => {
@@ -51,9 +51,27 @@ const ContactPage = () => {
   ];
 
   const socialLinks = [
-    { icon: Instagram, name: 'Instagram', handle: '@beautyarena.ro', color: 'hover:text-pink-500', href: '#' },
-    { icon: Facebook, name: 'Facebook', handle: 'BeautyArena.ro', color: 'hover:text-blue-600', href: '#' },
-    { icon: Twitter, name: 'Twitter', handle: '@BeautyArena', color: 'hover:text-blue-400', href: '#' },
+    {
+      icon: Instagram,
+      name: 'Instagram',
+      handle: '@salonbeautyarena.ro',
+      color: 'hover:text-pink-500',
+      href: 'https://www.instagram.com/salonbeautyarena.ro'
+    },
+    {
+      icon: Facebook,
+      name: 'Facebook',
+      handle: 'SalonBeautyArena.ro',
+      color: 'hover:text-blue-600',
+      href: 'https://www.facebook.com/SalonBeautyArena.ro'
+    },
+    {
+      icon: Music2,
+      name: 'TikTok',
+      handle: '@salonbeautyarena',
+      color: 'hover:text-gray-900',
+      href: 'https://www.tiktok.com/@salonbeautyarena'
+    },
     { icon: MessageCircle, name: 'WhatsApp', handle: '0722402559', color: 'hover:text-green-500', href: 'tel:0722402559' }
   ];
 
@@ -337,7 +355,9 @@ const ContactPage = () => {
                       return (
                         <a
                           key={index}
-                          href="#"
+                          href={social.href}
+                          target={social.href?.startsWith('http') ? '_blank' : undefined}
+                          rel={social.href?.startsWith('http') ? 'noopener noreferrer' : undefined}
                           className={`flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-beauty-pink transition-all duration-300 group ${social.color}`}
                         >
                           <Icon className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
