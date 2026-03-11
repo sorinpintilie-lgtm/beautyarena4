@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Star, Heart, ShoppingCart, Truck, Shield, RotateCcw, ChevronLeft, Check, ZoomIn } from 'lucide-react';
 import { useCart } from '../context/CartContext';
@@ -41,6 +41,7 @@ const ProductDetailPage = () => {
   const [activeTab, setActiveTab] = useState('description');
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [showImageModal, setShowImageModal] = useState(false);
+  const lastTrackedProductId = useRef(null);
   const productPath = `/product/${product?.slug || slug || ''}`;
 
   // Modify descriptions to avoid copyright - must be called before any early returns
@@ -107,12 +108,14 @@ const ProductDetailPage = () => {
 
   // Track product view
   useEffect(() => {
-    if (product) {
-      addToRecentlyViewed(product);
-      setQuantity(1);
-      setActiveTab('description');
-      setActiveImageIndex(0);
-    }
+    if (!product) return;
+    if (lastTrackedProductId.current === product.id) return;
+
+    lastTrackedProductId.current = product.id;
+    addToRecentlyViewed(product);
+    setQuantity(1);
+    setActiveTab('description');
+    setActiveImageIndex(0);
   }, [product, addToRecentlyViewed]);
 
   const schemaPayload = useMemo(() => {
