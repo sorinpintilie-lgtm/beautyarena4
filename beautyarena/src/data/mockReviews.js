@@ -436,21 +436,27 @@ const topHelpfulReviewComments = [
   'L-am folosit constant in ultima perioada si rezultatul este vizibil: mai putine fire rebele, aspect mai curat si par mai placut la atingere. Nu spun ca face minuni, dar clar isi face treaba foarte bine.',
 ];
 
-const deriveProductReviewContext = (productId = '', random) => {
+const getProductReviewContexts = (productId = '') => {
   const slug = String(productId).toLowerCase();
 
   const genericContexts = [
     {
       usage: 'dupa spalare',
       timeframe: '2-3 saptamani',
-      effectOne: 'ca firele rebele s-au redus vizibil',
+      effectOne: 'firele rebele s-au redus vizibil',
       effectTwo: 'parul ramane mai moale si mai usor de aranjat',
     },
     {
       usage: 'in rutina zilnica',
       timeframe: 'cateva utilizari',
-      effectOne: 'ca textura parului s-a imbunatatit',
+      effectOne: 'textura parului s-a imbunatatit',
       effectTwo: 'nu mai arata tern la varfuri',
+    },
+    {
+      usage: 'dupa uscare, la finalul rutinei',
+      timeframe: 'aproape 2 saptamani',
+      effectOne: 'parul sta mai disciplinat pe parcursul zilei',
+      effectTwo: 'nu mai am nevoie de mult styling in plus',
     },
   ];
 
@@ -458,14 +464,20 @@ const deriveProductReviewContext = (productId = '', random) => {
     {
       usage: 'pe scalp, in timpul spalarii',
       timeframe: '10-14 zile',
-      effectOne: 'ca s-a calmat senzatia de disconfort',
+      effectOne: 's-a calmat senzatia de disconfort',
       effectTwo: 'scalpul nu se mai ingrasa asa repede',
     },
     {
       usage: 'constat, de 2-3 ori pe saptamana',
       timeframe: 'aproape 3 saptamani',
-      effectOne: 'ca mancarimea s-a redus mult',
+      effectOne: 'mancarimea s-a redus mult',
       effectTwo: 'radacina arata mai curata intre spalari',
+    },
+    {
+      usage: 'la fiecare spalare, cu masaj usor pe scalp',
+      timeframe: '2 saptamani',
+      effectOne: 'scalpul este mai echilibrat si mai confortabil',
+      effectTwo: 'nu mai simt nevoia sa spal parul atat de des',
     },
   ];
 
@@ -473,14 +485,20 @@ const deriveProductReviewContext = (productId = '', random) => {
     {
       usage: 'dupa decolorare',
       timeframe: 'cateva spalari',
-      effectOne: 'ca nuanta rece s-a pastrat mai bine',
+      effectOne: 'nuanta rece s-a pastrat mai bine',
       effectTwo: 'parul ramane mai hidratat si mai usor de pieptanat',
     },
     {
       usage: 'in zilele cand folosesc produse anti-galben',
       timeframe: '2 saptamani',
-      effectOne: 'ca tonul a ramas mai uniform',
+      effectOne: 'tonul a ramas mai uniform',
       effectTwo: 'nu mai am aspectul uscat pe lungimi',
+    },
+    {
+      usage: 'la fiecare a doua spalare',
+      timeframe: 'aproape 3 saptamani',
+      effectOne: 'reflexele nedorite apar mult mai rar',
+      effectTwo: 'parul blond are un aspect mai curat si mai ingrijit',
     },
   ];
 
@@ -488,14 +506,20 @@ const deriveProductReviewContext = (productId = '', random) => {
     {
       usage: 'pe par umed, inainte de difuzor',
       timeframe: '1-2 saptamani',
-      effectOne: 'ca buclele se definesc mai usor',
+      effectOne: 'buclele se definesc mai usor',
       effectTwo: 'frizz-ul e mai controlat pe parcursul zilei',
     },
     {
       usage: 'la fiecare spalare',
       timeframe: 'cateva aplicari',
-      effectOne: 'ca buclele au forma mai buna',
+      effectOne: 'buclele au forma mai buna',
       effectTwo: 'parul se simte mai elastic si mai placut',
+    },
+    {
+      usage: 'inainte de styling, pe lungimi',
+      timeframe: 'aproape 2 saptamani',
+      effectOne: 'buclele rezista mai bine pana a doua zi',
+      effectTwo: 'aspectul general este mai ordonat si natural',
     },
   ];
 
@@ -503,14 +527,20 @@ const deriveProductReviewContext = (productId = '', random) => {
     {
       usage: 'la radacina, inainte de uscare',
       timeframe: 'primele aplicari',
-      effectOne: 'ca volumul tine mai bine pana seara',
+      effectOne: 'volumul tine mai bine pana seara',
       effectTwo: 'nu lasa senzatie de incarcare',
     },
     {
       usage: 'cand fac styling rapid',
       timeframe: 'cateva zile',
-      effectOne: 'ca parul capata forma mai usor',
+      effectOne: 'parul capata forma mai usor',
       effectTwo: 'radacina nu se lasa imediat',
+    },
+    {
+      usage: 'dupa fiecare spalare, pe par uscat in prosop',
+      timeframe: 'aproape o saptamana',
+      effectOne: 'coafura ramane mai plina pe durata zilei',
+      effectTwo: 'textura nu devine lipicioasa',
     },
   ];
 
@@ -518,14 +548,20 @@ const deriveProductReviewContext = (productId = '', random) => {
     {
       usage: 'pe lungimi uscate, dupa spalare',
       timeframe: '2-3 saptamani',
-      effectOne: 'ca varfurile nu mai arata atat de aspre',
+      effectOne: 'varfurile nu mai arata atat de aspre',
       effectTwo: 'parul are un aspect mai sanatos la coafare',
     },
     {
       usage: 'in combinatie cu masca, o data la cateva zile',
       timeframe: 'aproape o luna',
-      effectOne: 'ca parul si-a revenit treptat',
+      effectOne: 'parul si-a revenit treptat',
       effectTwo: 'se rupe mai putin la pieptanat',
+    },
+    {
+      usage: 'dupa spalare, insistand pe varfuri',
+      timeframe: '2 saptamani',
+      effectOne: 'lungimile par mai hidratate si mai uniforme',
+      effectTwo: 'se simte mult mai moale la atingere',
     },
   ];
 
@@ -543,24 +579,39 @@ const deriveProductReviewContext = (productId = '', random) => {
     contexts = hydrationRepairContexts;
   }
 
-  return pick(contexts, random);
+  return contexts;
 };
 
 const topHelpfulProductTemplates = [
-  (ctx) => `L-am introdus ${ctx.usage} si dupa ${ctx.timeframe} am observat ${ctx.effectOne}. In plus, ${ctx.effectTwo}, iar parul nu ramane incarcat dupa uscare.`,
-  (ctx) => `Am fost sceptica la inceput, dar dupa ${ctx.timeframe} pot spune clar ${ctx.effectOne}. Pentru mine a contat mult ca ${ctx.effectTwo} si se aplica usor.`,
-  (ctx) => `L-am folosit constant ${ctx.usage} si diferenta e vizibila: ${ctx.effectOne}. Mi-a placut si faptul ca ${ctx.effectTwo}, fara sa lase textura lipicioasa.`,
-  (ctx) => `Dupa ce l-am testat ${ctx.usage}, in aproximativ ${ctx.timeframe} am vazut ${ctx.effectOne}. Per total, ${ctx.effectTwo} si rutina e mai simpla acum.`,
+  (ctx) => `L-am introdus ${ctx.usage} si dupa ${ctx.timeframe} am observat ca ${ctx.effectOne}. In plus, ${ctx.effectTwo}, iar parul nu ramane incarcat dupa uscare.`,
+  (ctx) => `Am fost sceptica la inceput, dar dupa ${ctx.timeframe} pot spune clar ca ${ctx.effectOne}. Pentru mine a contat mult ca ${ctx.effectTwo} si se aplica usor.`,
+  (ctx) => `L-am folosit constant ${ctx.usage} si diferenta e vizibila, ${ctx.effectOne}. Mi-a placut si faptul ca ${ctx.effectTwo}, fara sa lase textura lipicioasa.`,
+  (ctx) => `Dupa ce l-am testat ${ctx.usage}, in aproximativ ${ctx.timeframe} am vazut ca ${ctx.effectOne}. Per total, ${ctx.effectTwo} si rutina e mai simpla acum.`,
 ];
 
 const createTopHelpfulReviews = (productId, random, maxCount, now, namePool, usedBodies) => {
   const desiredCount = Math.min(maxCount, random() < 0.5 ? 2 : 3);
   const list = [];
-  const productContext = deriveProductReviewContext(productId, random);
+  const productContexts = [...getProductReviewContexts(productId)];
+  const usedTopTitles = new Set();
+
+  for (let i = productContexts.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(random() * (i + 1));
+    [productContexts[i], productContexts[j]] = [productContexts[j], productContexts[i]];
+  }
 
   for (let index = 0; index < desiredCount; index += 1) {
+    const productContext = productContexts[index % productContexts.length];
     let selectedComment = pick(topHelpfulProductTemplates, random)(productContext);
     let normalizedComment = normalizeReviewBody(selectedComment);
+    let selectedTitle = pick(topHelpfulReviewTitles, random);
+
+    for (let titleAttempt = 0; titleAttempt < topHelpfulReviewTitles.length * 2; titleAttempt += 1) {
+      if (!usedTopTitles.has(selectedTitle.toLowerCase())) break;
+      selectedTitle = pick(topHelpfulReviewTitles, random);
+    }
+
+    usedTopTitles.add(selectedTitle.toLowerCase());
 
     for (let attempt = 0; attempt < (topHelpfulReviewComments.length + topHelpfulProductTemplates.length) * 2; attempt += 1) {
       if (!usedBodies.has(normalizedComment)) break;
@@ -582,8 +633,8 @@ const createTopHelpfulReviews = (productId, random, maxCount, now, namePool, use
       userId: `tu-${hashString(`${productId}-top-${index}`)}`,
       userName: namePool[index] || `client_${index + 1}`,
       rating: random() < 0.78 ? 5 : 4,
-      title: withOccasionalTypos(pick(topHelpfulReviewTitles, random), random),
-      comment: withOccasionalTypos(selectedComment, random),
+      title: selectedTitle,
+      comment: selectedComment,
       verified: true,
       helpful: 160 + Math.floor(random() * 240),
       createdAt: new Date(now - index * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
