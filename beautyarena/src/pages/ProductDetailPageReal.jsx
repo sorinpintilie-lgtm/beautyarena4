@@ -508,7 +508,7 @@ const ProductDetailPage = () => {
             )}
 
             {activeTab === 'reviews' && (
-              <ProductReviews productId={product.id} />
+              <ProductReviews productId={product.id} reviewCount={product.reviewCount || 0} />
             )}
           </div>
         </div>

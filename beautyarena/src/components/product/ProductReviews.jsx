@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Star, ThumbsUp, Check } from 'lucide-react';
 import { getReviewsByProductId, getRatingDistribution } from '../../data/mockReviews';
 
-const ProductReviews = ({ productId }) => {
-  const reviews = getReviewsByProductId(productId);
-  const distribution = getRatingDistribution(productId);
+const ProductReviews = ({ productId, reviewCount = 0 }) => {
+  const reviews = getReviewsByProductId(productId, reviewCount);
+  const distribution = getRatingDistribution(productId, reviewCount);
   const [sortBy, setSortBy] = useState('recent');
 
   const sortedReviews = [...reviews].sort((a, b) => {
