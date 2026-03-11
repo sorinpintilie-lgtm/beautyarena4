@@ -4,20 +4,35 @@ import { Star, Heart, ShoppingCart, Truck, Shield, RotateCcw, ChevronLeft, Check
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import { useRecentlyViewed } from '../hooks/useRecentlyViewed';
-import { useProductBySlug } from '../hooks/useRealProducts';
+import { useProductBySlug, useRealProducts } from '../hooks/useRealProducts';
 import { DescriptionModifier } from '../utils/descriptionModifier';
 import { injectProductSchema, clearInjectedProductSchema } from '../utils/productSchema';
 import SEO from '../components/common/SEO';
 import ProductReviews from '../components/product/ProductReviews';
-import LoadingSpinner from '../components/common/LoadingSpinner';
 import SkeletonCard from '../components/common/SkeletonCard';
 
 const SITE_URL = 'https://salonbeautyarena.ro';
+
+const slugifyCategoryLevel = (value = '') => value
+  .toLowerCase()
+  .normalize('NFD')
+  .replace(/[\u0300-\u036f]/g, '')
+  .replace(/[^\w\s-]/g, '')
+  .replace(/\s+/g, '-')
+  .replace(/-+/g, '-')
+  .trim();
+
+const getPrimaryProductImage = (item) => {
+  if (item?.localImages && item.localImages.length > 0) return item.localImages[0];
+  if (item?.images && item.images.length > 0) return item.images[0];
+  return '/placeholder-image.jpg';
+};
 
 const ProductDetailPage = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { product, loading, error } = useProductBySlug(slug);
+  const { products: allProducts, loading: relatedProductsLoading } = useRealProducts();
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
   const { addToRecentlyViewed } = useRecentlyViewed();
@@ -30,15 +45,75 @@ const ProductDetailPage = () => {
 
   // Modify descriptions to avoid copyright - must be called before any early returns
   const modifiedDescription = useMemo(() => {
-    return product ? DescriptionModifier.modifyDescription(product.description) : '';
+    return DescriptionModifier.modifyDescription(product?.description || '');
   }, [product?.description]);
+
+  const relatedProducts = useMemo(() => {
+    if (!product || !allProducts || allProducts.length === 0) return [];
+
+    const currentCategoryPathSlugs = new Set(
+      (product.categoryPaths || []).flatMap((path) =>
+        (path.levels || []).map(slugifyCategoryLevel).filter(Boolean)
+      )
+    );
+
+    const currentTags = new Set((product.tags || []).map((tag) => String(tag).toLowerCase()));
+
+    const scoredCandidates = allProducts
+      .filter((candidate) => candidate.id !== product.id && candidate.slug !== product.slug)
+      .map((candidate) => {
+        let score = 0;
+
+        if (candidate.brand?.id && candidate.brand.id === product.brand?.id) score += 4;
+        if (candidate.subcategory && candidate.subcategory === product.subcategory) score += 3;
+        if (candidate.category && candidate.category === product.category) score += 2;
+
+        const candidatePathSlugs = new Set(
+          (candidate.categoryPaths || []).flatMap((path) =>
+            (path.levels || []).map(slugifyCategoryLevel).filter(Boolean)
+          )
+        );
+
+        const hasSharedPath = [...candidatePathSlugs].some((slugValue) => currentCategoryPathSlugs.has(slugValue));
+        if (hasSharedPath) score += 3;
+
+        const candidateTags = new Set((candidate.tags || []).map((tag) => String(tag).toLowerCase()));
+        const sharedTagCount = [...candidateTags].filter((tag) => currentTags.has(tag)).length;
+        score += Math.min(sharedTagCount, 2);
+
+        if (product.price > 0 && candidate.price > 0) {
+          const relativePriceDifference = Math.abs(candidate.price - product.price) / product.price;
+          if (relativePriceDifference <= 0.25) score += 1;
+        }
+
+        if (candidate.inStock) score += 0.5;
+
+        return { candidate, score };
+      })
+      .filter(({ score }) => score > 0)
+      .sort((a, b) => {
+        if (b.score !== a.score) return b.score - a.score;
+        return (b.candidate.reviewCount || 0) - (a.candidate.reviewCount || 0);
+      })
+      .slice(0, 4)
+      .map(({ candidate }) => candidate);
+
+    if (scoredCandidates.length > 0) return scoredCandidates;
+
+    return allProducts
+      .filter((candidate) => candidate.id !== product.id && candidate.slug !== product.slug)
+      .slice(0, 4);
+  }, [allProducts, product]);
 
   // Track product view
   useEffect(() => {
     if (product) {
       addToRecentlyViewed(product);
+      setQuantity(1);
+      setActiveTab('description');
+      setActiveImageIndex(0);
     }
-  }, [product?.id]);
+  }, [product, addToRecentlyViewed]);
 
   const schemaPayload = useMemo(() => {
     if (!product) return null;
@@ -430,22 +505,68 @@ const ProductDetailPage = () => {
             )}
 
             {activeTab === 'reviews' && (
-              <div className="text-center py-12">
-                <Star className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-600">Recenziile vor fi disponibile în curând</p>
-              </div>
+              <ProductReviews productId={product.id} />
             )}
           </div>
         </div>
 
-        {/* Related Products - Mock for now */}
+        {/* Related Products */}
         <div>
           <h2 className="text-2xl font-elegant font-bold text-gray-900 mb-8">
             Produse similare
           </h2>
-          <div className="text-center py-12 text-gray-500">
-            Produsele similare vor fi disponibile în curând
-          </div>
+
+          {relatedProductsLoading && relatedProducts.length === 0 && (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {[...Array(4)].map((_, index) => (
+                <SkeletonCard key={`related-loading-${index}`} className="aspect-square" />
+              ))}
+            </div>
+          )}
+
+          {!relatedProductsLoading && relatedProducts.length === 0 && (
+            <div className="text-center py-12 text-gray-500">
+              Nu am găsit produse similare momentan.
+            </div>
+          )}
+
+          {relatedProducts.length > 0 && (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+              {relatedProducts.map((relatedProduct) => (
+                <Link
+                  key={relatedProduct.id}
+                  to={`/product/${relatedProduct.slug}`}
+                  className="card-beauty group block"
+                >
+                  <div className="aspect-square bg-beauty-pink/10 rounded-lg mb-3 overflow-hidden">
+                    <img
+                      src={getPrimaryProductImage(relatedProduct)}
+                      alt={relatedProduct.name}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      onError={(e) => {
+                        e.target.src = '/placeholder-image.jpg';
+                      }}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <p className="text-xs text-gray-500">{relatedProduct.brand?.name}</p>
+                    <h3 className="text-sm font-semibold line-clamp-2 group-hover:text-beauty-pink transition-colors">
+                      {relatedProduct.name}
+                    </h3>
+                    <div className="flex items-center gap-1">
+                      <Star className="w-3 h-3 text-beauty-peach fill-current" />
+                      <span className="text-xs">{relatedProduct.rating}</span>
+                      <span className="text-xs text-gray-400">({relatedProduct.reviewCount || 0})</span>
+                    </div>
+                    <p className="text-sm md:text-lg font-bold text-beauty-pink">
+                      {(relatedProduct.price || 0).toFixed(2)} lei
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
