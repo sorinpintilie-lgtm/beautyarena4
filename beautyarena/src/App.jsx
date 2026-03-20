@@ -35,7 +35,6 @@ const DeliveryPolicyPage = lazy(() => import('./pages/DeliveryPolicyPage'));
 const ReturnCancellationPolicyPage = lazy(() => import('./pages/ReturnCancellationPolicyPage'));
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
 const TermsAndConditionsPage = lazy(() => import('./pages/TermsAndConditionsPage'));
-const GiveawayRulesPage = lazy(() => import('./pages/GiveawayRulesPage'));
 
 // Loading component
 const LoadingSpinner = () => (
@@ -83,7 +82,6 @@ function App() {
                           <Route path="/retur-anulare" element={<ReturnCancellationPolicyPage />} />
                           <Route path="/politica-de-confidentialitate" element={<PrivacyPolicyPage />} />
                           <Route path="/termeni-si-conditii" element={<TermsAndConditionsPage />} />
-                          <Route path="/regulament-giveaway-valentines-day" element={<GiveawayRulesPage />} />
                           <Route path="/carousel-test" element={<CarouselTest />} />
                         </Routes>
                       </Suspense>

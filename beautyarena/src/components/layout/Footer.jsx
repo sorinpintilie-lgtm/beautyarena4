@@ -198,13 +198,6 @@ const Footer = () => {
                 >
                   Retur / Anulare
                 </Link>
-                <span className="text-gray-600">|</span>
-                <Link
-                  to="/regulament-giveaway-valentines-day"
-                  className="hover:text-beauty-pink transition-colors"
-                >
-                  Regulament Giveaway Valentine's Day
-                </Link>
               </p>
             </div>
 
