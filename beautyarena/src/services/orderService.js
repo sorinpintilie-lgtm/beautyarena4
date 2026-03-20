@@ -12,7 +12,8 @@ export const createOrder = async (userId, orderData) => {
       userId,
       orderNumber,
       ...orderData,
-      status: 'pending', // pending, confirmed, shipped, delivered
+      status: orderData.paymentMethod === 'card' ? 'payment_pending' : 'pending',
+      paymentStatus: orderData.paymentMethod === 'card' ? 'payment_pending' : 'unpaid',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };

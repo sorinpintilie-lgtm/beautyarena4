@@ -130,6 +130,55 @@ const AccountPage = () => {
     navigate('/');
   };
 
+  const getOrderStatusLabel = (status) => {
+    switch (status) {
+      case 'pending':
+        return 'În așteptare';
+      case 'confirmed':
+        return 'Confirmată';
+      case 'shipped':
+        return 'Expediată';
+      case 'delivered':
+        return 'Livrată';
+      case 'payment_pending':
+        return 'Plată în procesare';
+      case 'payment_processing':
+        return 'Procesare plată';
+      case 'paid':
+        return 'Plătită';
+      case 'payment_cancelled':
+        return 'Plată anulată';
+      case 'refunded':
+        return 'Rambursată';
+      default:
+        return status || 'Necunoscut';
+    }
+  };
+
+  const getOrderStatusClasses = (status) => {
+    switch (status) {
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'confirmed':
+        return 'bg-blue-100 text-blue-800';
+      case 'shipped':
+        return 'bg-orange-100 text-orange-800';
+      case 'delivered':
+        return 'bg-green-100 text-green-800';
+      case 'payment_pending':
+      case 'payment_processing':
+        return 'bg-indigo-100 text-indigo-800';
+      case 'paid':
+        return 'bg-emerald-100 text-emerald-800';
+      case 'payment_cancelled':
+        return 'bg-rose-100 text-rose-800';
+      case 'refunded':
+        return 'bg-slate-200 text-slate-800';
+      default:
+        return 'bg-gray-100 text-gray-700';
+    }
+  };
+
   return (
     <>
       <SEO
@@ -415,14 +464,9 @@ const AccountPage = () => {
                               Comandă #{order.orderNumber}
                             </span>
                             <span className={`text-xs px-2 py-1 rounded-full ${
-                              order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                              order.status === 'confirmed' ? 'bg-blue-100 text-blue-800' :
-                              order.status === 'shipped' ? 'bg-orange-100 text-orange-800' :
-                              'bg-green-100 text-green-800'
+                              getOrderStatusClasses(order.status)
                             }`}>
-                              {order.status === 'pending' ? 'În așteptare' :
-                               order.status === 'confirmed' ? 'Confirmată' :
-                               order.status === 'shipped' ? 'Expediată' : 'Livrată'}
+                              {getOrderStatusLabel(order.status)}
                             </span>
                           </div>
 

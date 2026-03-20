@@ -4,6 +4,7 @@ import { ChevronLeft, CreditCard, Truck, MapPin, Phone, Mail, User, Check } from
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { createOrder } from '../services/orderService';
+import { initializeNetopiaPayment } from '../services/paymentService';
 import SEO from '../components/common/SEO';
 import toast from 'react-hot-toast';
 
@@ -66,20 +67,25 @@ const CheckoutPage = () => {
   const [promoError, setPromoError] = useState('');
 
   const shippingMethods = [
-    { id: 'standard', name: 'FAN Courier standard', duration: '3-5 zile lucrătoare', price: 20 },
-    { id: 'express', name: 'FAN Courier express', duration: '1-2 zile lucrătoare', price: 20 },
+    { id: 'standard', name: 'FAN Courier standard', duration: '3-5 zile lucrătoare', price: 15 },
+    { id: 'express', name: 'FAN Courier express', duration: '1-2 zile lucrătoare', price: 15 },
   ];
 
   const paymentMethods = [
     { id: 'cash', name: 'Ramburs', icon: Truck },
+    { id: 'card', name: 'Card online (NETOPIA)', icon: CreditCard },
   ];
+
+  const RAMBURS_FEE = 12; // Cash on delivery extra fee
 
   const selectedShipping = shippingMethods.find(m => m.id === formData.shippingMethod);
   const baseShippingCost = selectedShipping?.price || 0;
   const shippingCost = cartSubtotal >= 300 ? 0 : baseShippingCost; // Free shipping over 300 RON
+  const rambursFee = formData.paymentMethod === 'cash' ? RAMBURS_FEE : 0;
+  const totalShippingCost = shippingCost + rambursFee;
   const qualifiesForFreeShipping = cartSubtotal >= 300;
   const promoDiscount = calculatePromoDiscount(appliedPromo, cartSubtotal);
-  const totalBeforeDiscount = cartSubtotal + shippingCost;
+  const totalBeforeDiscount = cartSubtotal + totalShippingCost;
   const total = Math.max(totalBeforeDiscount - promoDiscount, 0);
 
   const handleApplyPromoCode = () => {
@@ -173,7 +179,8 @@ const CheckoutPage = () => {
           country: formData.country
         },
         shippingMethod: formData.shippingMethod,
-        shippingCost: shippingCost,
+        shippingCost: totalShippingCost,
+        rambursFee: rambursFee,
         paymentMethod: formData.paymentMethod,
         promoCode: appliedPromo?.code || null,
         discount: promoDiscount,
@@ -191,40 +198,60 @@ const CheckoutPage = () => {
       const orderResult = await createOrder(user.uid, orderData);
 
       if (orderResult.success) {
-        // Send order confirmation emails
-        try {
-          // Send confirmation to customer
-          await fetch('/.netlify/functions/send-email', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              type: 'order_confirmation',
-              data: orderResult
-            })
-          });
+        if (formData.paymentMethod === 'card') {
+          try {
+            await initializeNetopiaPayment({
+              orderNumber: orderResult.orderNumber,
+              amount: total,
+              currency: 'RON',
+              description: `Comandă Beauty Arena ${orderResult.orderNumber}`,
+              customerInfo: orderResult.customerInfo,
+              shippingAddress: orderResult.shippingAddress,
+            });
 
-          // Send notification to store contact
-          await fetch('/.netlify/functions/send-email', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              type: 'store_order_notification',
-              data: orderResult
-            })
-          });
-        } catch (emailError) {
-          console.warn('Order emails failed:', emailError);
-          // Don't fail the order if emails fail
+            clearCart();
+            toast.success('Te redirecționăm către NETOPIA pentru finalizarea plății.');
+            return;
+          } catch (paymentError) {
+            console.error('Error initializing NETOPIA payment:', paymentError);
+            toast.error(paymentError.message || 'Nu am putut inițializa plata online.');
+          }
+        } else {
+          // Send order confirmation emails for cash orders
+          try {
+            // Send confirmation to customer
+            await fetch('/.netlify/functions/send-email', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                type: 'order_confirmation',
+                data: orderResult
+              })
+            });
+
+            // Send notification to store contact
+            await fetch('/.netlify/functions/send-email', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                type: 'store_order_notification',
+                data: orderResult
+              })
+            });
+          } catch (emailError) {
+            console.warn('Order emails failed:', emailError);
+            // Don't fail the order if emails fail
+          }
+
+          // Clear cart and navigate
+          clearCart();
+          toast.success('Comandă plasată cu succes!');
+          navigate('/contul-meu');
         }
-
-        // Clear cart and navigate
-        clearCart();
-        toast.success('Comandă plasată cu succes!');
-        navigate('/contul-meu');
       } else {
         toast.error('Eroare la plasarea comenzii');
       }
@@ -500,7 +527,7 @@ const CheckoutPage = () => {
                           </div>
                         </div>
                         <span className={`font-semibold ${qualifiesForFreeShipping ? 'text-green-600' : 'text-beauty-pink'}`}>
-                          {qualifiesForFreeShipping ? 'GRATUIT' : `${method.price} lei`}
+                          {qualifiesForFreeShipping ? 'GRATUIT' : `${baseShippingCost} lei`}
                         </span>
                       </label>
                     ))}
@@ -704,6 +731,13 @@ const CheckoutPage = () => {
                     <span className={`font-medium ${qualifiesForFreeShipping ? 'text-green-600' : 'text-gray-900'}`}>
                       {qualifiesForFreeShipping ? 'GRATUIT' : `${shippingCost.toFixed(2)} lei`}
                     </span>
+                  </div>
+                )}
+
+                {rambursFee > 0 && step >= 3 && (
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Comision ramburs</span>
+                    <span className="font-medium text-gray-900">{rambursFee.toFixed(2)} lei</span>
                   </div>
                 )}
 

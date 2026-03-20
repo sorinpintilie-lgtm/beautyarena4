@@ -1,11 +1,15 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { CheckCircle, Package, Truck, Mail, Phone, ArrowRight } from 'lucide-react';
 import SEO from '../components/common/SEO';
 
 const OrderConfirmationPage = () => {
+  const [searchParams] = useSearchParams();
+  const source = searchParams.get('source');
+  const orderFromQuery = searchParams.get('order');
+
   // In a real app, this would come from state/props
-  const orderNumber = `BA${Date.now().toString().slice(-8)}`;
+  const orderNumber = orderFromQuery || `BA${Date.now().toString().slice(-8)}`;
   const orderDate = new Date().toLocaleDateString('ro-RO', {
     year: 'numeric',
     month: 'long',
@@ -27,10 +31,14 @@ const OrderConfirmationPage = () => {
             <CheckCircle className="w-12 h-12 text-green-600" />
           </div>
           <h1 className="text-3xl md:text-4xl font-elegant font-bold text-gray-900 mb-4">
-            Comanda ta a fost plasată cu succes!
+            {source === 'netopia'
+              ? 'Cererea ta de plată a fost trimisă'
+              : 'Comanda ta a fost plasată cu succes!'}
           </h1>
           <p className="text-lg text-gray-600">
-            Îți mulțumim pentru comandă. Vei primi un email de confirmare în curând.
+            {source === 'netopia'
+              ? 'Plata a fost inițiată. Vei primi confirmarea finală prin email imediat ce tranzacția este validată de procesator.'
+              : 'Îți mulțumim pentru comandă. Vei primi un email de confirmare în curând.'}
           </p>
         </div>
 
