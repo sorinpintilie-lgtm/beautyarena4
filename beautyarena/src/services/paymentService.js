@@ -16,7 +16,8 @@ export const initializeNetopiaPayment = async (orderPayload) => {
   const data = await response.json();
 
   if (!response.ok || !data?.success || !data?.redirectHtml) {
-    throw new Error(data?.error || 'Nu s-a putut inițializa plata NETOPIA.');
+    const backendMessage = [data?.error, data?.details].filter(Boolean).join(': ');
+    throw new Error(backendMessage || 'Nu s-a putut inițializa plata NETOPIA.');
   }
 
   openNetopiaRedirect(data.redirectHtml);

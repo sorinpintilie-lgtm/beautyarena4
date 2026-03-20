@@ -11,6 +11,15 @@ const jsonHeaders = {
   'Content-Type': 'application/json',
 };
 
+const getSafeDiagnostics = () => ({
+  hasSignature: Boolean((process.env.NETOPIA_SIGNATURE || '').trim()),
+  hasPrivateKey: Boolean((process.env.NETOPIA_PRIVATE_KEY || '').trim()),
+  hasPublicCert: Boolean((process.env.NETOPIA_PUBLIC_CERT || '').trim()),
+  netopiaIsLive: process.env.NETOPIA_IS_LIVE ?? null,
+  netopiaSandbox: process.env.NETOPIA_SANDBOX ?? null,
+  hasSiteUrl: Boolean(process.env.SITE_URL || process.env.URL || process.env.DEPLOY_PRIME_URL),
+});
+
 const parseBody = (event) => {
   const raw = event?.isBase64Encoded
     ? Buffer.from(event.body || '', 'base64').toString('utf8')
@@ -133,13 +142,20 @@ const handler = async (event) => {
       }),
     };
   } catch (error) {
-    console.error('create-netopia-payment error:', error);
+    const diagnostics = getSafeDiagnostics();
+    console.error('create-netopia-payment error:', {
+      name: error?.name,
+      message: error?.message,
+      diagnostics,
+    });
+
     return {
       statusCode: 500,
       headers: jsonHeaders,
       body: JSON.stringify({
         error: 'Failed to initialize NETOPIA payment',
         details: error.message,
+        diagnostics,
       }),
     };
   }
