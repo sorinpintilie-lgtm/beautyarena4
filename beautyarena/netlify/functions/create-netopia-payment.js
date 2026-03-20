@@ -113,6 +113,14 @@ const handler = async (event) => {
     const request = mobilPay.buildRequest(isSandbox);
     const paymentUrl = String(request.url || '').replace(/^http:\/\//i, 'https://');
 
+    console.info('create-netopia-payment request built', {
+      mode: isSandbox ? 'sandbox' : 'live',
+      paymentUrl,
+      signatureLength: signature.length,
+      envKeyLength: String(request?.env_key || '').length,
+      dataLength: String(request?.data || '').length,
+    });
+
     const redirectHtml = `<!doctype html>
 <html lang="ro">
   <head>
