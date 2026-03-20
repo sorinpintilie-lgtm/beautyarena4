@@ -93,9 +93,9 @@ const TermsAndConditionsPage = () => {
             <h2 className="text-2xl font-semibold text-gray-900 mb-3">6. Dreptul de retragere și returul produselor</h2>
             <p className="text-gray-700 mb-2">
               În conformitate cu legislația în vigoare privind protecția consumatorilor, ai dreptul de a te retrage
-              din contractul la distanță, în anumite condiții și termene. Informațiile detaliate privind procedura
-              de retur și excepțiile aplicabile sunt prezentate într-o politică dedicată sau în cadrul acestei
-              secțiuni, după caz.
+              din contractul la distanță, în anumite condiții și termene. Informațiile detaliate privind termenul
+              estimativ de retur și modul de retur/anulare sunt prezentate în secțiunea dedicată
+              <strong> Retur / Anulare</strong>, disponibilă pe site.
             </p>
           </section>
 

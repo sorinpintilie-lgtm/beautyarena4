@@ -32,6 +32,7 @@ const LoginPage = lazy(() => import('./pages/LoginPage'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage'));
 const AccountPage = lazy(() => import('./pages/AccountPage'));
 const DeliveryPolicyPage = lazy(() => import('./pages/DeliveryPolicyPage'));
+const ReturnCancellationPolicyPage = lazy(() => import('./pages/ReturnCancellationPolicyPage'));
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
 const TermsAndConditionsPage = lazy(() => import('./pages/TermsAndConditionsPage'));
 const GiveawayRulesPage = lazy(() => import('./pages/GiveawayRulesPage'));
@@ -79,6 +80,7 @@ function App() {
                           <Route path="/contul-meu" element={<AccountPage />} />
                           <Route path="/confirmare-comanda" element={<OrderConfirmationPage />} />
                           <Route path="/politica-de-livrare" element={<DeliveryPolicyPage />} />
+                          <Route path="/retur-anulare" element={<ReturnCancellationPolicyPage />} />
                           <Route path="/politica-de-confidentialitate" element={<PrivacyPolicyPage />} />
                           <Route path="/termeni-si-conditii" element={<TermsAndConditionsPage />} />
                           <Route path="/regulament-giveaway-valentines-day" element={<GiveawayRulesPage />} />

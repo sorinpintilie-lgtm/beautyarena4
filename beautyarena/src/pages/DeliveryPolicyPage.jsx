@@ -20,20 +20,30 @@ const DeliveryPolicyPage = () => {
             Prezenta politică de livrare se aplică tuturor comenzilor plasate prin magazinul online al Salon
             Beauty Arena. Ne dorim ca produsele comandate să ajungă în siguranță la tine, în cel mai scurt timp
             posibil, motiv pentru care colaborăm cu servicii de curierat rapid și monitorizăm permanent
-            livrările.
+            livrările. În această secțiune găsești explicit atât termenul estimativ de livrare, cât și modul de
+            livrare pentru produsele și/sau serviciile comercializate.
           </p>
 
           <section className="mt-8">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-3">1. Metode de livrare</h2>
-            <p className="text-gray-700 mb-2">
-              Livrarea produselor se realizează prin firme de curierat rapid pe teritoriul României. Detaliile
-              exacte (curierul utilizat, costurile, estimarea de timp) sunt afișate în pagina de finalizare a
-              comenzii și pot fi actualizate periodic.
-            </p>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-3">1. Mod de livrare</h2>
+            <ul className="list-disc list-inside text-gray-700 space-y-1">
+              <li>
+                Pentru <strong>produse fizice</strong>, livrarea se realizează prin firme de curierat rapid, pe
+                teritoriul României.
+              </li>
+              <li>
+                Pentru <strong>servicii comercializate online</strong> (ex: vouchere, confirmări programări),
+                transmiterea se face electronic, prin email și/sau telefon.
+              </li>
+              <li>
+                Detaliile exacte (curier utilizat, cost, status livrare) sunt afișate în pagina de finalizare a
+                comenzii și în comunicările ulterioare.
+              </li>
+            </ul>
           </section>
 
           <section className="mt-6">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-3">2. Timp de procesare și livrare</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-3">2. Termen estimativ de livrare</h2>
             <ul className="list-disc list-inside text-gray-700 space-y-1">
               <li>
                 Comenzile sunt, de regulă, procesate în <strong>1-2 zile lucrătoare</strong> de la
@@ -42,6 +52,10 @@ const DeliveryPolicyPage = () => {
               <li>
                 Termenul estimat de livrare este, în mod obișnuit, de <strong>1-3 zile lucrătoare</strong>
                 de la predarea coletului către curier.
+              </li>
+              <li>
+                Pentru serviciile livrate digital (voucher/confirmare), termenul estimat este de
+                <strong> 24-48 ore</strong> de la confirmarea plății/comenzii.
               </li>
               <li>
                 În perioade aglomerate (sărbători, promoții, condiții meteo nefavorabile etc.), termenele de

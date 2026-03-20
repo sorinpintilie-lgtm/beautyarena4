@@ -193,6 +193,13 @@ const Footer = () => {
                 </Link>
                 <span className="text-gray-600">|</span>
                 <Link
+                  to="/retur-anulare"
+                  className="hover:text-beauty-pink transition-colors"
+                >
+                  Retur / Anulare
+                </Link>
+                <span className="text-gray-600">|</span>
+                <Link
                   to="/regulament-giveaway-valentines-day"
                   className="hover:text-beauty-pink transition-colors"
                 >
@@ -232,6 +239,14 @@ const Footer = () => {
                     className="h-8 w-auto object-contain"
                   />
                 </a>
+                <div className="inline-flex items-center justify-center rounded-md bg-white/5 px-2 py-1">
+                  <iframe
+                    src="https://mny.ro/npId.html?color=%23ffffff&version=orizontal&secret=162420"
+                    style={{ border: 'none', width: '100px', height: '80px' }}
+                    title="NETOPIA Payments - Visa și MasterCard"
+                    loading="lazy"
+                  />
+                </div>
                 <a
                   href="https://anpc.ro/?ref=footer_3_6"
                   target="_blank"
