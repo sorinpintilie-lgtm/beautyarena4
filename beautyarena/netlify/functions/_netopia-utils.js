@@ -13,7 +13,11 @@ const toBoolean = (value, fallback = false) => {
   return fallback;
 };
 
-const normalizePem = (rawValue = '') => rawValue.replace(/\\n/g, '\n').trim();
+const normalizePem = (rawValue = '') => String(rawValue || '')
+  .replace(/^"|"$/g, '')
+  .replace(/^'|'$/g, '')
+  .replace(/\\n/g, '\n')
+  .trim();
 
 const normalizeCertificatePem = (rawCertificate = '') => {
   const cert = normalizePem(rawCertificate);
@@ -22,12 +26,13 @@ const normalizeCertificatePem = (rawCertificate = '') => {
     throw new Error('NETOPIA_PUBLIC_CERT is missing');
   }
 
-  if (cert.includes('BEGIN CERTIFICATE')) {
-    return cert;
-  }
+  const compact = cert
+    .replace(/-----BEGIN CERTIFICATE-----/gi, '')
+    .replace(/-----END CERTIFICATE-----/gi, '')
+    .replace(/\s+/g, '');
 
-  const compact = cert.replace(/\s+/g, '');
-  return `-----BEGIN CERTIFICATE-----\n${compact}\n-----END CERTIFICATE-----`;
+  const wrapped = compact.match(/.{1,64}/g)?.join('\n') || compact;
+  return `-----BEGIN CERTIFICATE-----\n${wrapped}\n-----END CERTIFICATE-----`;
 };
 
 const extractPublicKeyFromCertificate = (rawCertificate = '') => {
