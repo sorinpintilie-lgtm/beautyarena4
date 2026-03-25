@@ -11,13 +11,32 @@ const jsonHeaders = {
   'Content-Type': 'application/json',
 };
 
+const maskValue = (value = '', visible = 4) => {
+  const normalized = String(value || '');
+  if (!normalized) return '';
+  if (normalized.length <= visible * 2) return '*'.repeat(normalized.length);
+
+  return `${normalized.slice(0, visible)}...${normalized.slice(-visible)}`;
+};
+
 const getSafeDiagnostics = () => ({
   hasSignature: Boolean((process.env.NETOPIA_SIGNATURE || '').trim()),
+  signatureRawLength: String(process.env.NETOPIA_SIGNATURE || '').length,
+  signatureTrimmedLength: String((process.env.NETOPIA_SIGNATURE || '').trim()).length,
+  signatureHasLeadingOrTrailingWhitespace:
+    String(process.env.NETOPIA_SIGNATURE || '') !== String((process.env.NETOPIA_SIGNATURE || '').trim()),
+  signaturePreview: maskValue((process.env.NETOPIA_SIGNATURE || '').trim()),
   hasPrivateKey: Boolean((process.env.NETOPIA_PRIVATE_KEY || '').trim()),
+  privateKeyLength: String(process.env.NETOPIA_PRIVATE_KEY || '').length,
   hasPublicCert: Boolean((process.env.NETOPIA_PUBLIC_CERT || '').trim()),
+  publicCertLength: String(process.env.NETOPIA_PUBLIC_CERT || '').length,
   netopiaIsLive: process.env.NETOPIA_IS_LIVE ?? null,
   netopiaSandbox: process.env.NETOPIA_SANDBOX ?? null,
   hasSiteUrl: Boolean(process.env.SITE_URL || process.env.URL || process.env.DEPLOY_PRIME_URL),
+  netlifyContext: process.env.CONTEXT || null,
+  netlifyBranch: process.env.BRANCH || null,
+  deployId: process.env.DEPLOY_ID || null,
+  siteName: process.env.SITE_NAME || null,
 });
 
 const parseBody = (event) => {
@@ -65,6 +84,18 @@ const handler = async (event) => {
     }
 
     const { signature, privateKey, publicCert, isSandbox } = getNetopiaConfig();
+    console.info('NETOPIA mode resolution', {
+      NETOPIA_IS_LIVE: process.env.NETOPIA_IS_LIVE ?? null,
+      NETOPIA_SANDBOX: process.env.NETOPIA_SANDBOX ?? null,
+      resolvedMode: isSandbox ? 'sandbox' : 'live',
+      signatureLength: signature.length,
+      signaturePreview: maskValue(signature),
+      privateKeyLength: privateKey.length,
+      publicCertLength: String(publicCert || '').length,
+      netlifyContext: process.env.CONTEXT || null,
+      netlifyBranch: process.env.BRANCH || null,
+      deployId: process.env.DEPLOY_ID || null,
+    });
     const publicKey = extractPublicKeyFromCertificate(publicCert);
 
     const baseUrl = getBaseUrl(event);
@@ -110,6 +141,18 @@ const handler = async (event) => {
       returnUrl,
     });
 
+    const orderSignature = mobilPay?.paymentData?.order?.signature || '';
+    console.info('NETOPIA payload signature diagnostics', {
+      orderNumber,
+      resolvedMode: isSandbox ? 'sandbox' : 'live',
+      hasOrderSignature: Boolean(orderSignature),
+      orderSignatureLength: String(orderSignature).length,
+      orderSignaturePreview: maskValue(orderSignature),
+      orderSignatureMatchesEnvSignature: orderSignature === signature,
+      confirmUrl,
+      returnUrl,
+    });
+
     const request = mobilPay.buildRequest(isSandbox);
     const paymentUrl = String(request.url || '').replace(/^http:\/\//i, 'https://');
 
@@ -145,6 +188,9 @@ const handler = async (event) => {
       body: JSON.stringify({
         success: true,
         orderNumber,
+        paymentUrl,
+        envKey: request.env_key,
+        data: request.data,
         redirectHtml,
         mode: isSandbox ? 'sandbox' : 'live',
       }),

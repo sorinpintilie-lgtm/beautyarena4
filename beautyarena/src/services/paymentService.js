@@ -1,7 +1,23 @@
-const openNetopiaRedirect = (redirectHtml) => {
-  document.open();
-  document.write(redirectHtml);
-  document.close();
+const openNetopiaRedirect = ({ paymentUrl, envKey, data }) => {
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = paymentUrl;
+  form.style.display = 'none';
+
+  const envKeyInput = document.createElement('input');
+  envKeyInput.type = 'hidden';
+  envKeyInput.name = 'env_key';
+  envKeyInput.value = envKey;
+
+  const dataInput = document.createElement('input');
+  dataInput.type = 'hidden';
+  dataInput.name = 'data';
+  dataInput.value = data;
+
+  form.appendChild(envKeyInput);
+  form.appendChild(dataInput);
+  document.body.appendChild(form);
+  form.submit();
 };
 
 export const initializeNetopiaPayment = async (orderPayload) => {
@@ -15,12 +31,26 @@ export const initializeNetopiaPayment = async (orderPayload) => {
 
   const data = await response.json();
 
-  if (!response.ok || !data?.success || !data?.redirectHtml) {
+  const hasStructuredPayload = Boolean(data?.paymentUrl && data?.envKey && data?.data);
+  const hasLegacyPayload = Boolean(data?.redirectHtml);
+
+  if (!response.ok || !data?.success || (!hasStructuredPayload && !hasLegacyPayload)) {
     const backendMessage = [data?.error, data?.details].filter(Boolean).join(': ');
     throw new Error(backendMessage || 'Nu s-a putut inițializa plata NETOPIA.');
   }
 
-  openNetopiaRedirect(data.redirectHtml);
+  if (hasStructuredPayload) {
+    openNetopiaRedirect({
+      paymentUrl: data.paymentUrl,
+      envKey: data.envKey,
+      data: data.data,
+    });
+    return data;
+  }
+
+  document.open();
+  document.write(data.redirectHtml);
+  document.close();
   return data;
 };
 
