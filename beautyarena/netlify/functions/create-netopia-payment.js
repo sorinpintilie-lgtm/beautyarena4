@@ -1,5 +1,6 @@
 const MobilPay = require('mobilpay-card');
 const https = require('https');
+const crypto = require('crypto');
 const {
   extractPublicKeyFromCertificate,
   getBaseUrl,
@@ -150,6 +151,10 @@ const handler = async (event) => {
       deployId: process.env.DEPLOY_ID || null,
     });
     const publicKey = extractPublicKeyFromCertificate(publicCert);
+    const publicKeyFingerprint = crypto.createHash('sha256').update(publicKey).digest('hex');
+    console.info('NETOPIA key fingerprint', {
+      publicKeyFingerprint,
+    });
 
     const baseUrl = getBaseUrl(event);
     const returnUrl = `${baseUrl}/confirmare-comanda?source=netopia&order=${encodeURIComponent(orderNumber)}`;
