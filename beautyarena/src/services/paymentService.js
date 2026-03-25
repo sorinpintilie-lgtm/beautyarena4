@@ -31,12 +31,18 @@ export const initializeNetopiaPayment = async (orderPayload) => {
 
   const data = await response.json();
 
+  const hasHostedUrl = Boolean(data?.hostedPaymentUrl);
   const hasStructuredPayload = Boolean(data?.paymentUrl && data?.envKey && data?.data);
   const hasLegacyPayload = Boolean(data?.redirectHtml);
 
   if (!response.ok || !data?.success || (!hasStructuredPayload && !hasLegacyPayload)) {
     const backendMessage = [data?.error, data?.details].filter(Boolean).join(': ');
     throw new Error(backendMessage || 'Nu s-a putut inițializa plata NETOPIA.');
+  }
+
+  if (hasHostedUrl) {
+    window.location.assign(data.hostedPaymentUrl);
+    return data;
   }
 
   if (hasStructuredPayload) {

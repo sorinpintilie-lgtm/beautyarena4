@@ -1,4 +1,5 @@
 const MobilPay = require('mobilpay-card');
+const https = require('https');
 const {
   extractPublicKeyFromCertificate,
   getBaseUrl,
@@ -46,6 +47,50 @@ const parseBody = (event) => {
 
   return JSON.parse(raw);
 };
+
+const resolveHostedPaymentUrl = ({ paymentUrl, envKey, data }) => new Promise((resolve, reject) => {
+  try {
+    const body = new URLSearchParams({
+      env_key: envKey,
+      data,
+    }).toString();
+
+    const url = new URL(paymentUrl);
+    const req = https.request({
+      protocol: url.protocol,
+      hostname: url.hostname,
+      port: url.port || undefined,
+      path: `${url.pathname || '/'}${url.search || ''}`,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length': Buffer.byteLength(body),
+      },
+    }, (res) => {
+      const statusCode = res.statusCode || 0;
+      const location = res.headers.location || '';
+
+      res.resume();
+
+      if (![301, 302, 303, 307, 308].includes(statusCode) || !location) {
+        resolve({ hostedPaymentUrl: '', statusCode, location });
+        return;
+      }
+
+      const hostedPaymentUrl = /^https?:\/\//i.test(location)
+        ? location
+        : new URL(location, paymentUrl).toString();
+
+      resolve({ hostedPaymentUrl, statusCode, location: hostedPaymentUrl });
+    });
+
+    req.on('error', reject);
+    req.write(body);
+    req.end();
+  } catch (error) {
+    reject(error);
+  }
+});
 
 const handler = async (event) => {
   if (event.httpMethod !== 'POST') {
@@ -155,6 +200,29 @@ const handler = async (event) => {
 
     const request = mobilPay.buildRequest(isSandbox);
     const paymentUrl = String(request.url || '').replace(/^http:\/\//i, 'https://');
+    let hostedPaymentUrl = '';
+
+    try {
+      const hostedResolution = await resolveHostedPaymentUrl({
+        paymentUrl,
+        envKey: request.env_key,
+        data: request.data,
+      });
+
+      hostedPaymentUrl = hostedResolution.hostedPaymentUrl || '';
+      console.info('NETOPIA hosted payment URL resolution', {
+        mode: isSandbox ? 'sandbox' : 'live',
+        paymentUrl,
+        hostedPaymentUrl,
+        gatewayStatusCode: hostedResolution.statusCode,
+      });
+    } catch (hostedResolutionError) {
+      console.warn('NETOPIA hosted payment URL resolution failed', {
+        mode: isSandbox ? 'sandbox' : 'live',
+        paymentUrl,
+        message: hostedResolutionError?.message,
+      });
+    }
 
     console.info('create-netopia-payment request built', {
       mode: isSandbox ? 'sandbox' : 'live',
@@ -189,6 +257,7 @@ const handler = async (event) => {
         success: true,
         orderNumber,
         paymentUrl,
+        hostedPaymentUrl,
         envKey: request.env_key,
         data: request.data,
         redirectHtml,
