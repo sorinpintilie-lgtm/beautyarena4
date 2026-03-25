@@ -141,6 +141,10 @@ const getNetopiaConfig = () => {
   const isLive = toBoolean(process.env.NETOPIA_IS_LIVE, false);
   const isSandbox = toBoolean(process.env.NETOPIA_SANDBOX, !isLive);
 
+  if (isLive && isSandbox) {
+    throw new Error('Invalid NETOPIA mode configuration: NETOPIA_IS_LIVE and NETOPIA_SANDBOX cannot both be true');
+  }
+
   return {
     signature,
     privateKey,

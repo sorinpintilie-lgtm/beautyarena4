@@ -69,19 +69,27 @@ const resolveHostedPaymentUrl = ({ paymentUrl, envKey, data }) => new Promise((r
     }, (res) => {
       const statusCode = res.statusCode || 0;
       const location = res.headers.location || '';
+      let body = '';
 
-      res.resume();
+      res.on('data', (chunk) => {
+        if (body.length >= 2000) return;
+        body += String(chunk || '');
+      });
 
-      if (![301, 302, 303, 307, 308].includes(statusCode) || !location) {
-        resolve({ hostedPaymentUrl: '', statusCode, location });
-        return;
-      }
+      res.on('end', () => {
+        const bodySample = body.slice(0, 400);
 
-      const hostedPaymentUrl = /^https?:\/\//i.test(location)
-        ? location
-        : new URL(location, paymentUrl).toString();
+        if (![301, 302, 303, 307, 308].includes(statusCode) || !location) {
+          resolve({ hostedPaymentUrl: '', statusCode, location, bodySample });
+          return;
+        }
 
-      resolve({ hostedPaymentUrl, statusCode, location: hostedPaymentUrl });
+        const hostedPaymentUrl = /^https?:\/\//i.test(location)
+          ? location
+          : new URL(location, paymentUrl).toString();
+
+        resolve({ hostedPaymentUrl, statusCode, location: hostedPaymentUrl, bodySample });
+      });
     });
 
     req.on('error', reject);
@@ -215,6 +223,8 @@ const handler = async (event) => {
         paymentUrl,
         hostedPaymentUrl,
         gatewayStatusCode: hostedResolution.statusCode,
+        gatewayBodyHasSignatureMissing: /signature is missing/i.test(hostedResolution.bodySample || ''),
+        gatewayBodyHasDecryptError: /decriptarea datelor a esuat/i.test(hostedResolution.bodySample || ''),
       });
     } catch (hostedResolutionError) {
       console.warn('NETOPIA hosted payment URL resolution failed', {
