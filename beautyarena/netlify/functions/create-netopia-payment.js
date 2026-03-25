@@ -49,9 +49,10 @@ const parseBody = (event) => {
   return JSON.parse(raw);
 };
 
-const resolveHostedPaymentUrl = ({ paymentUrl, envKey, data }) => new Promise((resolve, reject) => {
+const resolveHostedPaymentUrl = ({ paymentUrl, signature, envKey, data }) => new Promise((resolve, reject) => {
   try {
     const body = new URLSearchParams({
+      signature,
       env_key: envKey,
       data,
     }).toString();
@@ -218,6 +219,7 @@ const handler = async (event) => {
     try {
       const hostedResolution = await resolveHostedPaymentUrl({
         paymentUrl,
+        signature,
         envKey: request.env_key,
         data: request.data,
       });
@@ -263,6 +265,7 @@ const handler = async (event) => {
   <body>
     <p>Redirecționare către pagina securizată de plată...</p>
     <form id="netopiaRedirect" method="post" action="${xmlEscape(paymentUrl)}">
+      <input type="hidden" name="signature" value="${xmlEscape(signature)}" />
       <input type="hidden" name="env_key" value="${xmlEscape(request.env_key)}" />
       <input type="hidden" name="data" value="${xmlEscape(request.data)}" />
       <noscript><button type="submit">Continuă către plată</button></noscript>
@@ -279,6 +282,7 @@ const handler = async (event) => {
         orderNumber,
         paymentUrl,
         hostedPaymentUrl,
+        signature,
         envKey: request.env_key,
         data: request.data,
         redirectHtml,

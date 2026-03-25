@@ -1,8 +1,16 @@
-const openNetopiaRedirect = ({ paymentUrl, envKey, data }) => {
+const openNetopiaRedirect = ({ paymentUrl, signature, envKey, data }) => {
   const form = document.createElement('form');
   form.method = 'POST';
   form.action = paymentUrl;
   form.style.display = 'none';
+
+  if (signature) {
+    const signatureInput = document.createElement('input');
+    signatureInput.type = 'hidden';
+    signatureInput.name = 'signature';
+    signatureInput.value = signature;
+    form.appendChild(signatureInput);
+  }
 
   const envKeyInput = document.createElement('input');
   envKeyInput.type = 'hidden';
@@ -48,6 +56,7 @@ export const initializeNetopiaPayment = async (orderPayload) => {
   if (hasStructuredPayload) {
     openNetopiaRedirect({
       paymentUrl: data.paymentUrl,
+      signature: data.signature,
       envKey: data.envKey,
       data: data.data,
     });
