@@ -190,7 +190,11 @@ const handler = async (event) => {
       }
 
       const v2Response = await netopiaV2.startPayment();
-      const hostedPaymentUrl = v2Response?.data?.payment?.paymentURL || '';
+      const hostedPaymentUrl =
+        v2Response?.payment?.paymentURL
+        || v2Response?.data?.payment?.paymentURL
+        || v2Response?.paymentURL
+        || '';
 
       if (!hostedPaymentUrl) {
         throw new Error(`NETOPIA v2 missing payment URL: ${JSON.stringify(v2Response?.data?.error || v2Response || {})}`);
