@@ -29,12 +29,31 @@ const openNetopiaRedirect = ({ paymentUrl, signature, envKey, data }) => {
 };
 
 export const initializeNetopiaPayment = async (orderPayload) => {
+  const browserData = {
+    BROWSER_USER_AGENT: navigator.userAgent,
+    BROWSER_TZ: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    BROWSER_COLOR_DEPTH: window.screen.colorDepth,
+    BROWSER_JAVA_ENABLED: false,
+    BROWSER_LANGUAGE: navigator.language,
+    BROWSER_TZ_OFFSET: new Date().getTimezoneOffset(),
+    BROWSER_SCREEN_WIDTH: window.screen.width,
+    BROWSER_SCREEN_HEIGHT: window.screen.height,
+    BROWSER_PLUGINS: '',
+    MOBILE: /Mobi|Android/i.test(navigator.userAgent),
+    SCREEN_POINT: 'false',
+    OS: '',
+    OS_VERSION: '',
+  };
+
   const response = await fetch('/.netlify/functions/create-netopia-payment', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(orderPayload),
+    body: JSON.stringify({
+      ...orderPayload,
+      browserData,
+    }),
   });
 
   const data = await response.json();
@@ -43,7 +62,7 @@ export const initializeNetopiaPayment = async (orderPayload) => {
   const hasStructuredPayload = Boolean(data?.paymentUrl && data?.envKey && data?.data);
   const hasLegacyPayload = Boolean(data?.redirectHtml);
 
-  if (!response.ok || !data?.success || (!hasStructuredPayload && !hasLegacyPayload)) {
+  if (!response.ok || !data?.success || (!hasHostedUrl && !hasStructuredPayload && !hasLegacyPayload)) {
     const backendMessage = [data?.error, data?.details].filter(Boolean).join(': ');
     throw new Error(backendMessage || 'Nu s-a putut inițializa plata NETOPIA.');
   }

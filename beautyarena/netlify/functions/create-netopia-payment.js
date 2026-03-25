@@ -1,4 +1,5 @@
 const MobilPay = require('mobilpay-card');
+const { Netopia } = require('netopia-card');
 const https = require('https');
 const crypto = require('crypto');
 const {
@@ -120,6 +121,7 @@ const handler = async (event) => {
       description,
       customerInfo = {},
       shippingAddress = {},
+      browserData = null,
     } = payload;
 
     if (!orderNumber) {
@@ -135,6 +137,81 @@ const handler = async (event) => {
         statusCode: 400,
         headers: jsonHeaders,
         body: JSON.stringify({ error: 'Invalid amount' }),
+      };
+    }
+
+    const netopiaApiKey = String(process.env.NETOPIA_API_KEY || '').trim();
+    const netopiaSignature = String(process.env.NETOPIA_SIGNATURE || '').trim();
+    const isLive = String(process.env.NETOPIA_IS_LIVE || '').trim().toLowerCase() === 'true';
+
+    if (netopiaApiKey) {
+      const baseUrl = getBaseUrl(event);
+      const returnUrl = `${baseUrl}/confirmare-comanda?source=netopia&order=${encodeURIComponent(orderNumber)}`;
+      const confirmUrl = `${baseUrl}/.netlify/functions/netopia-ipn`;
+      const fullName = shippingAddress.fullName || customerInfo.name || 'Client Beauty Arena';
+      const { firstName, lastName } = splitFullName(fullName);
+      const city = shippingAddress.city || 'București';
+      const phone = customerInfo.phone || shippingAddress.phone || '0700000000';
+      const details = shippingAddress.address || 'Adresă indisponibilă';
+
+      const netopiaV2 = new Netopia({
+        apiKey: netopiaApiKey,
+        posSignature: netopiaSignature,
+        notifyUrl: confirmUrl,
+        redirectUrl: returnUrl,
+        sandbox: !isLive,
+      });
+
+      netopiaV2.setOrderData({
+        amount: Number(amount),
+        orderID: orderNumber,
+        description: description || `Comandă ${orderNumber}`,
+        currency,
+        billing: {
+          email: customerInfo.email || 'contact@salonbeautyarena.ro',
+          phone,
+          firstName,
+          lastName,
+          city,
+          country: 642,
+          countryName: 'Romania',
+          state: city,
+          postalCode: shippingAddress.postalCode || '',
+          details,
+        },
+      });
+
+      const reqIp = String(event?.headers?.['x-forwarded-for'] || event?.headers?.['X-Forwarded-For'] || '')
+        .split(',')[0]
+        .trim() || '127.0.0.1';
+
+      if (browserData && browserData.BROWSER_USER_AGENT) {
+        netopiaV2.setBrowserData(browserData, reqIp);
+      }
+
+      const v2Response = await netopiaV2.startPayment();
+      const hostedPaymentUrl = v2Response?.data?.payment?.paymentURL || '';
+
+      if (!hostedPaymentUrl) {
+        throw new Error(`NETOPIA v2 missing payment URL: ${JSON.stringify(v2Response?.data?.error || v2Response || {})}`);
+      }
+
+      console.info('NETOPIA v2 payment URL created', {
+        mode: isLive ? 'live' : 'sandbox',
+        orderNumber,
+        hasHostedPaymentUrl: Boolean(hostedPaymentUrl),
+      });
+
+      return {
+        statusCode: 200,
+        headers: jsonHeaders,
+        body: JSON.stringify({
+          success: true,
+          orderNumber,
+          hostedPaymentUrl,
+          mode: isLive ? 'live' : 'sandbox',
+          flow: 'netopia-v2',
+        }),
       };
     }
 
