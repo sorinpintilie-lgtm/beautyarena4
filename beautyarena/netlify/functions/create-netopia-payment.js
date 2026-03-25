@@ -218,6 +218,11 @@ const handler = async (event) => {
       });
 
       hostedPaymentUrl = hostedResolution.hostedPaymentUrl || '';
+      const gatewayBodySampleCompact = String(hostedResolution.bodySample || '')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .slice(0, 220);
+
       console.info('NETOPIA hosted payment URL resolution', {
         mode: isSandbox ? 'sandbox' : 'live',
         paymentUrl,
@@ -225,6 +230,7 @@ const handler = async (event) => {
         gatewayStatusCode: hostedResolution.statusCode,
         gatewayBodyHasSignatureMissing: /signature is missing/i.test(hostedResolution.bodySample || ''),
         gatewayBodyHasDecryptError: /decriptarea datelor a esuat/i.test(hostedResolution.bodySample || ''),
+        gatewayBodySample: gatewayBodySampleCompact,
       });
     } catch (hostedResolutionError) {
       console.warn('NETOPIA hosted payment URL resolution failed', {
