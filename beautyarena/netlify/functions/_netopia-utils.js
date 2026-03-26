@@ -134,6 +134,7 @@ const mapNetopiaV2ToOrderStatus = ({ paymentStatus, errorCode }) => {
 
   if (error === '100' || status === 15) return 'payment_processing';
   if (error === '101' || status === 1) return 'payment_pending';
+  if (error === '99') return 'payment_processing';
 
   if (status === 12) return 'payment_cancelled';
   if (!isSuccessError) return 'payment_failed';

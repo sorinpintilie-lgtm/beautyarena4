@@ -203,6 +203,10 @@ const handler = async (event) => {
         || v2Response?.data?.payment?.paymentURL
         || v2Response?.paymentURL
         || '';
+      const ntpID =
+        v2Response?.payment?.ntpID
+        || v2Response?.data?.payment?.ntpID
+        || null;
 
       if (!hostedPaymentUrl) {
         throw new Error(`NETOPIA v2 missing payment URL: ${JSON.stringify(v2Response?.data?.error || v2Response || {})}`);
@@ -220,6 +224,7 @@ const handler = async (event) => {
         body: JSON.stringify({
           success: true,
           orderNumber,
+          ntpID,
           hostedPaymentUrl,
           mode: isLive ? 'live' : 'sandbox',
           flow: 'netopia-v2',

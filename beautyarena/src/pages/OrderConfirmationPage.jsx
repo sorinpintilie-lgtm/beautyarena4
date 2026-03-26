@@ -73,21 +73,37 @@ const logNetopiaDebug = (...args) => {
   console.log('[NETOPIA CONFIRM DEBUG]', ...args);
 };
 
+const resolvePendingPaymentSnapshot = () => {
+  if (typeof window === 'undefined') return null;
+
+  try {
+    return JSON.parse(localStorage.getItem(PENDING_PAYMENT_STORAGE_KEY) || 'null');
+  } catch (_error) {
+    return null;
+  }
+};
+
 const OrderConfirmationPage = () => {
   const [searchParams] = useSearchParams();
   const source = searchParams.get('source');
   const orderFromQuery = searchParams.get('order');
   const ntpIdFromQuery = searchParams.get('ntpID') || searchParams.get('ntp_id') || searchParams.get('paymentId');
+  const pendingPaymentSnapshot = resolvePendingPaymentSnapshot();
+  const ntpIdFromPendingPayment =
+    pendingPaymentSnapshot?.orderNumber && orderFromQuery
+      ? (pendingPaymentSnapshot.orderNumber === orderFromQuery ? pendingPaymentSnapshot.ntpID || null : null)
+      : (pendingPaymentSnapshot?.ntpID || null);
+  const resolvedNtpId = ntpIdFromQuery || ntpIdFromPendingPayment || null;
   const isNetopiaFlow = source === 'netopia';
   const { cartItems, clearCart } = useCart();
   const paidStateHandledRef = useRef(false);
   const pollingDisabledRef = useRef(false);
   const [paymentStatus, setPaymentStatus] = useState(isNetopiaFlow ? 'payment_processing' : 'paid');
-  const [isCheckingStatus, setIsCheckingStatus] = useState(Boolean(isNetopiaFlow && (orderFromQuery || ntpIdFromQuery)));
+  const [isCheckingStatus, setIsCheckingStatus] = useState(Boolean(isNetopiaFlow && (orderFromQuery || resolvedNtpId)));
   const redirectStatusHint = getRedirectStatusHint(searchParams);
 
   // In a real app, this would come from state/props
-  const orderNumber = orderFromQuery || ntpIdFromQuery || `BA${Date.now().toString().slice(-8)}`;
+  const orderNumber = orderFromQuery || resolvedNtpId || `BA${Date.now().toString().slice(-8)}`;
   const orderDate = new Date().toLocaleDateString('ro-RO', {
     year: 'numeric',
     month: 'long',
@@ -100,16 +116,18 @@ const OrderConfirmationPage = () => {
       isNetopiaFlow,
       orderFromQuery,
       ntpIdFromQuery,
+      ntpIdFromPendingPayment,
+      resolvedNtpId,
       redirectStatusHint,
       currentPaymentStatus: paymentStatus,
       url: typeof window !== 'undefined' ? window.location.href : null,
     });
 
-    if (!isNetopiaFlow || (!orderFromQuery && !ntpIdFromQuery)) {
+    if (!isNetopiaFlow || (!orderFromQuery && !resolvedNtpId)) {
       logNetopiaDebug('effect:stop-no-netopia-context', {
         isNetopiaFlow,
         orderFromQuery,
-        ntpIdFromQuery,
+        resolvedNtpId,
       });
       setIsCheckingStatus(false);
       return undefined;
@@ -160,7 +178,7 @@ const OrderConfirmationPage = () => {
 
         const requestPayload = {
           orderNumber: orderFromQuery,
-          ntpID: ntpIdFromQuery || null,
+          ntpID: resolvedNtpId,
         };
 
         logNetopiaDebug('polling:request', requestPayload);
@@ -269,7 +287,16 @@ const OrderConfirmationPage = () => {
       isCancelled = true;
       window.clearInterval(intervalId);
     };
-  }, [isNetopiaFlow, orderFromQuery, ntpIdFromQuery, redirectStatusHint, clearCart, cartItems.length]);
+  }, [
+    isNetopiaFlow,
+    orderFromQuery,
+    ntpIdFromQuery,
+    ntpIdFromPendingPayment,
+    resolvedNtpId,
+    redirectStatusHint,
+    clearCart,
+    cartItems.length,
+  ]);
 
   const netopiaStatusCopy = getNetopiaStatusCopy(paymentStatus);
   const isPaid = paymentStatus === 'paid';

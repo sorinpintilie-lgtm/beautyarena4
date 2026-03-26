@@ -1,3 +1,5 @@
+const PENDING_PAYMENT_STORAGE_KEY = 'beautyarena-pending-payment-order';
+
 const openNetopiaRedirect = ({ paymentUrl, signature, envKey, data }) => {
   const form = document.createElement('form');
   form.method = 'POST';
@@ -65,6 +67,22 @@ export const initializeNetopiaPayment = async (orderPayload) => {
   if (!response.ok || !data?.success || (!hasHostedUrl && !hasStructuredPayload && !hasLegacyPayload)) {
     const backendMessage = [data?.error, data?.details].filter(Boolean).join(': ');
     throw new Error(backendMessage || 'Nu s-a putut inițializa plata NETOPIA.');
+  }
+
+  if (data?.ntpID && orderPayload?.orderNumber) {
+    try {
+      const pendingPayment = JSON.parse(localStorage.getItem(PENDING_PAYMENT_STORAGE_KEY) || 'null');
+
+      if (pendingPayment?.orderNumber === orderPayload.orderNumber) {
+        localStorage.setItem(PENDING_PAYMENT_STORAGE_KEY, JSON.stringify({
+          ...pendingPayment,
+          ntpID: data.ntpID,
+          updatedAt: new Date().toISOString(),
+        }));
+      }
+    } catch (_error) {
+      // no-op, used only for debugging fallback IDs
+    }
   }
 
   if (hasHostedUrl) {

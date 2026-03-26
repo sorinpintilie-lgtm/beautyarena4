@@ -145,10 +145,14 @@ const handler = async (event) => {
 
     const paymentStatusCode = statusPayload?.payment?.status ?? null;
     const errorCode = statusPayload?.error?.code || null;
-    const mappedStatus = mapNetopiaV2ToOrderStatus({
+    const invalidNtpIdError = String(errorCode || '') === '99'
+      && /invalid\s*ntpid/i.test(String(statusPayload?.error?.message || ''));
+
+    const mappedStatusRaw = mapNetopiaV2ToOrderStatus({
       paymentStatus: paymentStatusCode,
       errorCode,
     });
+    const mappedStatus = invalidNtpIdError ? 'payment_processing' : mappedStatusRaw;
 
     console.info('get-order-status NETOPIA response mapped', {
       orderNumber: orderNumber || null,
@@ -156,6 +160,7 @@ const handler = async (event) => {
       paymentStatusCode,
       errorCode,
       errorMessage: statusPayload?.error?.message || null,
+      invalidNtpIdError,
       mappedStatus,
       hasPaymentObject: Boolean(statusPayload?.payment),
       hasOrderObject: Boolean(statusPayload?.order),
@@ -163,7 +168,9 @@ const handler = async (event) => {
 
     const resolvedOrderNumber = statusPayload?.order?.orderID || orderNumber || null;
     const resolvedNtpID = statusPayload?.payment?.ntpID || ntpID || null;
-    const found = Boolean(resolvedOrderNumber || resolvedNtpID || statusPayload?.error?.message || errorCode);
+    const found = invalidNtpIdError
+      ? false
+      : Boolean(resolvedOrderNumber || resolvedNtpID || statusPayload?.error?.message || errorCode);
 
     return {
       statusCode: 200,
@@ -179,6 +186,7 @@ const handler = async (event) => {
         paymentStatusCode,
         errorCode,
         errorMessage: statusPayload?.error?.message || null,
+        reason: invalidNtpIdError ? 'netopia_invalid_ntpid' : null,
         updatedAt: new Date().toISOString(),
       }),
     };
