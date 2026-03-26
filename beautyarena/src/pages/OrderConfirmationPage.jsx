@@ -38,6 +38,7 @@ const OrderConfirmationPage = () => {
   const isNetopiaFlow = source === 'netopia';
   const { cartItems, clearCart } = useCart();
   const paidStateHandledRef = useRef(false);
+  const pollingDisabledRef = useRef(false);
   const [paymentStatus, setPaymentStatus] = useState(isNetopiaFlow ? 'payment_processing' : 'paid');
   const [isCheckingStatus, setIsCheckingStatus] = useState(Boolean(isNetopiaFlow && orderFromQuery));
 
@@ -59,6 +60,8 @@ const OrderConfirmationPage = () => {
 
     const syncOrderPaymentStatus = async () => {
       try {
+        if (pollingDisabledRef.current) return;
+
         const response = await fetch('/.netlify/functions/get-order-status', {
           method: 'POST',
           headers: {
@@ -72,7 +75,21 @@ const OrderConfirmationPage = () => {
         const payload = await response.json();
         if (isCancelled) return;
 
-        if (!response.ok || !payload?.found) {
+        if (payload?.reason === 'admin_not_configured') {
+          pollingDisabledRef.current = true;
+          setIsCheckingStatus(false);
+          setPaymentStatus('payment_processing');
+          return;
+        }
+
+        if (!response.ok) {
+          pollingDisabledRef.current = true;
+          setIsCheckingStatus(false);
+          setPaymentStatus('payment_processing');
+          return;
+        }
+
+        if (!payload?.found) {
           setPaymentStatus('payment_processing');
           setIsCheckingStatus(true);
           return;
@@ -102,8 +119,10 @@ const OrderConfirmationPage = () => {
             }
           }
         }
-      } catch (error) {
-        console.error('Failed to sync NETOPIA payment status:', error);
+      } catch (_error) {
+        pollingDisabledRef.current = true;
+        setIsCheckingStatus(false);
+        setPaymentStatus('payment_processing');
       }
     };
 

@@ -13,7 +13,7 @@ const initFirebaseAdmin = () => {
     const privateKey = (process.env.FIREBASE_ADMIN_PRIVATE_KEY || '').replace(/\\n/g, '\n');
 
     if (!projectId || !clientEmail || !privateKey) {
-      throw new Error('Missing Firebase Admin env vars: FIREBASE_ADMIN_PROJECT_ID, FIREBASE_ADMIN_CLIENT_EMAIL, FIREBASE_ADMIN_PRIVATE_KEY');
+      return null;
     }
 
     initializeApp({
@@ -58,6 +58,22 @@ const handler = async (event) => {
     }
 
     const db = initFirebaseAdmin();
+
+    if (!db) {
+      return {
+        statusCode: 200,
+        headers: jsonHeaders,
+        body: JSON.stringify({
+          success: false,
+          found: false,
+          orderNumber,
+          status: 'payment_processing',
+          paymentStatus: 'payment_processing',
+          reason: 'admin_not_configured',
+        }),
+      };
+    }
+
     const querySnap = await db
       .collection('orders')
       .where('orderNumber', '==', orderNumber)
