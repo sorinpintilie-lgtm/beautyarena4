@@ -68,10 +68,15 @@ const mapNetopiaV2ToOrderStatus = ({ paymentStatus, errorCode }) => {
   const status = Number(paymentStatus);
   const error = String(errorCode || '').trim();
 
-  if (error === '00' || status === 3 || status === 5) return 'paid';
+  // In v2, status must be interpreted together with error.code.
+  // Never mark as paid when error.code is not "00".
+  if (error === '00' && (status === 3 || status === 5)) return 'paid';
+
+  if (error === '100' || status === 15) return 'payment_processing';
+  if (error === '101' || status === 1) return 'payment_pending';
+
   if (status === 12) return 'payment_cancelled';
-  if (status === 15) return 'payment_processing';
-  if (status === 1) return 'payment_pending';
+  if (error && error !== '00') return 'payment_failed';
 
   return 'payment_processing';
 };
