@@ -5,6 +5,7 @@ const {
   extractPublicKeyFromCertificate,
   getNetopiaConfig,
   mapNetopiaActionToOrderStatus,
+  mapNetopiaV2ToOrderStatus,
   parseNetopiaPayload,
 } = require('./_netopia-utils');
 
@@ -139,24 +140,6 @@ const parseJsonBody = (event) => {
     : (event?.body || '{}');
 
   return JSON.parse(raw || '{}');
-};
-
-const mapNetopiaV2ToOrderStatus = ({ paymentStatus, errorCode }) => {
-  const status = Number(paymentStatus);
-  const error = String(errorCode || '').trim();
-  const isSuccessError = error === '' || error === '0' || error === '00';
-
-  // In v2, status must be interpreted together with error.code.
-  // Mark as paid for successful terminal status + success error code variants.
-  if (isSuccessError && (status === 3 || status === 5)) return 'paid';
-
-  if (error === '100' || status === 15) return 'payment_processing';
-  if (error === '101' || status === 1) return 'payment_pending';
-
-  if (status === 12) return 'payment_cancelled';
-  if (!isSuccessError) return 'payment_failed';
-
-  return 'payment_processing';
 };
 
 const handler = async (event) => {

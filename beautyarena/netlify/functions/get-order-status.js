@@ -1,31 +1,8 @@
-const { initializeApp, cert, getApps } = require('firebase-admin/app');
-const { getFirestore } = require('firebase-admin/firestore');
+const { mapNetopiaV2ToOrderStatus } = require('./_netopia-utils');
 
 const jsonHeaders = {
   'Content-Type': 'application/json',
   'Cache-Control': 'no-store',
-};
-
-const initFirebaseAdmin = () => {
-  if (!getApps().length) {
-    const projectId = process.env.FIREBASE_ADMIN_PROJECT_ID;
-    const clientEmail = process.env.FIREBASE_ADMIN_CLIENT_EMAIL;
-    const privateKey = (process.env.FIREBASE_ADMIN_PRIVATE_KEY || '').replace(/\\n/g, '\n');
-
-    if (!projectId || !clientEmail || !privateKey) {
-      return null;
-    }
-
-    initializeApp({
-      credential: cert({
-        projectId,
-        clientEmail,
-        privateKey,
-      }),
-    });
-  }
-
-  return getFirestore();
 };
 
 const parseBody = (event) => {
@@ -34,6 +11,32 @@ const parseBody = (event) => {
     : (event.body || '{}');
 
   return JSON.parse(raw);
+};
+
+const toBoolean = (value, fallback = false) => {
+  if (typeof value === 'boolean') return value;
+  if (typeof value !== 'string') return fallback;
+
+  const normalized = value.trim().toLowerCase();
+  if (['1', 'true', 'yes', 'y', 'on'].includes(normalized)) return true;
+  if (['0', 'false', 'no', 'n', 'off'].includes(normalized)) return false;
+
+  return fallback;
+};
+
+const resolveNetopiaBaseUrl = () => {
+  const isLive = toBoolean(process.env.NETOPIA_IS_LIVE, false);
+  return isLive
+    ? 'https://secure.mobilpay.ro/pay'
+    : 'https://secure.sandbox.netopia-payments.com';
+};
+
+const parseJsonSafe = (rawText) => {
+  try {
+    return JSON.parse(rawText || '{}');
+  } catch (_error) {
+    return null;
+  }
 };
 
 const handler = async (event) => {
@@ -48,63 +51,124 @@ const handler = async (event) => {
   try {
     const payload = parseBody(event);
     const orderNumber = String(payload?.orderNumber || '').trim();
+    const ntpID = String(payload?.ntpID || payload?.ntpId || '').trim();
 
-    if (!orderNumber) {
+    if (!orderNumber && !ntpID) {
       return {
         statusCode: 400,
         headers: jsonHeaders,
-        body: JSON.stringify({ success: false, error: 'Missing orderNumber' }),
+        body: JSON.stringify({ success: false, error: 'Missing orderNumber or ntpID' }),
       };
     }
 
-    const db = initFirebaseAdmin();
+    const netopiaApiKey = String(process.env.NETOPIA_API_KEY || '').trim();
 
-    if (!db) {
+    if (!netopiaApiKey) {
       return {
         statusCode: 200,
         headers: jsonHeaders,
         body: JSON.stringify({
           success: false,
           found: false,
-          orderNumber,
+          orderNumber: orderNumber || null,
+          ntpID: ntpID || null,
           status: 'payment_processing',
           paymentStatus: 'payment_processing',
-          reason: 'admin_not_configured',
+          reason: 'netopia_not_configured',
         }),
       };
     }
 
-    const querySnap = await db
-      .collection('orders')
-      .where('orderNumber', '==', orderNumber)
-      .limit(1)
-      .get();
+    const requestBody = {
+      ...(orderNumber ? { orderID: orderNumber } : {}),
+      ...(ntpID ? { ntpID } : {}),
+      ...(process.env.NETOPIA_POS_ID ? { posID: String(process.env.NETOPIA_POS_ID) } : {}),
+    };
 
-    if (querySnap.empty) {
+    const baseUrl = resolveNetopiaBaseUrl();
+    const statusUrl = `${baseUrl}/operation/status`;
+
+    console.info('get-order-status querying NETOPIA directly', {
+      statusUrl,
+      orderNumber: orderNumber || null,
+      ntpID: ntpID || null,
+      hasApiKey: Boolean(netopiaApiKey),
+      hasPosId: Boolean(process.env.NETOPIA_POS_ID),
+      netopiaIsLive: process.env.NETOPIA_IS_LIVE ?? null,
+    });
+
+    const statusResponse = await fetch(statusUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: netopiaApiKey,
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    const responseText = await statusResponse.text();
+    const statusPayload = parseJsonSafe(responseText);
+
+    if (!statusResponse.ok) {
       return {
-        statusCode: 404,
+        statusCode: 502,
         headers: jsonHeaders,
         body: JSON.stringify({
           success: false,
           found: false,
-          orderNumber,
+          orderNumber: orderNumber || null,
+          ntpID: ntpID || null,
+          status: 'payment_processing',
+          paymentStatus: 'payment_processing',
+          reason: 'netopia_status_http_error',
+          netopiaHttpStatus: statusResponse.status,
+          netopiaResponse: statusPayload || responseText.slice(0, 500),
         }),
       };
     }
 
-    const orderData = querySnap.docs[0].data() || {};
+    if (!statusPayload) {
+      return {
+        statusCode: 502,
+        headers: jsonHeaders,
+        body: JSON.stringify({
+          success: false,
+          found: false,
+          orderNumber: orderNumber || null,
+          ntpID: ntpID || null,
+          status: 'payment_processing',
+          paymentStatus: 'payment_processing',
+          reason: 'netopia_status_parse_error',
+        }),
+      };
+    }
+
+    const paymentStatusCode = statusPayload?.payment?.status ?? null;
+    const errorCode = statusPayload?.error?.code || null;
+    const mappedStatus = mapNetopiaV2ToOrderStatus({
+      paymentStatus: paymentStatusCode,
+      errorCode,
+    });
+
+    const resolvedOrderNumber = statusPayload?.order?.orderID || orderNumber || null;
+    const resolvedNtpID = statusPayload?.payment?.ntpID || ntpID || null;
+    const found = Boolean(resolvedOrderNumber || resolvedNtpID || statusPayload?.error?.message || errorCode);
 
     return {
       statusCode: 200,
       headers: jsonHeaders,
       body: JSON.stringify({
         success: true,
-        found: true,
-        orderNumber,
-        status: orderData.status || null,
-        paymentStatus: orderData.paymentStatus || null,
-        updatedAt: orderData.updatedAt || null,
-        paidAt: orderData.paidAt || null,
+        found,
+        source: 'netopia',
+        orderNumber: resolvedOrderNumber,
+        ntpID: resolvedNtpID,
+        status: mappedStatus,
+        paymentStatus: mappedStatus,
+        paymentStatusCode,
+        errorCode,
+        errorMessage: statusPayload?.error?.message || null,
+        updatedAt: new Date().toISOString(),
       }),
     };
   } catch (error) {

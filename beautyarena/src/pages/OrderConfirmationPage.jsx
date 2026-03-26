@@ -71,16 +71,17 @@ const OrderConfirmationPage = () => {
   const [searchParams] = useSearchParams();
   const source = searchParams.get('source');
   const orderFromQuery = searchParams.get('order');
+  const ntpIdFromQuery = searchParams.get('ntpID') || searchParams.get('ntp_id') || searchParams.get('paymentId');
   const isNetopiaFlow = source === 'netopia';
   const { cartItems, clearCart } = useCart();
   const paidStateHandledRef = useRef(false);
   const pollingDisabledRef = useRef(false);
   const [paymentStatus, setPaymentStatus] = useState(isNetopiaFlow ? 'payment_processing' : 'paid');
-  const [isCheckingStatus, setIsCheckingStatus] = useState(Boolean(isNetopiaFlow && orderFromQuery));
+  const [isCheckingStatus, setIsCheckingStatus] = useState(Boolean(isNetopiaFlow && (orderFromQuery || ntpIdFromQuery)));
   const redirectStatusHint = getRedirectStatusHint(searchParams);
 
   // In a real app, this would come from state/props
-  const orderNumber = orderFromQuery || `BA${Date.now().toString().slice(-8)}`;
+  const orderNumber = orderFromQuery || ntpIdFromQuery || `BA${Date.now().toString().slice(-8)}`;
   const orderDate = new Date().toLocaleDateString('ro-RO', {
     year: 'numeric',
     month: 'long',
@@ -88,7 +89,7 @@ const OrderConfirmationPage = () => {
   });
 
   useEffect(() => {
-    if (!isNetopiaFlow || !orderFromQuery) {
+    if (!isNetopiaFlow || (!orderFromQuery && !ntpIdFromQuery)) {
       setIsCheckingStatus(false);
       return undefined;
     }
@@ -118,9 +119,6 @@ const OrderConfirmationPage = () => {
         }
       }
 
-      if (isFinalHint) {
-        return undefined;
-      }
     }
 
     let isCancelled = false;
@@ -136,6 +134,7 @@ const OrderConfirmationPage = () => {
           },
           body: JSON.stringify({
             orderNumber: orderFromQuery,
+            ntpID: ntpIdFromQuery || null,
           }),
         });
 
@@ -198,7 +197,7 @@ const OrderConfirmationPage = () => {
       isCancelled = true;
       window.clearInterval(intervalId);
     };
-  }, [isNetopiaFlow, orderFromQuery, redirectStatusHint, clearCart, cartItems.length]);
+  }, [isNetopiaFlow, orderFromQuery, ntpIdFromQuery, redirectStatusHint, clearCart, cartItems.length]);
 
   const netopiaStatusCopy = getNetopiaStatusCopy(paymentStatus);
   const isPaid = paymentStatus === 'paid';

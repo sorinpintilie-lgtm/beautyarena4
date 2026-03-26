@@ -123,6 +123,22 @@ const mapNetopiaActionToOrderStatus = (action = '') => {
   }
 };
 
+const mapNetopiaV2ToOrderStatus = ({ paymentStatus, errorCode }) => {
+  const status = Number(paymentStatus);
+  const error = String(errorCode || '').trim();
+  const isSuccessError = error === '' || error === '0' || error === '00';
+
+  if (isSuccessError && (status === 3 || status === 5)) return 'paid';
+
+  if (error === '100' || status === 15) return 'payment_processing';
+  if (error === '101' || status === 1) return 'payment_pending';
+
+  if (status === 12) return 'payment_cancelled';
+  if (!isSuccessError) return 'payment_failed';
+
+  return 'payment_processing';
+};
+
 const getNetopiaConfig = () => {
   const signature = (process.env.NETOPIA_SIGNATURE || '').trim();
   const privateKey = normalizePem(process.env.NETOPIA_PRIVATE_KEY || '');
@@ -160,6 +176,7 @@ module.exports = {
   getBaseUrl,
   getNetopiaConfig,
   mapNetopiaActionToOrderStatus,
+  mapNetopiaV2ToOrderStatus,
   parseNetopiaPayload,
   splitFullName,
   xmlEscape,
