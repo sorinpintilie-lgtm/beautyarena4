@@ -141,7 +141,7 @@ const OrderConfirmationPage = () => {
         const payload = await response.json();
         if (isCancelled) return;
 
-        if (payload?.reason === 'admin_not_configured') {
+        if (payload?.reason === 'admin_not_configured' || payload?.reason === 'netopia_not_configured') {
           pollingDisabledRef.current = true;
           setIsCheckingStatus(false);
           setPaymentStatus('payment_processing');
