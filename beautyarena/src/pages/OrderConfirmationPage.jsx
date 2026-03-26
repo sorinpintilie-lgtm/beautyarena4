@@ -1,11 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { CheckCircle, Package, Truck, Mail, Phone, ArrowRight, Clock3, AlertTriangle } from 'lucide-react';
-import { collection, getDocs, limit, query, where } from 'firebase/firestore';
 import SEO from '../components/common/SEO';
-import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
-import { db } from '../firebase';
 
 const PENDING_PAYMENT_STORAGE_KEY = 'beautyarena-pending-payment-order';
 const FAILED_PAYMENT_STATUSES = new Set(['payment_failed', 'payment_cancelled', 'refunded']);
@@ -39,7 +36,6 @@ const OrderConfirmationPage = () => {
   const source = searchParams.get('source');
   const orderFromQuery = searchParams.get('order');
   const isNetopiaFlow = source === 'netopia';
-  const { user } = useAuth();
   const { cartItems, clearCart } = useCart();
   const paidStateHandledRef = useRef(false);
   const [paymentStatus, setPaymentStatus] = useState(isNetopiaFlow ? 'payment_processing' : 'paid');
@@ -54,7 +50,7 @@ const OrderConfirmationPage = () => {
   });
 
   useEffect(() => {
-    if (!isNetopiaFlow || !orderFromQuery || !user?.uid) {
+    if (!isNetopiaFlow || !orderFromQuery) {
       setIsCheckingStatus(false);
       return undefined;
     }
@@ -63,29 +59,26 @@ const OrderConfirmationPage = () => {
 
     const syncOrderPaymentStatus = async () => {
       try {
-        const orderQuery = query(
-          collection(db, 'orders'),
-          where('orderNumber', '==', orderFromQuery),
-          limit(1)
-        );
+        const response = await fetch('/.netlify/functions/get-order-status', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            orderNumber: orderFromQuery,
+          }),
+        });
 
-        const snapshot = await getDocs(orderQuery);
+        const payload = await response.json();
         if (isCancelled) return;
 
-        if (snapshot.empty) {
+        if (!response.ok || !payload?.found) {
           setPaymentStatus('payment_processing');
           setIsCheckingStatus(true);
           return;
         }
 
-        const orderData = snapshot.docs[0].data();
-
-        if (orderData.userId && orderData.userId !== user.uid) {
-          setIsCheckingStatus(false);
-          return;
-        }
-
-        const nextStatus = orderData.paymentStatus || orderData.status || 'payment_processing';
+        const nextStatus = payload.paymentStatus || payload.status || 'payment_processing';
         const isFinalStatus = nextStatus === 'paid' || FAILED_PAYMENT_STATUSES.has(nextStatus);
 
         setPaymentStatus(nextStatus);
@@ -121,7 +114,7 @@ const OrderConfirmationPage = () => {
       isCancelled = true;
       window.clearInterval(intervalId);
     };
-  }, [isNetopiaFlow, orderFromQuery, user?.uid, clearCart, cartItems.length]);
+  }, [isNetopiaFlow, orderFromQuery, clearCart, cartItems.length]);
 
   const netopiaStatusCopy = getNetopiaStatusCopy(paymentStatus);
   const isPaid = paymentStatus === 'paid';
