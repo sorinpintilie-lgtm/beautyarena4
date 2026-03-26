@@ -25,6 +25,68 @@ const jsonAckResponse = () => ({
   body: jsonAckBody,
 });
 
+const toBoolean = (value, fallback = false) => {
+  if (typeof value === 'boolean') return value;
+  if (typeof value !== 'string') return fallback;
+
+  const normalized = value.trim().toLowerCase();
+  if (['1', 'true', 'yes', 'y', 'on'].includes(normalized)) return true;
+  if (['0', 'false', 'no', 'n', 'off'].includes(normalized)) return false;
+
+  return fallback;
+};
+
+const isIpnDebugEnabled = () => toBoolean(process.env.NETOPIA_IPN_DEBUG, false);
+
+const decodeEventBody = (event) => {
+  if (!event?.body) return '';
+  return event.isBase64Encoded
+    ? Buffer.from(event.body, 'base64').toString('utf8')
+    : String(event.body || '');
+};
+
+const summarizeBodyByContentType = ({ contentType, rawBody }) => {
+  if (!rawBody) {
+    return { hasBody: false };
+  }
+
+  if (String(contentType || '').includes('application/json')) {
+    try {
+      const parsed = JSON.parse(rawBody || '{}');
+      return {
+        hasBody: true,
+        bodyType: 'json',
+        topLevelKeys: Object.keys(parsed || {}),
+        hasOrderId: Boolean(parsed?.order?.orderID || parsed?.orderID),
+        hasPaymentStatus: Boolean(parsed?.payment?.status !== undefined),
+        hasErrorCode: Boolean(parsed?.error?.code),
+      };
+    } catch (error) {
+      return {
+        hasBody: true,
+        bodyType: 'json',
+        jsonParseError: error.message,
+      };
+    }
+  }
+
+  const params = new URLSearchParams(rawBody);
+  const envKey = params.get('env_key') || params.get('envKey') || '';
+  const data = params.get('data') || '';
+  const cipher = params.get('cipher') || '';
+  const signature = params.get('signature') || '';
+
+  return {
+    hasBody: true,
+    bodyType: 'form-urlencoded',
+    envKeyLength: envKey.length,
+    dataLength: data.length,
+    cipher,
+    hasSignature: Boolean(signature),
+    signatureLength: signature.length,
+  };
+};
+
 const initFirebaseAdmin = () => {
   if (!getApps().length) {
     const projectId = process.env.FIREBASE_ADMIN_PROJECT_ID;
@@ -98,16 +160,40 @@ const mapNetopiaV2ToOrderStatus = ({ paymentStatus, errorCode }) => {
 };
 
 const handler = async (event) => {
+  const requestId = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+  const contentType = String(event?.headers?.['content-type'] || event?.headers?.['Content-Type'] || '').toLowerCase();
+  const isJsonRequest = contentType.includes('application/json');
+  const debugEnabled = isIpnDebugEnabled();
+  const rawBody = decodeEventBody(event);
+
+  console.info('[netopia-ipn] request received', {
+    requestId,
+    httpMethod: event?.httpMethod,
+    path: event?.path,
+    contentType,
+    isJsonRequest,
+    isBase64Encoded: Boolean(event?.isBase64Encoded),
+    bodyLength: rawBody.length,
+    host: event?.headers?.host || event?.headers?.['x-forwarded-host'] || null,
+    forwardedFor: event?.headers?.['x-forwarded-for'] || event?.headers?.['X-Forwarded-For'] || null,
+    userAgent: event?.headers?.['user-agent'] || event?.headers?.['User-Agent'] || null,
+  });
+
+  if (debugEnabled) {
+    console.info('[netopia-ipn] request body summary', {
+      requestId,
+      ...summarizeBodyByContentType({ contentType, rawBody }),
+    });
+  }
+
   if (event.httpMethod !== 'POST') {
+    console.warn('[netopia-ipn] rejected non-POST request', { requestId, method: event.httpMethod });
     return {
       statusCode: 405,
       headers: xmlHeaders,
       body: safeXmlResponse(1, 'Method not allowed'),
     };
   }
-
-  const contentType = String(event?.headers?.['content-type'] || event?.headers?.['Content-Type'] || '').toLowerCase();
-  const isJsonRequest = contentType.includes('application/json');
 
   try {
     if (isJsonRequest) {
@@ -116,6 +202,14 @@ const handler = async (event) => {
       const paymentStatusCode = payload?.payment?.status ?? null;
       const errorCode = payload?.error?.code || null;
       const status = mapNetopiaV2ToOrderStatus({ paymentStatus: paymentStatusCode, errorCode });
+
+      console.info('[netopia-ipn] v2 payload parsed', {
+        requestId,
+        orderNumber,
+        paymentStatusCode,
+        errorCode,
+        mappedStatus: status,
+      });
 
       if (orderNumber) {
         const db = initFirebaseAdmin();
@@ -143,6 +237,13 @@ const handler = async (event) => {
           };
 
           await doc.ref.update(nextOrderUpdate);
+          console.info('[netopia-ipn] v2 order updated', {
+            requestId,
+            orderNumber,
+            previousPaymentStatus,
+            normalizedStatus,
+            shouldSendPaidEmail,
+          });
 
           if (shouldSendPaidEmail) {
             const orderData = { id: doc.id, ...currentData, ...nextOrderUpdate };
@@ -173,18 +274,31 @@ const handler = async (event) => {
             }
           }
         } else {
-          console.warn('NETOPIA v2 webhook order not found for orderNumber:', orderNumber);
+          console.warn('NETOPIA v2 webhook order not found for orderNumber:', orderNumber, { requestId });
         }
       } else {
-        console.warn('NETOPIA v2 webhook missing order id', payload);
+        console.warn('NETOPIA v2 webhook missing order id', { requestId, payloadKeys: Object.keys(payload || {}) });
       }
 
+      console.info('[netopia-ipn] v2 ack sent', { requestId, ackBody: jsonAckBody });
       return jsonAckResponse();
     }
 
     const { envKey, data, cipher } = parseNetopiaPayload(event);
 
+    console.info('[netopia-ipn] classic payload parsed', {
+      requestId,
+      envKeyLength: String(envKey || '').length,
+      dataLength: String(data || '').length,
+      cipher: cipher || null,
+    });
+
     if (!envKey || !data) {
+      console.warn('[netopia-ipn] missing encrypted fields', {
+        requestId,
+        hasEnvKey: Boolean(envKey),
+        hasData: Boolean(data),
+      });
       return {
         statusCode: 400,
         headers: xmlHeaders,
@@ -199,13 +313,31 @@ const handler = async (event) => {
     mobilPay.setPublicKey(publicKey);
     mobilPay.setPrivateKey(privateKey);
 
+    console.info('[netopia-ipn] starting validatePayment', {
+      requestId,
+      signatureLength: String(signature || '').length,
+    });
     const validation = await mobilPay.validatePayment(envKey, data, cipher || undefined);
 
     const orderNumber = validation?.$?.id || validation?.orderInvoice?.$?.order_id || null;
     const action = validation?.action || '';
     const status = mapNetopiaActionToOrderStatus(action);
 
+    console.info('[netopia-ipn] validatePayment finished', {
+      requestId,
+      orderNumber,
+      action,
+      mappedStatus: status,
+      hasValidationError: Boolean(validation?.error),
+      hasSdkAck: Boolean(validation?.res?.send),
+    });
+
     if (validation?.error) {
+      console.warn('[netopia-ipn] validation marked as error by SDK', {
+        requestId,
+        orderNumber,
+        errorMessage: validation?.errorMessage || null,
+      });
       return {
         statusCode: 200,
         headers: xmlHeaders,
@@ -242,6 +374,13 @@ const handler = async (event) => {
         };
 
         await doc.ref.update(nextOrderUpdate);
+        console.info('[netopia-ipn] classic order updated', {
+          requestId,
+          orderNumber,
+          previousPaymentStatus,
+          normalizedStatus,
+          shouldSendPaidEmail,
+        });
 
         if (shouldSendPaidEmail) {
           const orderData = { id: doc.id, ...currentData, ...nextOrderUpdate };
@@ -274,24 +413,39 @@ const handler = async (event) => {
           }
         }
       } else {
-        console.warn('NETOPIA IPN order not found for orderNumber:', orderNumber);
+        console.warn('NETOPIA IPN order not found for orderNumber:', orderNumber, { requestId });
       }
     } else {
-      console.warn('NETOPIA IPN without order id in payload/action:', action);
+      console.warn('NETOPIA IPN without order id in payload/action:', action, { requestId });
     }
+
+    const ackBody =
+      validation?.res?.send
+      || orderAckXmlResponse(orderNumber || 'UNKNOWN', 'OK')
+      || safeXmlResponse(0, validation?.errorMessage || 'OK');
+
+    console.info('[netopia-ipn] classic ack sent', {
+      requestId,
+      orderNumber,
+      ackLength: String(ackBody || '').length,
+      ackPreview: String(ackBody || '').slice(0, 180),
+    });
 
     return {
       statusCode: 200,
       headers: xmlHeaders,
-      body:
-        validation?.res?.send
-        || orderAckXmlResponse(orderNumber || 'UNKNOWN', 'OK')
-        || safeXmlResponse(0, validation?.errorMessage || 'OK'),
+      body: ackBody,
     };
   } catch (error) {
-    console.error('netopia-ipn error:', error);
+    console.error('netopia-ipn error:', {
+      requestId,
+      name: error?.name,
+      message: error?.message,
+      stack: isIpnDebugEnabled() ? error?.stack : undefined,
+    });
 
     if (isJsonRequest) {
+      console.warn('[netopia-ipn] returning v2 ack despite error', { requestId });
       return jsonAckResponse();
     }
 
