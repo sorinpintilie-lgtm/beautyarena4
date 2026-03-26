@@ -95,12 +95,12 @@ const OrderConfirmationPage = () => {
       : (pendingPaymentSnapshot?.ntpID || null);
   const resolvedNtpId = ntpIdFromQuery || ntpIdFromPendingPayment || null;
   const isNetopiaFlow = source === 'netopia';
+  const redirectStatusHint = getRedirectStatusHint(searchParams);
   const { cartItems, clearCart } = useCart();
   const paidStateHandledRef = useRef(false);
   const [paymentStatus, setPaymentStatus] = useState(
     isNetopiaFlow ? (redirectStatusHint || 'paid') : 'paid'
   );
-  const redirectStatusHint = getRedirectStatusHint(searchParams);
 
   // In a real app, this would come from state/props
   const orderNumber = orderFromQuery || resolvedNtpId || `BA${Date.now().toString().slice(-8)}`;
@@ -268,7 +268,7 @@ const OrderConfirmationPage = () => {
                 <h4 className="font-medium text-gray-900 mb-1">Procesare comandă</h4>
                 <p className="text-sm text-gray-600">
                   {isNetopiaFlow && !isPaid
-                    ? 'Comanda rămâne în așteptare până când webhook-ul confirmă plata ca fiind achitată.'
+                    ? 'Comanda rămâne în așteptare până la confirmarea finală a plății în sistemul NETOPIA.'
                     : 'Comanda ta va fi procesată în 1-2 zile lucrătoare.'}
                 </p>
               </div>
