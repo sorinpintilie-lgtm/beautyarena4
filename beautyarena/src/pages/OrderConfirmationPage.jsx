@@ -97,9 +97,9 @@ const OrderConfirmationPage = () => {
   const isNetopiaFlow = source === 'netopia';
   const { cartItems, clearCart } = useCart();
   const paidStateHandledRef = useRef(false);
-  const pollingDisabledRef = useRef(false);
-  const [paymentStatus, setPaymentStatus] = useState(isNetopiaFlow ? 'payment_processing' : 'paid');
-  const [isCheckingStatus, setIsCheckingStatus] = useState(Boolean(isNetopiaFlow && (orderFromQuery || resolvedNtpId)));
+  const [paymentStatus, setPaymentStatus] = useState(
+    isNetopiaFlow ? (redirectStatusHint || 'paid') : 'paid'
+  );
   const redirectStatusHint = getRedirectStatusHint(searchParams);
 
   // In a real app, this would come from state/props
@@ -123,177 +123,44 @@ const OrderConfirmationPage = () => {
       url: typeof window !== 'undefined' ? window.location.href : null,
     });
 
-    if (!isNetopiaFlow || (!orderFromQuery && !resolvedNtpId)) {
-      logNetopiaDebug('effect:stop-no-netopia-context', {
-        isNetopiaFlow,
-        orderFromQuery,
-        resolvedNtpId,
-      });
-      setIsCheckingStatus(false);
+    if (!isNetopiaFlow) {
+      logNetopiaDebug('effect:stop-non-netopia-flow');
       return undefined;
     }
 
-    if (redirectStatusHint) {
-      logNetopiaDebug('redirect-hint-detected', {
-        redirectStatusHint,
-      });
-      setPaymentStatus(redirectStatusHint);
+    const finalRedirectStatus = redirectStatusHint || 'paid';
+    setPaymentStatus(finalRedirectStatus);
+    logNetopiaDebug('redirect:final-status-applied', {
+      finalRedirectStatus,
+      strategy: redirectStatusHint ? 'hint-from-netopia' : 'fallback-paid-on-return',
+    });
 
-      const isFinalHint = redirectStatusHint === 'paid' || FAILED_PAYMENT_STATUSES.has(redirectStatusHint);
-      setIsCheckingStatus(!isFinalHint);
-      logNetopiaDebug('redirect-hint-applied', {
-        isFinalHint,
-        isCheckingAfterHint: !isFinalHint,
-      });
+    if (finalRedirectStatus === 'paid' && !paidStateHandledRef.current) {
+      let pendingPayment = null;
 
-      if (redirectStatusHint === 'paid' && !paidStateHandledRef.current) {
-        let pendingPayment = null;
-
-        try {
-          pendingPayment = JSON.parse(localStorage.getItem(PENDING_PAYMENT_STORAGE_KEY) || 'null');
-        } catch (_error) {
-          pendingPayment = null;
-        }
-
-        if (pendingPayment?.orderNumber === orderFromQuery) {
-          paidStateHandledRef.current = true;
-          localStorage.removeItem(PENDING_PAYMENT_STORAGE_KEY);
-
-          if (cartItems.length > 0) {
-            clearCart();
-          }
-        }
+      try {
+        pendingPayment = JSON.parse(localStorage.getItem(PENDING_PAYMENT_STORAGE_KEY) || 'null');
+      } catch (_error) {
+        pendingPayment = null;
       }
 
+      if (!pendingPayment || pendingPayment?.orderNumber === orderFromQuery) {
+        paidStateHandledRef.current = true;
+        localStorage.removeItem(PENDING_PAYMENT_STORAGE_KEY);
+
+        if (cartItems.length > 0) {
+          clearCart();
+        }
+      }
     }
 
-    let isCancelled = false;
-
-    const syncOrderPaymentStatus = async () => {
-      try {
-        if (pollingDisabledRef.current) {
-          logNetopiaDebug('polling:skipped-disabled');
-          return;
-        }
-
-        const requestPayload = {
-          orderNumber: orderFromQuery,
-          ntpID: resolvedNtpId,
-        };
-
-        logNetopiaDebug('polling:request', requestPayload);
-
-        const response = await fetch('/.netlify/functions/get-order-status', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(requestPayload),
-        });
-
-        let payload = null;
-        try {
-          payload = await response.json();
-        } catch (parseError) {
-          payload = null;
-          logNetopiaDebug('polling:response-json-parse-error', {
-            message: parseError?.message,
-          });
-        }
-
-        logNetopiaDebug('polling:response', {
-          ok: response.ok,
-          httpStatus: response.status,
-          payload,
-        });
-
-        if (isCancelled) return;
-
-        if (payload?.reason === 'admin_not_configured' || payload?.reason === 'netopia_not_configured') {
-          logNetopiaDebug('polling:disabled-not-configured', {
-            reason: payload?.reason,
-          });
-          pollingDisabledRef.current = true;
-          setIsCheckingStatus(false);
-          setPaymentStatus('payment_processing');
-          return;
-        }
-
-        if (!response.ok) {
-          logNetopiaDebug('polling:http-not-ok', {
-            httpStatus: response.status,
-          });
-          setIsCheckingStatus(true);
-          setPaymentStatus('payment_processing');
-          return;
-        }
-
-        if (!payload?.found) {
-          logNetopiaDebug('polling:not-found-yet', payload);
-          setPaymentStatus('payment_processing');
-          setIsCheckingStatus(true);
-          return;
-        }
-
-        const nextStatus = payload.paymentStatus || payload.status || 'payment_processing';
-        const isFinalStatus = nextStatus === 'paid' || FAILED_PAYMENT_STATUSES.has(nextStatus);
-
-        logNetopiaDebug('polling:status-derived', {
-          nextStatus,
-          isFinalStatus,
-          paymentStatusCode: payload?.paymentStatusCode,
-          errorCode: payload?.errorCode,
-          errorMessage: payload?.errorMessage,
-          source: payload?.source,
-          orderNumber: payload?.orderNumber,
-          ntpID: payload?.ntpID,
-        });
-
-        setPaymentStatus(nextStatus);
-        setIsCheckingStatus(!isFinalStatus);
-
-        if (nextStatus === 'paid' && !paidStateHandledRef.current) {
-          let pendingPayment = null;
-
-          try {
-            pendingPayment = JSON.parse(localStorage.getItem(PENDING_PAYMENT_STORAGE_KEY) || 'null');
-          } catch (error) {
-            pendingPayment = null;
-          }
-
-          if (pendingPayment?.orderNumber === orderFromQuery) {
-            paidStateHandledRef.current = true;
-            localStorage.removeItem(PENDING_PAYMENT_STORAGE_KEY);
-
-            if (cartItems.length > 0) {
-              clearCart();
-            }
-          }
-        }
-      } catch (_error) {
-        logNetopiaDebug('polling:exception', {
-          message: _error?.message,
-          stack: _error?.stack,
-        });
-        setIsCheckingStatus(true);
-        setPaymentStatus('payment_processing');
-      }
-    };
-
-    syncOrderPaymentStatus();
-    const intervalId = window.setInterval(syncOrderPaymentStatus, 5000);
-
-    return () => {
-      isCancelled = true;
-      window.clearInterval(intervalId);
-    };
+    return undefined;
   }, [
+    source,
     isNetopiaFlow,
     orderFromQuery,
-    ntpIdFromQuery,
-    ntpIdFromPendingPayment,
-    resolvedNtpId,
     redirectStatusHint,
+    paymentStatus,
     clearCart,
     cartItems.length,
   ]);
@@ -340,9 +207,9 @@ const OrderConfirmationPage = () => {
               ? netopiaStatusCopy.description
               : 'Îți mulțumim pentru comandă. Vei primi un email de confirmare în curând.'}
           </p>
-          {isNetopiaFlow && isCheckingStatus && (
+          {isNetopiaFlow && paymentStatus === 'payment_processing' && (
             <p className="text-sm text-amber-700 mt-3 font-medium">
-              Verificăm periodic răspunsul webhook NETOPIA pentru această comandă.
+              Statusul plății este încă în curs de procesare.
             </p>
           )}
         </div>
