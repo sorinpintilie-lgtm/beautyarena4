@@ -56,6 +56,21 @@ const safeXmlResponse = (errorCode = 0, message = 'OK') => {
   return `<?xml version="1.0" encoding="utf-8"?><crc error_code="${errorCode}">${msg}</crc>`;
 };
 
+const orderAckXmlResponse = (orderId = 'UNKNOWN', message = 'OK') => {
+  const escapedOrderId = String(orderId || 'UNKNOWN')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+
+  const escapedMessage = String(message || 'OK')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  return `<?xml version="1.0" encoding="utf-8"?><crc><order id="${escapedOrderId}">${escapedMessage}</order></crc>`;
+};
+
 const parseJsonBody = (event) => {
   const raw = event?.isBase64Encoded
     ? Buffer.from(event.body || '', 'base64').toString('utf8')
@@ -67,16 +82,17 @@ const parseJsonBody = (event) => {
 const mapNetopiaV2ToOrderStatus = ({ paymentStatus, errorCode }) => {
   const status = Number(paymentStatus);
   const error = String(errorCode || '').trim();
+  const isSuccessError = error === '' || error === '0' || error === '00';
 
   // In v2, status must be interpreted together with error.code.
-  // Never mark as paid when error.code is not "00".
-  if (error === '00' && (status === 3 || status === 5)) return 'paid';
+  // Mark as paid for successful terminal status + success error code variants.
+  if (isSuccessError && (status === 3 || status === 5)) return 'paid';
 
   if (error === '100' || status === 15) return 'payment_processing';
   if (error === '101' || status === 1) return 'payment_pending';
 
   if (status === 12) return 'payment_cancelled';
-  if (error && error !== '00') return 'payment_failed';
+  if (!isSuccessError) return 'payment_failed';
 
   return 'payment_processing';
 };
@@ -113,16 +129,17 @@ const handler = async (event) => {
           const doc = querySnap.docs[0];
           const currentData = doc.data() || {};
           const previousPaymentStatus = currentData.paymentStatus || currentData.status || null;
-          const shouldSendPaidEmail = status === 'paid' && previousPaymentStatus !== 'paid';
+          const normalizedStatus = previousPaymentStatus === 'paid' && status !== 'paid' ? 'paid' : status;
+          const shouldSendPaidEmail = normalizedStatus === 'paid' && previousPaymentStatus !== 'paid';
 
           const nextOrderUpdate = {
-            status,
-            paymentStatus: status,
+            status: normalizedStatus,
+            paymentStatus: normalizedStatus,
             paymentGateway: 'netopia-v2',
             paymentAction: payload?.error?.message || null,
             paymentUpdatedAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
-            ...(status === 'paid' && !currentData.paidAt ? { paidAt: new Date().toISOString() } : {}),
+            ...(normalizedStatus === 'paid' && !currentData.paidAt ? { paidAt: new Date().toISOString() } : {}),
           };
 
           await doc.ref.update(nextOrderUpdate);
@@ -165,7 +182,7 @@ const handler = async (event) => {
       return jsonAckResponse();
     }
 
-    const { envKey, data } = parseNetopiaPayload(event);
+    const { envKey, data, cipher } = parseNetopiaPayload(event);
 
     if (!envKey || !data) {
       return {
@@ -182,7 +199,7 @@ const handler = async (event) => {
     mobilPay.setPublicKey(publicKey);
     mobilPay.setPrivateKey(privateKey);
 
-    const validation = await mobilPay.validatePayment(envKey, data);
+    const validation = await mobilPay.validatePayment(envKey, data, cipher || undefined);
 
     const orderNumber = validation?.$?.id || validation?.orderInvoice?.$?.order_id || null;
     const action = validation?.action || '';
@@ -192,7 +209,10 @@ const handler = async (event) => {
       return {
         statusCode: 200,
         headers: xmlHeaders,
-        body: validation?.res?.send || safeXmlResponse(5, validation?.errorMessage || 'Validation error'),
+        body:
+          validation?.res?.send
+          || orderAckXmlResponse(orderNumber || 'UNKNOWN', validation?.errorMessage || 'Validation error')
+          || safeXmlResponse(5, validation?.errorMessage || 'Validation error'),
       };
     }
 
@@ -208,16 +228,17 @@ const handler = async (event) => {
         const doc = querySnap.docs[0];
         const currentData = doc.data() || {};
         const previousPaymentStatus = currentData.paymentStatus || currentData.status || null;
-        const shouldSendPaidEmail = status === 'paid' && previousPaymentStatus !== 'paid';
+        const normalizedStatus = previousPaymentStatus === 'paid' && status !== 'paid' ? 'paid' : status;
+        const shouldSendPaidEmail = normalizedStatus === 'paid' && previousPaymentStatus !== 'paid';
 
         const nextOrderUpdate = {
-          status,
-          paymentStatus: status,
+          status: normalizedStatus,
+          paymentStatus: normalizedStatus,
           paymentGateway: 'netopia',
           paymentAction: action || null,
           paymentUpdatedAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
-          ...(status === 'paid' && !currentData.paidAt ? { paidAt: new Date().toISOString() } : {}),
+          ...(normalizedStatus === 'paid' && !currentData.paidAt ? { paidAt: new Date().toISOString() } : {}),
         };
 
         await doc.ref.update(nextOrderUpdate);
@@ -262,7 +283,10 @@ const handler = async (event) => {
     return {
       statusCode: 200,
       headers: xmlHeaders,
-      body: validation?.res?.send || safeXmlResponse(0, validation?.errorMessage || 'OK'),
+      body:
+        validation?.res?.send
+        || orderAckXmlResponse(orderNumber || 'UNKNOWN', 'OK')
+        || safeXmlResponse(0, validation?.errorMessage || 'OK'),
     };
   } catch (error) {
     console.error('netopia-ipn error:', error);

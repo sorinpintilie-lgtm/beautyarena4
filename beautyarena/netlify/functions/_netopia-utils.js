@@ -91,6 +91,7 @@ const parseNetopiaPayload = (event) => {
     return {
       envKey: parsed.env_key || parsed.envKey || '',
       data: parsed.data || '',
+      cipher: parsed.cipher || '',
     };
   }
 
@@ -98,6 +99,7 @@ const parseNetopiaPayload = (event) => {
   return {
     envKey: params.get('env_key') || params.get('envKey') || '',
     data: params.get('data') || '',
+    cipher: params.get('cipher') || '',
   };
 };
 

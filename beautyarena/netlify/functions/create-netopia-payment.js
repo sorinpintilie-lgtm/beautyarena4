@@ -50,6 +50,15 @@ const parseBody = (event) => {
   return JSON.parse(raw);
 };
 
+const resolveNetopiaCallbackUrls = ({ baseUrl, orderNumber }) => {
+  const configuredConfirmUrl = String(process.env.NETOPIA_CONFIRM_URL || '').trim();
+
+  return {
+    returnUrl: `${baseUrl}/confirmare-comanda?source=netopia&order=${encodeURIComponent(orderNumber)}`,
+    confirmUrl: configuredConfirmUrl || `${baseUrl}/.netlify/functions/netopia-ipn`,
+  };
+};
+
 const resolveHostedPaymentUrl = ({ paymentUrl, signature, envKey, data }) => new Promise((resolve, reject) => {
   try {
     const body = new URLSearchParams({
@@ -146,8 +155,7 @@ const handler = async (event) => {
 
     if (netopiaApiKey) {
       const baseUrl = getBaseUrl(event);
-      const returnUrl = `${baseUrl}/confirmare-comanda?source=netopia&order=${encodeURIComponent(orderNumber)}`;
-      const confirmUrl = `${baseUrl}/.netlify/functions/netopia-ipn`;
+      const { returnUrl, confirmUrl } = resolveNetopiaCallbackUrls({ baseUrl, orderNumber });
       const fullName = shippingAddress.fullName || customerInfo.name || 'Client Beauty Arena';
       const { firstName, lastName } = splitFullName(fullName);
       const city = shippingAddress.city || 'București';
@@ -239,8 +247,7 @@ const handler = async (event) => {
     });
 
     const baseUrl = getBaseUrl(event);
-    const returnUrl = `${baseUrl}/confirmare-comanda?source=netopia&order=${encodeURIComponent(orderNumber)}`;
-    const confirmUrl = `${baseUrl}/.netlify/functions/netopia-ipn`;
+    const { returnUrl, confirmUrl } = resolveNetopiaCallbackUrls({ baseUrl, orderNumber });
 
     const fullName = shippingAddress.fullName || customerInfo.name || 'Client Beauty Arena';
     const { firstName, lastName } = splitFullName(fullName);
