@@ -14,9 +14,16 @@ const xmlHeaders = {
 };
 
 const jsonHeaders = {
-  'Content-Type': 'application/json; charset=utf-8',
-  'Cache-Control': 'no-store',
+  'Content-Type': 'application/json',
 };
+
+const jsonAckBody = '{"errorCode":0}';
+
+const jsonAckResponse = () => ({
+  statusCode: 200,
+  headers: jsonHeaders,
+  body: jsonAckBody,
+});
 
 const initFirebaseAdmin = () => {
   if (!getApps().length) {
@@ -78,10 +85,11 @@ const handler = async (event) => {
     };
   }
 
-  try {
-    const contentType = String(event?.headers?.['content-type'] || event?.headers?.['Content-Type'] || '').toLowerCase();
+  const contentType = String(event?.headers?.['content-type'] || event?.headers?.['Content-Type'] || '').toLowerCase();
+  const isJsonRequest = contentType.includes('application/json');
 
-    if (contentType.includes('application/json')) {
+  try {
+    if (isJsonRequest) {
       const payload = parseJsonBody(event);
       const orderNumber = payload?.order?.orderID || payload?.orderID || null;
       const paymentStatusCode = payload?.payment?.status ?? null;
@@ -142,11 +150,7 @@ const handler = async (event) => {
         console.warn('NETOPIA v2 webhook missing order id', payload);
       }
 
-      return {
-        statusCode: 200,
-        headers: jsonHeaders,
-        body: JSON.stringify({ errorCode: 0 }),
-      };
+      return jsonAckResponse();
     }
 
     const { envKey, data } = parseNetopiaPayload(event);
@@ -243,6 +247,11 @@ const handler = async (event) => {
     };
   } catch (error) {
     console.error('netopia-ipn error:', error);
+
+    if (isJsonRequest) {
+      return jsonAckResponse();
+    }
+
     return {
       statusCode: 200,
       headers: xmlHeaders,
