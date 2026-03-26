@@ -44,7 +44,7 @@ export const CartProvider = ({ children }) => {
             name: product.name,
             brand: product.brand?.name || '',
             price: product.price,
-            image: product.thumbnail || product.images?.[0],
+            image: product.thumbnail || product.localImages?.[0] || product.images?.[0] || null,
             quantity,
             inStock: product.inStock,
           }

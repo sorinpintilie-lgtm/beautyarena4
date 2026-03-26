@@ -1,12 +1,49 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { CheckCircle, Package, Truck, Mail, Phone, ArrowRight } from 'lucide-react';
+import { CheckCircle, Package, Truck, Mail, Phone, ArrowRight, Clock3, AlertTriangle } from 'lucide-react';
+import { collection, getDocs, limit, query, where } from 'firebase/firestore';
 import SEO from '../components/common/SEO';
+import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
+import { db } from '../firebase';
+
+const PENDING_PAYMENT_STORAGE_KEY = 'beautyarena-pending-payment-order';
+const FAILED_PAYMENT_STATUSES = new Set(['payment_failed', 'payment_cancelled', 'refunded']);
+
+const getNetopiaStatusCopy = (status) => {
+  if (status === 'paid') {
+    return {
+      title: 'Plata a fost confirmată',
+      description: 'Tranzacția a fost validată de NETOPIA. Comanda intră acum în procesare.',
+      tone: 'success',
+    };
+  }
+
+  if (FAILED_PAYMENT_STATUSES.has(status)) {
+    return {
+      title: 'Plata nu a fost finalizată',
+      description: 'Tranzacția a fost anulată sau respinsă. Poți relua plata din contul tău.',
+      tone: 'error',
+    };
+  }
+
+  return {
+    title: 'Plata este în curs de confirmare',
+    description: 'Așteptăm confirmarea finală de la NETOPIA. Pagina se actualizează automat.',
+    tone: 'pending',
+  };
+};
 
 const OrderConfirmationPage = () => {
   const [searchParams] = useSearchParams();
   const source = searchParams.get('source');
   const orderFromQuery = searchParams.get('order');
+  const isNetopiaFlow = source === 'netopia';
+  const { user } = useAuth();
+  const { cartItems, clearCart } = useCart();
+  const paidStateHandledRef = useRef(false);
+  const [paymentStatus, setPaymentStatus] = useState(isNetopiaFlow ? 'payment_processing' : 'paid');
+  const [isCheckingStatus, setIsCheckingStatus] = useState(Boolean(isNetopiaFlow && orderFromQuery));
 
   // In a real app, this would come from state/props
   const orderNumber = orderFromQuery || `BA${Date.now().toString().slice(-8)}`;
@@ -15,6 +52,80 @@ const OrderConfirmationPage = () => {
     month: 'long',
     day: 'numeric'
   });
+
+  useEffect(() => {
+    if (!isNetopiaFlow || !orderFromQuery || !user?.uid) {
+      setIsCheckingStatus(false);
+      return undefined;
+    }
+
+    let isCancelled = false;
+
+    const syncOrderPaymentStatus = async () => {
+      try {
+        const orderQuery = query(
+          collection(db, 'orders'),
+          where('orderNumber', '==', orderFromQuery),
+          limit(1)
+        );
+
+        const snapshot = await getDocs(orderQuery);
+        if (isCancelled) return;
+
+        if (snapshot.empty) {
+          setPaymentStatus('payment_processing');
+          setIsCheckingStatus(true);
+          return;
+        }
+
+        const orderData = snapshot.docs[0].data();
+
+        if (orderData.userId && orderData.userId !== user.uid) {
+          setIsCheckingStatus(false);
+          return;
+        }
+
+        const nextStatus = orderData.paymentStatus || orderData.status || 'payment_processing';
+        const isFinalStatus = nextStatus === 'paid' || FAILED_PAYMENT_STATUSES.has(nextStatus);
+
+        setPaymentStatus(nextStatus);
+        setIsCheckingStatus(!isFinalStatus);
+
+        if (nextStatus === 'paid' && !paidStateHandledRef.current) {
+          let pendingPayment = null;
+
+          try {
+            pendingPayment = JSON.parse(localStorage.getItem(PENDING_PAYMENT_STORAGE_KEY) || 'null');
+          } catch (error) {
+            pendingPayment = null;
+          }
+
+          if (pendingPayment?.orderNumber === orderFromQuery) {
+            paidStateHandledRef.current = true;
+            localStorage.removeItem(PENDING_PAYMENT_STORAGE_KEY);
+
+            if (cartItems.length > 0) {
+              clearCart();
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Failed to sync NETOPIA payment status:', error);
+      }
+    };
+
+    syncOrderPaymentStatus();
+    const intervalId = window.setInterval(syncOrderPaymentStatus, 5000);
+
+    return () => {
+      isCancelled = true;
+      window.clearInterval(intervalId);
+    };
+  }, [isNetopiaFlow, orderFromQuery, user?.uid, clearCart, cartItems.length]);
+
+  const netopiaStatusCopy = getNetopiaStatusCopy(paymentStatus);
+  const isPaid = paymentStatus === 'paid';
+  const isPaymentFailed = FAILED_PAYMENT_STATUSES.has(paymentStatus);
 
   return (
     <>
@@ -27,19 +138,38 @@ const OrderConfirmationPage = () => {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Success Message */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-6">
-            <CheckCircle className="w-12 h-12 text-green-600" />
+          <div
+            className={`inline-flex items-center justify-center w-20 h-20 rounded-full mb-6 ${
+              !isNetopiaFlow || isPaid
+                ? 'bg-green-100'
+                : isPaymentFailed
+                  ? 'bg-red-100'
+                  : 'bg-amber-100'
+            }`}
+          >
+            {!isNetopiaFlow || isPaid ? (
+              <CheckCircle className="w-12 h-12 text-green-600" />
+            ) : isPaymentFailed ? (
+              <AlertTriangle className="w-12 h-12 text-red-600" />
+            ) : (
+              <Clock3 className="w-12 h-12 text-amber-600" />
+            )}
           </div>
           <h1 className="text-3xl md:text-4xl font-elegant font-bold text-gray-900 mb-4">
-            {source === 'netopia'
-              ? 'Cererea ta de plată a fost trimisă'
+            {isNetopiaFlow
+              ? netopiaStatusCopy.title
               : 'Comanda ta a fost plasată cu succes!'}
           </h1>
           <p className="text-lg text-gray-600">
-            {source === 'netopia'
-              ? 'Plata a fost inițiată. Vei primi confirmarea finală prin email imediat ce tranzacția este validată de procesator.'
+            {isNetopiaFlow
+              ? netopiaStatusCopy.description
               : 'Îți mulțumim pentru comandă. Vei primi un email de confirmare în curând.'}
           </p>
+          {isNetopiaFlow && isCheckingStatus && (
+            <p className="text-sm text-amber-700 mt-3 font-medium">
+              Verificăm periodic răspunsul webhook NETOPIA pentru această comandă.
+            </p>
+          )}
         </div>
 
         {/* Order Details Card */}
@@ -58,6 +188,12 @@ const OrderConfirmationPage = () => {
                 <p className="text-lg font-medium text-gray-900">{orderDate}</p>
               </div>
             </div>
+            {isNetopiaFlow && (
+              <div className="mt-3">
+                <p className="text-sm text-gray-600">Status plată</p>
+                <p className="text-lg font-semibold text-gray-900">{paymentStatus}</p>
+              </div>
+            )}
           </div>
 
           {/* Next Steps */}
@@ -73,7 +209,9 @@ const OrderConfirmationPage = () => {
               <div>
                 <h4 className="font-medium text-gray-900 mb-1">Confirmare prin email</h4>
                 <p className="text-sm text-gray-600">
-                  Vei primi un email cu detaliile comenzii și factura în câteva minute.
+                  {isNetopiaFlow && !isPaid
+                    ? 'Emailul de confirmare se trimite doar după validarea plății de către NETOPIA.'
+                    : 'Vei primi un email cu detaliile comenzii și factura în câteva minute.'}
                 </p>
               </div>
             </div>
@@ -87,7 +225,9 @@ const OrderConfirmationPage = () => {
               <div>
                 <h4 className="font-medium text-gray-900 mb-1">Procesare comandă</h4>
                 <p className="text-sm text-gray-600">
-                  Comanda ta va fi procesată în 1-2 zile lucrătoare.
+                  {isNetopiaFlow && !isPaid
+                    ? 'Comanda rămâne în așteptare până când webhook-ul confirmă plata ca fiind achitată.'
+                    : 'Comanda ta va fi procesată în 1-2 zile lucrătoare.'}
                 </p>
               </div>
             </div>
@@ -101,7 +241,9 @@ const OrderConfirmationPage = () => {
               <div>
                 <h4 className="font-medium text-gray-900 mb-1">Livrare</h4>
                 <p className="text-sm text-gray-600">
-                  Vei primi un cod de tracking când comanda va fi expediată.
+                  {isNetopiaFlow && isPaymentFailed
+                    ? 'După reluarea plății și confirmarea comenzii, vei primi detaliile de livrare.'
+                    : 'Vei primi un cod de tracking când comanda va fi expediată.'}
                 </p>
               </div>
             </div>
@@ -135,17 +277,17 @@ const OrderConfirmationPage = () => {
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4">
           <Link
-            to="/shop"
+            to={isNetopiaFlow && !isPaid ? '/contul-meu' : '/shop'}
             className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-beauty-pink text-white rounded-lg font-medium hover:bg-beauty-pink-dark transition-colors"
           >
-            Continuă cumpărăturile
+            {isNetopiaFlow && !isPaid ? 'Vezi statusul comenzii' : 'Continuă cumpărăturile'}
             <ArrowRight className="w-5 h-5" />
           </Link>
           <Link
-            to="/"
+            to={isNetopiaFlow && isPaymentFailed ? '/checkout' : '/'}
             className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-white border-2 border-gray-200 text-gray-700 rounded-lg font-medium hover:border-beauty-pink transition-colors"
           >
-            Înapoi la pagina principală
+            {isNetopiaFlow && isPaymentFailed ? 'Reia checkout-ul' : 'Înapoi la pagina principală'}
           </Link>
         </div>
         </div>

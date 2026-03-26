@@ -111,17 +111,24 @@ const handler = async (event) => {
 
         if (!querySnap.empty) {
           const doc = querySnap.docs[0];
-          await doc.ref.update({
+          const currentData = doc.data() || {};
+          const previousPaymentStatus = currentData.paymentStatus || currentData.status || null;
+          const shouldSendPaidEmail = status === 'paid' && previousPaymentStatus !== 'paid';
+
+          const nextOrderUpdate = {
             status,
             paymentStatus: status,
             paymentGateway: 'netopia-v2',
             paymentAction: payload?.error?.message || null,
             paymentUpdatedAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
-          });
+            ...(status === 'paid' && !currentData.paidAt ? { paidAt: new Date().toISOString() } : {}),
+          };
 
-          if (status === 'paid') {
-            const orderData = { id: doc.id, ...doc.data() };
+          await doc.ref.update(nextOrderUpdate);
+
+          if (shouldSendPaidEmail) {
+            const orderData = { id: doc.id, ...currentData, ...nextOrderUpdate };
             const siteUrl = process.env.SITE_URL || process.env.URL || process.env.DEPLOY_PRIME_URL;
 
             if (siteUrl) {
@@ -199,17 +206,24 @@ const handler = async (event) => {
 
       if (!querySnap.empty) {
         const doc = querySnap.docs[0];
-        await doc.ref.update({
+        const currentData = doc.data() || {};
+        const previousPaymentStatus = currentData.paymentStatus || currentData.status || null;
+        const shouldSendPaidEmail = status === 'paid' && previousPaymentStatus !== 'paid';
+
+        const nextOrderUpdate = {
           status,
           paymentStatus: status,
           paymentGateway: 'netopia',
           paymentAction: action || null,
           paymentUpdatedAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
-        });
+          ...(status === 'paid' && !currentData.paidAt ? { paidAt: new Date().toISOString() } : {}),
+        };
 
-        if (status === 'paid') {
-          const orderData = { id: doc.id, ...doc.data() };
+        await doc.ref.update(nextOrderUpdate);
+
+        if (shouldSendPaidEmail) {
+          const orderData = { id: doc.id, ...currentData, ...nextOrderUpdate };
           const siteUrl = process.env.SITE_URL || process.env.URL || process.env.DEPLOY_PRIME_URL;
 
           if (siteUrl) {

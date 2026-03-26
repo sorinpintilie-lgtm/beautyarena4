@@ -6,6 +6,9 @@ import { Link } from 'react-router-dom';
 const CartDrawerMobile = ({ isOpen, onClose }) => {
   const { cartItems, cartCount, cartSubtotal, updateQuantity, removeFromCart } = useCart();
 
+  const getCartItemImage = (item) =>
+    item.image || item.thumbnail || item.localImages?.[0] || item.images?.[0] || '/visualMarketing_logo.png';
+
   // Prevent body scroll when cart is open on mobile
   useEffect(() => {
     if (isOpen && window.innerWidth < 1024) {
@@ -83,8 +86,16 @@ const CartDrawerMobile = ({ isOpen, onClose }) => {
               {cartItems.map((item) => (
                 <div key={`${item.productId}-${item.variantId}`} className="flex gap-4 p-4 bg-gray-50 rounded-2xl">
                   {/* Product Image */}
-                  <div className="w-20 h-20 bg-gradient-to-br from-pink-50 to-purple-50 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <div className="text-2xl">🎨</div>
+                  <div className="w-20 h-20 bg-gradient-to-br from-pink-50 to-purple-50 rounded-xl overflow-hidden flex-shrink-0">
+                    <img
+                      src={getCartItemImage(item)}
+                      alt={item.name}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = '/visualMarketing_logo.png';
+                      }}
+                    />
                   </div>
 
                   {/* Product Info */}
@@ -239,8 +250,16 @@ const CartDrawerMobile = ({ isOpen, onClose }) => {
               {cartItems.map((item) => (
                 <div key={`${item.productId}-${item.variantId}`} className="flex gap-4 p-4 bg-gray-50 rounded-xl">
                   {/* Product Image */}
-                  <div className="w-20 h-20 bg-gradient-to-br from-pink-50 to-purple-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <div className="text-2xl">🎨</div>
+                  <div className="w-20 h-20 bg-gradient-to-br from-pink-50 to-purple-50 rounded-lg overflow-hidden flex-shrink-0">
+                    <img
+                      src={getCartItemImage(item)}
+                      alt={item.name}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = '/visualMarketing_logo.png';
+                      }}
+                    />
                   </div>
 
                   {/* Product Info */}

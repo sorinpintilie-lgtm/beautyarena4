@@ -6,6 +6,9 @@ import { Link } from 'react-router-dom';
 const CartDrawer = ({ isOpen, onClose }) => {
   const { cartItems, cartCount, cartSubtotal, updateQuantity, removeFromCart } = useCart();
 
+  const getCartItemImage = (item) =>
+    item.image || item.thumbnail || item.localImages?.[0] || item.images?.[0] || '/visualMarketing_logo.png';
+
   if (!isOpen) return null;
 
   return (
@@ -56,8 +59,16 @@ const CartDrawer = ({ isOpen, onClose }) => {
               {cartItems.map((item) => (
                 <div key={`${item.productId}-${item.variantId}`} className="flex gap-4 p-3 bg-gray-50 rounded-lg">
                   {/* Product Image */}
-                  <div className="w-20 h-20 bg-beauty-pink/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <div className="text-2xl">🎨</div>
+                  <div className="w-20 h-20 bg-beauty-pink/10 rounded-lg overflow-hidden flex-shrink-0">
+                    <img
+                      src={getCartItemImage(item)}
+                      alt={item.name}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = '/visualMarketing_logo.png';
+                      }}
+                    />
                   </div>
 
                   {/* Product Info */}
