@@ -7,6 +7,42 @@ import { useCart } from '../context/CartContext';
 const PENDING_PAYMENT_STORAGE_KEY = 'beautyarena-pending-payment-order';
 const FAILED_PAYMENT_STATUSES = new Set(['payment_failed', 'payment_cancelled', 'refunded']);
 
+const getRedirectStatusHint = (searchParams) => {
+  const statusRaw = String(
+    searchParams.get('status')
+    || searchParams.get('action')
+    || searchParams.get('result')
+    || searchParams.get('order_status')
+    || ''
+  ).trim().toLowerCase();
+
+  const errorCodeRaw = String(
+    searchParams.get('errorCode')
+    || searchParams.get('error_code')
+    || searchParams.get('error.code')
+    || ''
+  ).trim().toLowerCase();
+
+  const paymentStatusRaw = String(
+    searchParams.get('paymentStatus')
+    || searchParams.get('payment_status')
+    || ''
+  ).trim().toLowerCase();
+
+  if (['paid', 'confirmed', 'approved', 'success', 'captured'].includes(statusRaw)) return 'paid';
+  if (['canceled', 'cancelled', 'failed', 'declined', 'error'].includes(statusRaw)) return 'payment_failed';
+
+  const numericStatus = Number(paymentStatusRaw || statusRaw);
+  if ((numericStatus === 3 || numericStatus === 5) && (!errorCodeRaw || errorCodeRaw === '0' || errorCodeRaw === '00')) {
+    return 'paid';
+  }
+
+  if (numericStatus === 12) return 'payment_cancelled';
+  if (errorCodeRaw && !['0', '00'].includes(errorCodeRaw)) return 'payment_failed';
+
+  return null;
+};
+
 const getNetopiaStatusCopy = (status) => {
   if (status === 'paid') {
     return {
@@ -41,6 +77,7 @@ const OrderConfirmationPage = () => {
   const pollingDisabledRef = useRef(false);
   const [paymentStatus, setPaymentStatus] = useState(isNetopiaFlow ? 'payment_processing' : 'paid');
   const [isCheckingStatus, setIsCheckingStatus] = useState(Boolean(isNetopiaFlow && orderFromQuery));
+  const redirectStatusHint = getRedirectStatusHint(searchParams);
 
   // In a real app, this would come from state/props
   const orderNumber = orderFromQuery || `BA${Date.now().toString().slice(-8)}`;
@@ -54,6 +91,36 @@ const OrderConfirmationPage = () => {
     if (!isNetopiaFlow || !orderFromQuery) {
       setIsCheckingStatus(false);
       return undefined;
+    }
+
+    if (redirectStatusHint) {
+      setPaymentStatus(redirectStatusHint);
+
+      const isFinalHint = redirectStatusHint === 'paid' || FAILED_PAYMENT_STATUSES.has(redirectStatusHint);
+      setIsCheckingStatus(!isFinalHint);
+
+      if (redirectStatusHint === 'paid' && !paidStateHandledRef.current) {
+        let pendingPayment = null;
+
+        try {
+          pendingPayment = JSON.parse(localStorage.getItem(PENDING_PAYMENT_STORAGE_KEY) || 'null');
+        } catch (_error) {
+          pendingPayment = null;
+        }
+
+        if (pendingPayment?.orderNumber === orderFromQuery) {
+          paidStateHandledRef.current = true;
+          localStorage.removeItem(PENDING_PAYMENT_STORAGE_KEY);
+
+          if (cartItems.length > 0) {
+            clearCart();
+          }
+        }
+      }
+
+      if (isFinalHint) {
+        return undefined;
+      }
     }
 
     let isCancelled = false;
@@ -83,8 +150,7 @@ const OrderConfirmationPage = () => {
         }
 
         if (!response.ok) {
-          pollingDisabledRef.current = true;
-          setIsCheckingStatus(false);
+          setIsCheckingStatus(true);
           setPaymentStatus('payment_processing');
           return;
         }
@@ -120,8 +186,7 @@ const OrderConfirmationPage = () => {
           }
         }
       } catch (_error) {
-        pollingDisabledRef.current = true;
-        setIsCheckingStatus(false);
+        setIsCheckingStatus(true);
         setPaymentStatus('payment_processing');
       }
     };
@@ -133,7 +198,7 @@ const OrderConfirmationPage = () => {
       isCancelled = true;
       window.clearInterval(intervalId);
     };
-  }, [isNetopiaFlow, orderFromQuery, clearCart, cartItems.length]);
+  }, [isNetopiaFlow, orderFromQuery, redirectStatusHint, clearCart, cartItems.length]);
 
   const netopiaStatusCopy = getNetopiaStatusCopy(paymentStatus);
   const isPaid = paymentStatus === 'paid';
