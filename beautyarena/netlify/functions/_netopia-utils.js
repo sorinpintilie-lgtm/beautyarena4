@@ -128,7 +128,9 @@ const mapNetopiaV2ToOrderStatus = ({ paymentStatus, errorCode }) => {
   const error = String(errorCode || '').trim();
   const isSuccessError = error === '' || error === '0' || error === '00';
 
-  if (isSuccessError && (status === 3 || status === 5)) return 'paid';
+  // Terminal successful payment statuses should win over error code variants
+  // that can still be present in some intermediary gateway responses.
+  if (status === 3 || status === 5) return 'paid';
 
   if (error === '100' || status === 15) return 'payment_processing';
   if (error === '101' || status === 1) return 'payment_pending';

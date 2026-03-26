@@ -150,6 +150,17 @@ const handler = async (event) => {
       errorCode,
     });
 
+    console.info('get-order-status NETOPIA response mapped', {
+      orderNumber: orderNumber || null,
+      ntpID: ntpID || null,
+      paymentStatusCode,
+      errorCode,
+      errorMessage: statusPayload?.error?.message || null,
+      mappedStatus,
+      hasPaymentObject: Boolean(statusPayload?.payment),
+      hasOrderObject: Boolean(statusPayload?.order),
+    });
+
     const resolvedOrderNumber = statusPayload?.order?.orderID || orderNumber || null;
     const resolvedNtpID = statusPayload?.payment?.ntpID || ntpID || null;
     const found = Boolean(resolvedOrderNumber || resolvedNtpID || statusPayload?.error?.message || errorCode);
